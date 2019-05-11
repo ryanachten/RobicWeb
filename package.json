@@ -7,8 +7,10 @@
     "@material-ui/core": "latest",
     "@types/react": "*",
     "@types/react-dom": "*",
+    "@types/react-router-dom": "^4.3.3",
     "react": "latest",
     "react-dom": "latest",
+    "react-router-dom": "^5.0.0",
     "react-scripts": "latest"
   },
   "devDependencies": {

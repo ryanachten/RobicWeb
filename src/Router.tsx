@@ -1,15 +1,19 @@
 import * as React from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter, Route, Link } from "react-router-dom";
 import Header from "./components/Header";
 import Index from "./pages/index";
 import Test from "./pages/test";
+import withRoot from "./withRoot";
 
-export default () => (
-  <Router>
+const Router = () => (
+  <BrowserRouter>
     <div>
       <Header />
       <Route path="/" exact component={Index} />
       <Route path="/test/" component={Test} />
     </div>
-  </Router>
+  </BrowserRouter>
 );
+
+//  Apply MUI theme to root component to make accessible to children
+export default withRoot(Router);

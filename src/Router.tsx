@@ -10,7 +10,9 @@ const Router = () => (
     <div>
       <Header />
       <Route path="/" exact component={Index} />
-      <Route path="/test/" component={Test} />
+      <Route path="/history/" exact component={Test} />
+      <Route path="/exercises/" exact component={Test} />
+      <Route path="/exercises/new/" exact component={Test} />
     </div>
   </BrowserRouter>
 );

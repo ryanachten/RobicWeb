@@ -7,15 +7,29 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import CreateIcon from "@material-ui/icons/Create";
+import FitnessCenterIcon from "@material-ui/icons/FitnessCenter";
+import HistoryIcon from "@material-ui/icons/History";
+import HomeIcon from "@material-ui/icons/Home";
 import MenuIcon from "@material-ui/icons/Menu";
-import MailIcon from "@material-ui/icons/Mail";
 import Toolbar from "@material-ui/core/Toolbar";
 import { Classes } from "jss";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 
-const styles = (theme: Theme) => createStyles({});
+const styles = (theme: Theme) =>
+  createStyles({
+    link: {
+      textDecoration: "none"
+    }
+  });
+
+type MenuLink = {
+  icon: string;
+  url: string;
+  text: string;
+};
 
 type Props = {
   classes: Classes;
@@ -40,11 +54,50 @@ class Header extends React.Component<WithStyles<typeof styles>, State> {
     }));
   }
 
+  renderMenuIcon(icon: string) {
+    if (icon === "home") {
+      return <HomeIcon />;
+    }
+    if (icon === "create") {
+      return <CreateIcon />;
+    }
+    if (icon === "history") {
+      return <HistoryIcon />;
+    }
+    return <FitnessCenterIcon />;
+  }
+
+  renderLink(link: MenuLink) {
+    const { icon, text, url } = link;
+    return (
+      <Link
+        key={url}
+        to={url}
+        onClick={this.toggleMenu}
+        className={this.props.classes.link}
+      >
+        <ListItem button>
+          <ListItemIcon>{this.renderMenuIcon(icon)}</ListItemIcon>
+          <ListItemText primary={text} />
+        </ListItem>
+      </Link>
+    );
+  }
+
   render() {
     const { drawerOpen } = this.state;
+    const { classes } = this.props;
+
+    const links = [
+      { url: "/", text: "Home", icon: "home" },
+      { url: "/history/", text: "History", icon: "history" },
+      { url: "/exercises/", text: "Exercises", icon: "fitness" },
+      { url: "/exercises/new/", text: "Create Exercise", icon: "create" }
+    ];
+
     return (
       <div>
-        <AppBar>
+        <AppBar position="static">
           <Toolbar>
             <IconButton
               color="inherit"
@@ -56,34 +109,11 @@ class Header extends React.Component<WithStyles<typeof styles>, State> {
           </Toolbar>
         </AppBar>
         <Drawer anchor="left" open={drawerOpen} onClose={this.toggleMenu}>
-          <List>
-            <MenuLink url="/" text="Home" onClick={this.toggleMenu} />
-            <MenuLink url="/test/" text="Test" onClick={this.toggleMenu} />
-          </List>
+          <List>{links.map(link => this.renderLink(link))}</List>
         </Drawer>
       </div>
     );
   }
 }
-
-type MenuProps = {
-  url: string;
-  text: string;
-  onClick: () => void;
-};
-
-const MenuLink = (props: MenuProps) => {
-  const { url, text, onClick } = props;
-  return (
-    <Link to={url} onClick={onClick}>
-      <ListItem button>
-        <ListItemIcon>
-          <MailIcon />
-        </ListItemIcon>
-        <ListItemText primary={text} />
-      </ListItem>
-    </Link>
-  );
-};
 
 export default withStyles(styles)(Header);

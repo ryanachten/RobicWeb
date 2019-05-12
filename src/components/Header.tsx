@@ -97,7 +97,7 @@ class Header extends React.Component<WithStyles<typeof styles>, State> {
 
     return (
       <div>
-        <AppBar position="static">
+        <AppBar color="inherit" position="static">
           <Toolbar>
             <IconButton
               color="inherit"

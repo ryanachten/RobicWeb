@@ -27,7 +27,7 @@ const styles = (theme: Theme) =>
     root: {
       alignItems: "center",
       display: "flex",
-      height: "calc(100vh - 80px)",
+      height: "100vh",
       justifyContent: "center"
     },
     submitWrapper: {

@@ -4,28 +4,31 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
-import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
+import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import gql from "graphql-tag";
-import {
-  compose,
-  graphql,
-  ChildProps,
-  Mutation,
-  ChildDataProps
-} from "react-apollo";
+import { compose, graphql } from "react-apollo";
 
 const styles = (theme: Theme) =>
   createStyles({
+    error: {
+      marginTop: theme.spacing.unit
+    },
     form: {
       display: "flex",
       flexFlow: "row wrap"
     },
+    header: {
+      marginBottom: theme.spacing.unit * 2
+    },
     input: {
-      margin: 10
+      margin: theme.spacing.unit
     },
     root: {
-      padding: 20
+      alignItems: "center",
+      display: "flex",
+      height: "calc(100vh - 80px)",
+      justifyContent: "center"
     },
     submitWrapper: {
       width: "100%"
@@ -65,7 +68,9 @@ class Login extends React.Component<Props, State> {
     const { email, password } = this.state;
     if (!email || !password) {
       //  TODO: provide proper validation and feedback
-      return null;
+      return this.setState({
+        error: new Error("Email and password must be provided")
+      });
     }
     // Executes the login mutation with the following query parameters
     try {
@@ -76,10 +81,8 @@ class Login extends React.Component<Props, State> {
         }
       });
       const token = loginResponse.data.loginUser;
-      console.log("token", token);
       if (token) {
-        await window.localStorage.setItemAsync("token", token);
-        console.log("token", token);
+        await window.localStorage.setItem("token", token);
       }
     } catch (error) {
       this.setState({
@@ -94,6 +97,9 @@ class Login extends React.Component<Props, State> {
     return (
       <div className={classes.root}>
         <form onSubmit={this.submitForm}>
+          <Typography className={classes.header} variant="h1">
+            Login
+          </Typography>
           <TextField
             label="Email"
             className={classes.input}
@@ -112,7 +118,11 @@ class Login extends React.Component<Props, State> {
           <div className="submitWrapper">
             <Button type="submit">Submit</Button>
           </div>
-          {error && <Typography color="error">{error.message}</Typography>}
+          {error && (
+            <Typography className={classes.error} color="error">
+              {error.message}
+            </Typography>
+          )}
         </form>
       </div>
     );

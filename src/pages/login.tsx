@@ -8,6 +8,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import gql from "graphql-tag";
 import { compose, graphql } from "react-apollo";
+import { RouteChildrenProps } from "react-router";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -41,7 +42,7 @@ type State = {
   error: Error | null;
 };
 
-type Props = {
+type Props = RouteChildrenProps & {
   classes: Classes;
   mutate: any;
 };
@@ -67,7 +68,6 @@ class Login extends React.Component<Props, State> {
     e.preventDefault();
     const { email, password } = this.state;
     if (!email || !password) {
-      //  TODO: provide proper validation and feedback
       return this.setState({
         error: new Error("Email and password must be provided")
       });
@@ -82,7 +82,8 @@ class Login extends React.Component<Props, State> {
       });
       const token = loginResponse.data.loginUser;
       if (token) {
-        await window.localStorage.setItem("token", token);
+        window.localStorage.setItem("token", token);
+        this.props.history.push("/");
       }
     } catch (error) {
       this.setState({

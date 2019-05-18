@@ -1,10 +1,10 @@
 import * as React from "react";
 import { ApolloProvider } from "react-apollo";
-import { BrowserRouter, Route, Link, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Header from "./components/Header";
-import Index from "./pages/index";
-import Login from "./pages/login";
-import Test from "./pages/test";
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import Stub from "./pages/Stub";
 import withRoot from "./withRoot";
 import ApolloClient from "./ApolloClient";
 
@@ -12,10 +12,10 @@ const AuthedRoutes = () => (
   <div>
     <Header />
     <Switch>
-      <Route path="/" exact component={Index} />
-      <Route path="/history/" exact component={Test} />
-      <Route path="/exercises/" exact component={Test} />
-      <Route path="/exercises/new/" exact component={Test} />
+      <Route path="/" exact component={Dashboard} />
+      <Route path="/history/" exact component={Stub} />
+      <Route path="/exercises/" exact component={Stub} />
+      <Route path="/exercises/new/" exact component={Stub} />
       <Redirect to="/" />
     </Switch>
   </div>

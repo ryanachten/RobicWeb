@@ -1,16 +1,19 @@
 import * as React from "react";
 import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
+import gql from "graphql-tag";
+import {
+  compose,
+  graphql,
+  ChildProps,
+  Mutation,
+  ChildDataProps
+} from "react-apollo";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -32,18 +35,21 @@ const styles = (theme: Theme) =>
 type State = {
   email: string;
   password: string;
+  error: Error | null;
 };
 
 type Props = {
   classes: Classes;
+  mutate: any;
 };
 
-class Index extends React.Component<WithStyles<typeof styles>, State> {
+class Login extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      error: null
     };
     this.submitForm = this.submitForm.bind(this);
   }
@@ -54,15 +60,37 @@ class Index extends React.Component<WithStyles<typeof styles>, State> {
     this.setState(state);
   }
 
-  submitForm(e: React.FormEvent) {
+  async submitForm(e: React.FormEvent) {
     e.preventDefault();
     const { email, password } = this.state;
-    console.log("email, password", email, password);
+    if (!email || !password) {
+      //  TODO: provide proper validation and feedback
+      return null;
+    }
+    // Executes the login mutation with the following query parameters
+    try {
+      const loginResponse = await this.props.mutate({
+        variables: {
+          email,
+          password
+        }
+      });
+      const token = loginResponse.data.loginUser;
+      console.log("token", token);
+      if (token) {
+        await window.localStorage.setItemAsync("token", token);
+        console.log("token", token);
+      }
+    } catch (error) {
+      this.setState({
+        error
+      });
+    }
   }
 
   render() {
     const { classes } = this.props;
-    const { email, password } = this.state;
+    const { email, error, password } = this.state;
     return (
       <div className={classes.root}>
         <form onSubmit={this.submitForm}>
@@ -74,6 +102,7 @@ class Index extends React.Component<WithStyles<typeof styles>, State> {
           />
           <TextField
             label="Password"
+            type="password"
             className={classes.input}
             onChange={event =>
               this.onFieldUpdate("password", event.target.value)
@@ -83,10 +112,31 @@ class Index extends React.Component<WithStyles<typeof styles>, State> {
           <div className="submitWrapper">
             <Button type="submit">Submit</Button>
           </div>
+          {error && <Typography color="error">{error.message}</Typography>}
         </form>
       </div>
     );
   }
 }
 
-export default withStyles(styles)(Index);
+const mutation = gql`
+  mutation LoginUser($email: String!, $password: String!) {
+    loginUser(email: $email, password: $password)
+  }
+`;
+
+const query = gql`
+  {
+    currentUser {
+      id
+      email
+      firstName
+      lastName
+    }
+  }
+`;
+
+export default compose(
+  graphql(mutation),
+  graphql(query)
+)(withStyles(styles)(Login));

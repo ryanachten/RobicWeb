@@ -37,6 +37,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "proxy": "https://robic-server.herokuapp.com/graphql"
+  ]
 }

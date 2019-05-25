@@ -6,9 +6,9 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
-import gql from "graphql-tag";
 import { compose, graphql } from "react-apollo";
 import { RouteChildrenProps } from "react-router";
+import { LoginUser } from "../constants/mutations";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -83,7 +83,9 @@ class Login extends React.Component<Props, State> {
       const token = loginResponse.data.loginUser;
       if (token) {
         window.localStorage.setItem("token", token);
-        this.props.history.push("/");
+        /* Workaround: Not sure how to set the auth token on the Apollo client
+          after it has been instantiated */
+        location.reload();
       }
     } catch (error) {
       this.setState({
@@ -130,24 +132,4 @@ class Login extends React.Component<Props, State> {
   }
 }
 
-const mutation = gql`
-  mutation LoginUser($email: String!, $password: String!) {
-    loginUser(email: $email, password: $password)
-  }
-`;
-
-const query = gql`
-  {
-    currentUser {
-      id
-      email
-      firstName
-      lastName
-    }
-  }
-`;
-
-export default compose(
-  graphql(mutation),
-  graphql(query)
-)(withStyles(styles)(Login));
+export default compose(graphql(LoginUser))(withStyles(styles)(Login));

@@ -3,7 +3,7 @@ import { createShallow } from "@material-ui/core/test-utils";
 import Header from "./Header";
 import renderer from "react-test-renderer";
 
-describe("Component: Button", () => {
+describe("Component: Header", () => {
   let shallow: any;
 
   beforeEach(() => {
@@ -16,7 +16,6 @@ describe("Component: Button", () => {
   });
 
   it("should call toggleMenu", () => {
-    const onClick = jest.fn();
     const wrapper = shallow(<Header />);
     const instance = wrapper.instance();
     expect(instance.state.drawerOpen).toBeFalsy;

@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Stub from "./pages/Stub";
 import withRoot from "./withRoot";
 import ApolloClient from "./ApolloClient";
+import routes from "./constants/routes";
 import { GetCurrentUser } from "./constants/queries";
 import Loading from "./pages/Loading";
 
@@ -14,19 +15,19 @@ const AuthedRoutes = () => (
   <div>
     <Header />
     <Switch>
-      <Route path="/" exact component={Dashboard} />
-      <Route path="/history/" exact component={Stub} />
-      <Route path="/exercises/" exact component={Stub} />
-      <Route path="/exercises/new/" exact component={Stub} />
-      <Redirect to="/" />
+      <Route path={routes.HOME.route} exact component={Dashboard} />
+      <Route path={routes.HISTORY.route} exact component={Stub} />
+      <Route path={routes.EXERCISES.route} exact component={Stub} />
+      <Route path={routes.NEW_EXERCISE.route} exact component={Stub} />
+      <Redirect to={routes.HOME.route} />
     </Switch>
   </div>
 );
 
 const UnauthedRoutes = () => (
   <Switch>
-    <Route path="/login/" exact component={Login} />
-    <Redirect to="/login/" />
+    <Route path={routes.LOGIN.route} exact component={Login} />
+    <Redirect to={routes.LOGIN.route} />
   </Switch>
 );
 

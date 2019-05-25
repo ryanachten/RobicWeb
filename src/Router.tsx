@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ApolloProvider } from "react-apollo";
+import { ApolloProvider, graphql } from "react-apollo";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Header from "./components/Header";
 import Dashboard from "./pages/Dashboard";
@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Stub from "./pages/Stub";
 import withRoot from "./withRoot";
 import ApolloClient from "./ApolloClient";
+import { GetCurrentUser } from "./constants/queries";
 
 const AuthedRoutes = () => (
   <div>
@@ -28,14 +29,25 @@ const UnauthedRoutes = () => (
   </Switch>
 );
 
-const authed = window.localStorage.getItem("token");
-const Router = () => (
-  <ApolloProvider client={ApolloClient}>
-    <BrowserRouter>
-      {authed ? <AuthedRoutes /> : <UnauthedRoutes />}
-    </BrowserRouter>
-  </ApolloProvider>
-);
+const Routes = graphql<any>(GetCurrentUser)(props => {
+  const {
+    data: { loading, currentUser }
+  } = props;
+  if (loading) {
+    return <div>Loading</div>;
+  }
+  return <Switch>{currentUser ? <AuthedRoutes /> : <UnauthedRoutes />}</Switch>;
+});
+
+const Router = (props: any) => {
+  return (
+    <ApolloProvider client={ApolloClient}>
+      <BrowserRouter>
+        <Routes />
+      </BrowserRouter>
+    </ApolloProvider>
+  );
+};
 
 //  Apply MUI theme to root component to make accessible to children
 export default withRoot(Router);

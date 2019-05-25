@@ -8,6 +8,7 @@ import Stub from "./pages/Stub";
 import withRoot from "./withRoot";
 import ApolloClient from "./ApolloClient";
 import { GetCurrentUser } from "./constants/queries";
+import Loading from "./pages/Loading";
 
 const AuthedRoutes = () => (
   <div>
@@ -34,12 +35,12 @@ const Routes = graphql<any>(GetCurrentUser)(props => {
     data: { loading, currentUser }
   } = props;
   if (loading) {
-    return <div>Loading</div>;
+    return <Loading />;
   }
   return <Switch>{currentUser ? <AuthedRoutes /> : <UnauthedRoutes />}</Switch>;
 });
 
-const Router = (props: any) => {
+const Router = () => {
   return (
     <ApolloProvider client={ApolloClient}>
       <BrowserRouter>

@@ -3,13 +3,14 @@ import { ApolloProvider, graphql } from "react-apollo";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Header from "./components/Header";
 import Dashboard from "./pages/Dashboard";
+import Loading from "./pages/Loading";
+import Exercises from "./pages/Exercises";
 import Login from "./pages/Login";
 import Stub from "./pages/Stub";
 import withRoot from "./withRoot";
 import ApolloClient from "./ApolloClient";
 import routes from "./constants/routes";
 import { GetCurrentUser } from "./constants/queries";
-import Loading from "./pages/Loading";
 
 const AuthedRoutes = () => (
   <div>
@@ -17,7 +18,7 @@ const AuthedRoutes = () => (
     <Switch>
       <Route path={routes.HOME.route} exact component={Dashboard} />
       <Route path={routes.HISTORY.route} exact component={Stub} />
-      <Route path={routes.EXERCISES.route} exact component={Stub} />
+      <Route path={routes.EXERCISES.route} exact component={Exercises} />
       <Route path={routes.NEW_EXERCISE.route} exact component={Stub} />
       <Redirect to={routes.HOME.route} />
     </Switch>

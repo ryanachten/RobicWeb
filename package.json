@@ -19,8 +19,14 @@
     "react-scripts": "latest"
   },
   "devDependencies": {
+    "@types/enzyme": "^3.9.3",
+    "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/jest": "*",
     "@types/node": "*",
+    "@types/react-test-renderer": "^16.8.1",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.13.1",
+    "react-test-renderer": "^16.8.6",
     "typescript": "latest"
   },
   "scripts": {

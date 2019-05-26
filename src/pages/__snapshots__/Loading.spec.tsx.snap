@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Page: Loading renders correctly 1`] = `
+<div
+  className="Loading-root-1"
+>
+  <h2
+    className="MuiTypography-root-3 MuiTypography-h2-16 Loading-title-2"
+  >
+    Hold tight, we're loading...
+  </h2>
+  <div
+    className="MuiCircularProgress-root-39 MuiCircularProgress-colorPrimary-42 MuiCircularProgress-indeterminate-41"
+    role="progressbar"
+    style={
+      Object {
+        "height": 40,
+        "width": 40,
+      }
+    }
+  >
+    <svg
+      className="MuiCircularProgress-svg-44"
+      viewBox="22 22 44 44"
+    >
+      <circle
+        className="MuiCircularProgress-circle-45 MuiCircularProgress-circleIndeterminate-47"
+        cx={44}
+        cy={44}
+        fill="none"
+        r={20.2}
+        strokeWidth={3.6}
+        style={Object {}}
+      />
+    </svg>
+  </div>
+</div>
+`;

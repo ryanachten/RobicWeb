@@ -1,25 +1,36 @@
 import * as React from "react";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
-import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
-import { Classes } from "jss";
+import withStyles from "@material-ui/core/styles/withStyles";
+import Typography from "@material-ui/core/Typography";
 
-const styles = (theme: Theme) => createStyles({});
+const styles = (theme: Theme) =>
+  createStyles({
+    root: {
+      alignItems: "center",
+      display: "flex",
+      height: "100vh",
+      justifyContent: "center",
+      width: "100vw"
+    }
+  });
 
 type State = {};
 
 type Props = {
-  classes: Classes;
+  classes: any;
+  pageName: string;
 };
 
-class Index extends React.Component<WithStyles<typeof styles>, State> {
-  constructor(props: Props) {
-    super(props);
-  }
-
+class Stub extends React.Component<Props, State> {
   render() {
-    return <div>Meow</div>;
+    const { classes, pageName } = this.props;
+    return (
+      <div className={classes.root}>
+        <Typography variant="h1">{pageName}</Typography>
+      </div>
+    );
   }
 }
 
-export default withStyles(styles)(Index);
+export default withStyles(styles)(Stub);

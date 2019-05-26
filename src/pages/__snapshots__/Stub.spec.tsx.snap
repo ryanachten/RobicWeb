@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Page: Stub renders correctly 1`] = `
+<div
+  className="Stub-root-1"
+>
+  <h1
+    className="MuiTypography-root-2 MuiTypography-h1-14"
+  >
+    Stub
+  </h1>
+</div>
+`;

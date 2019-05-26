@@ -17,9 +17,17 @@ const AuthedRoutes = () => (
     <Header />
     <Switch>
       <Route path={routes.HOME.route} exact component={Dashboard} />
-      <Route path={routes.HISTORY.route} exact component={Stub} />
+      <Route
+        path={routes.HISTORY.route}
+        exact
+        component={() => <Stub pageName={routes.HISTORY.label} />}
+      />
       <Route path={routes.EXERCISES.route} exact component={Exercises} />
-      <Route path={routes.NEW_EXERCISE.route} exact component={Stub} />
+      <Route
+        path={routes.NEW_EXERCISE.route}
+        exact
+        component={() => <Stub pageName={routes.NEW_EXERCISE.label} />}
+      />
       <Redirect to={routes.HOME.route} />
     </Switch>
   </div>

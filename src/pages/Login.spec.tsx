@@ -8,18 +8,9 @@ import ApolloClient from "../ApolloClient";
 describe("Page: Login", () => {
   let shallow: any;
 
-  const initProps = () => {
-    return {
-      mutate: null,
-      match: null,
-      history: null,
-      location: null
-    };
-  };
-
   const Login = () => (
     <ApolloProvider client={ApolloClient}>
-      <NakedLogin {...initProps} />
+      <NakedLogin />
     </ApolloProvider>
   );
 
@@ -39,5 +30,30 @@ describe("Page: Login", () => {
     const input = "testing";
     instance.onFieldUpdate("email", input);
     expect(instance.state.email).toBe(input);
+  });
+
+  it("should set auth token and reload on form submission", async () => {
+    const token = "fakeToken123";
+    const mutateMock = jest.fn().mockImplementation(async () => ({
+      data: {
+        loginUser: token
+      }
+    }));
+    ApolloClient.mutate = mutateMock;
+    const reloadMock = jest.fn();
+    location.reload = reloadMock;
+    const storageSpy = jest.spyOn(Storage.prototype, "setItem");
+    const wrapper = shallow(<Login />);
+    const instance = wrapper.instance();
+    const email = "test@test.com";
+    const password = "123abc";
+    instance.onFieldUpdate("email", email);
+    instance.onFieldUpdate("password", password);
+    await instance.submitForm({
+      preventDefault: jest.fn()
+    });
+    await expect(mutateMock).toHaveBeenCalled();
+    expect(storageSpy).toHaveBeenCalledWith("token", token);
+    expect(reloadMock).toHaveBeenCalled();
   });
 });

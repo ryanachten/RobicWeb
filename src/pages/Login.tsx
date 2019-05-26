@@ -132,6 +132,4 @@ class Login extends React.Component<Props, State> {
   }
 }
 
-const styled = withStyles(styles)(Login);
-export { styled as Login };
-export default compose(graphql(LoginUser))(styled);
+export default compose(graphql(LoginUser))(withStyles(styles)(Login));

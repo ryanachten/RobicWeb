@@ -17,11 +17,15 @@ import { Classes } from "jss";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
+import { transparentize } from "../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
     link: {
       textDecoration: "none"
+    },
+    background: {
+      backgroundColor: transparentize(theme.palette.common.white, 0.5)
     }
   });
 
@@ -108,7 +112,18 @@ class Header extends React.Component<WithStyles<typeof styles>, State> {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Drawer anchor="left" open={drawerOpen} onClose={this.toggleMenu}>
+        <Drawer
+          anchor="left"
+          open={drawerOpen}
+          onClose={this.toggleMenu}
+          ModalProps={{
+            BackdropProps: {
+              classes: {
+                root: classes.background
+              }
+            }
+          }}
+        >
           <List>{links.map(link => this.renderLink(link))}</List>
         </Drawer>
       </div>

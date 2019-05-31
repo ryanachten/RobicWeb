@@ -3,14 +3,14 @@
 exports[`Component: Header renders correctly 1`] = `
 <div>
   <header
-    className="MuiPaper-root-11 MuiPaper-elevation4-17 MuiAppBar-root-2 MuiAppBar-positionStatic-6"
+    className="MuiPaper-root-12 MuiPaper-elevation4-18 MuiAppBar-root-3 MuiAppBar-positionStatic-7"
   >
     <div
-      className="MuiToolbar-root-38 MuiToolbar-regular-40 MuiToolbar-gutters-39"
+      className="MuiToolbar-root-39 MuiToolbar-regular-41 MuiToolbar-gutters-40"
     >
       <button
         aria-label="Menu"
-        className="MuiButtonBase-root-48 MuiIconButton-root-42 MuiIconButton-colorInherit-43"
+        className="MuiButtonBase-root-49 MuiIconButton-root-43 MuiIconButton-colorInherit-44"
         disabled={false}
         onBlur={[Function]}
         onClick={[Function]}
@@ -28,11 +28,11 @@ exports[`Component: Header renders correctly 1`] = `
         type="button"
       >
         <span
-          className="MuiIconButton-label-47"
+          className="MuiIconButton-label-48"
         >
           <svg
             aria-hidden="true"
-            className="MuiSvgIcon-root-51"
+            className="MuiSvgIcon-root-52"
             focusable="false"
             role="presentation"
             viewBox="0 0 24 24"
@@ -47,7 +47,7 @@ exports[`Component: Header renders correctly 1`] = `
           </svg>
         </span>
         <span
-          className="MuiTouchRipple-root-74"
+          className="MuiTouchRipple-root-75"
         />
       </button>
     </div>

@@ -8,6 +8,7 @@ import { GetExercises } from "../constants/queries";
 import { ExerciseDefinition } from "../constants/types";
 import { CircularProgress, Typography } from "@material-ui/core";
 import PageTitle from "../components/PageTitle";
+import routes from "../constants/routes";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -16,8 +17,7 @@ const styles = (theme: Theme) =>
     },
     exerciseTitle: {
       listStyle: "none",
-      marginBottom: theme.spacing.unit,
-      opacity: 0.5
+      marginBottom: theme.spacing.unit
     },
     root: {
       padding: theme.spacing.unit * 4
@@ -30,11 +30,20 @@ type Props = {
   classes: Classes;
   data: any;
   loading: boolean;
+  history: any;
 };
 
 class Exercises extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    this.state = {
+      selectedExercise: null
+    };
+    this.navigateToExercise = this.navigateToExercise.bind(this);
+  }
+
+  navigateToExercise(exercise: ExerciseDefinition) {
+    this.props.history.push(routes.EXERCISE(exercise.id, exercise.title).route);
   }
 
   render() {
@@ -52,7 +61,12 @@ class Exercises extends React.Component<Props, State> {
                 exercises.map((exercise: ExerciseDefinition) => {
                   return (
                     <li className={classes.exerciseTitle} key={exercise.id}>
-                      <Typography variant="h2">{exercise.title}</Typography>
+                      <Typography
+                        onClick={() => this.navigateToExercise(exercise)}
+                        variant="h2"
+                      >
+                        {exercise.title}
+                      </Typography>
                     </li>
                   );
                 })}

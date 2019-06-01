@@ -24,6 +24,10 @@ const AuthedRoutes = () => (
       />
       <Route path={routes.EXERCISES.route} exact component={Exercises} />
       <Route
+        path={routes.EXERCISE().route}
+        component={() => <Stub pageName={routes.EXERCISE().label} />}
+      />
+      <Route
         path={routes.NEW_EXERCISE.route}
         exact
         component={() => <Stub pageName={routes.NEW_EXERCISE.label} />}

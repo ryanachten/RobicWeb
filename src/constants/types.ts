@@ -2,6 +2,10 @@ enum Unit {
   kg = "kg"
 }
 
+export type SessionDefinition = {
+  date: string;
+};
+
 export type PersonalBest = {
   netValue: { value: number };
   setCount: { value: number };
@@ -11,7 +15,7 @@ export type PersonalBest = {
 };
 
 export type ExerciseDefinition = {
-  history: [];
+  history: { session: SessionDefinition }[];
   id: string;
   personalBest: PersonalBest;
   title: string;

@@ -9,6 +9,8 @@ import { ExerciseDefinition } from "../constants/types";
 import { CircularProgress, Typography } from "@material-ui/core";
 import PageTitle from "../components/PageTitle";
 import routes from "../constants/routes";
+import { formatDate } from "../utils";
+import { parse, isAfter } from "date-fns";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -34,12 +36,25 @@ type Props = {
 };
 
 class Exercises extends React.Component<Props, State> {
+  compareDates: (a: ExerciseDefinition, b: ExerciseDefinition) => number;
   constructor(props: Props) {
     super(props);
     this.state = {
       selectedExercise: null
     };
     this.navigateToExercise = this.navigateToExercise.bind(this);
+
+    this.compareDates = (a: ExerciseDefinition, b: ExerciseDefinition) => {
+      const a_latestSession =
+        a.history.length > 0
+          ? a.history[a.history.length - 1].session.date
+          : new Date();
+      const b_latestSession =
+        b.history.length > 0
+          ? b.history[b.history.length - 1].session.date
+          : new Date();
+      return isAfter(parse(a_latestSession), parse(b_latestSession)) ? 1 : -1;
+    };
   }
 
   navigateToExercise(exercise: ExerciseDefinition) {
@@ -58,18 +73,29 @@ class Exercises extends React.Component<Props, State> {
             <PageTitle label="Exercises" />
             <ul className={classes.exerciseList}>
               {exercises &&
-                exercises.map((exercise: ExerciseDefinition) => {
-                  return (
-                    <li className={classes.exerciseTitle} key={exercise.id}>
-                      <Typography
-                        onClick={() => this.navigateToExercise(exercise)}
-                        variant="h2"
-                      >
-                        {exercise.title}
-                      </Typography>
-                    </li>
-                  );
-                })}
+                exercises
+                  .sort(this.compareDates)
+                  .map((exercise: ExerciseDefinition) => {
+                    return (
+                      <li className={classes.exerciseTitle} key={exercise.id}>
+                        <Typography
+                          onClick={() => this.navigateToExercise(exercise)}
+                          variant="h2"
+                        >
+                          {exercise.title}
+                        </Typography>
+                        {exercise.history.length > 0 && (
+                          <Typography>
+                            {formatDate(
+                              exercise.history[exercise.history.length - 1]
+                                .session.date,
+                              true
+                            )}
+                          </Typography>
+                        )}
+                      </li>
+                    );
+                  })}
             </ul>
           </Fragment>
         )}

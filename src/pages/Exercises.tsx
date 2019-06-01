@@ -6,6 +6,8 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import { GetExercises } from "../constants/queries";
 import { ExerciseDefinition } from "../constants/types";
+import { Typography } from "@material-ui/core";
+import PageTitle, { TextPositiion } from "../components/PageTitle";
 
 const styles = (theme: Theme) => createStyles({});
 
@@ -26,11 +28,12 @@ class Exercises extends React.Component<Props, State> {
     const exercises = this.props.data.exerciseDefinitions;
     return (
       <div>
+        <PageTitle label="Exercises" position={TextPositiion.left} />
         {exercises &&
           exercises.map((exercise: ExerciseDefinition) => {
             return (
               <div key={exercise.id}>
-                <div>{exercise.title}</div>
+                <Typography>{exercise.title}</Typography>
               </div>
             );
           })}

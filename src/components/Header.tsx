@@ -5,12 +5,7 @@ import Drawer from "@material-ui/core/Drawer";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import CreateIcon from "@material-ui/icons/Create";
-import FitnessCenterIcon from "@material-ui/icons/FitnessCenter";
-import HistoryIcon from "@material-ui/icons/History";
-import HomeIcon from "@material-ui/icons/Home";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import { Classes } from "jss";
@@ -30,7 +25,6 @@ const styles = (theme: Theme) =>
   });
 
 type MenuLink = {
-  icon: string;
   url: string;
   text: string;
 };
@@ -58,21 +52,8 @@ class Header extends React.Component<WithStyles<typeof styles>, State> {
     }));
   }
 
-  renderMenuIcon(icon: string) {
-    if (icon === "home") {
-      return <HomeIcon />;
-    }
-    if (icon === "create") {
-      return <CreateIcon />;
-    }
-    if (icon === "history") {
-      return <HistoryIcon />;
-    }
-    return <FitnessCenterIcon />;
-  }
-
   renderLink(link: MenuLink) {
-    const { icon, text, url } = link;
+    const { text, url } = link;
     return (
       <Link
         key={url}
@@ -81,7 +62,6 @@ class Header extends React.Component<WithStyles<typeof styles>, State> {
         className={this.props.classes.link}
       >
         <ListItem button>
-          <ListItemIcon>{this.renderMenuIcon(icon)}</ListItemIcon>
           <ListItemText primary={text} />
         </ListItem>
       </Link>

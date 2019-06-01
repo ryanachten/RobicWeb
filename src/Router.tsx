@@ -2,9 +2,10 @@ import * as React from "react";
 import { ApolloProvider, graphql } from "react-apollo";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Header from "./components/Header";
+import Exercise from "./pages/Exercise";
+import Exercises from "./pages/Exercises";
 import Dashboard from "./pages/Dashboard";
 import Loading from "./pages/Loading";
-import Exercises from "./pages/Exercises";
 import Login from "./pages/Login";
 import Stub from "./pages/Stub";
 import withRoot from "./withRoot";
@@ -23,10 +24,7 @@ const AuthedRoutes = () => (
         component={() => <Stub pageName={routes.HISTORY.label} />}
       />
       <Route path={routes.EXERCISES.route} exact component={Exercises} />
-      <Route
-        path={routes.EXERCISE().route}
-        component={() => <Stub pageName={routes.EXERCISE().label} />}
-      />
+      <Route path={routes.EXERCISE().route} component={Exercise} />} />
       <Route
         path={routes.NEW_EXERCISE.route}
         exact

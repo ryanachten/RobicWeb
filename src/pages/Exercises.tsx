@@ -18,6 +18,7 @@ const styles = (theme: Theme) =>
       padding: 0
     },
     exerciseTitle: {
+      cursor: "pointer",
       listStyle: "none",
       marginBottom: theme.spacing.unit
     },

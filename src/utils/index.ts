@@ -1,7 +1,11 @@
+import { decomposeColor } from "@material-ui/core/styles/colorManipulator";
 import {
-  decomposeColor,
-  convertHexToRGB
-} from "@material-ui/core/styles/colorManipulator";
+  format,
+  distanceInWordsToNow,
+  isValid,
+  parse,
+  isBefore
+} from "date-fns";
 // @ts-ignore
 import classnames from "classnames";
 
@@ -10,4 +14,20 @@ export default classnames;
 export const transparentize = (color: string, alpha: number): string => {
   const rgb: [number, number, number, number?] = decomposeColor(color).values;
   return `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})`;
+};
+
+export const formatDate = (
+  originalDate: string,
+  relative?: boolean
+): string => {
+  const date = parse(originalDate);
+  if (!isValid(date)) {
+    return "invalid date";
+  }
+  if (relative) {
+    return isBefore(date, Date.now())
+      ? `${distanceInWordsToNow(date)} ago`
+      : `in ${distanceInWordsToNow(date)}`;
+  }
+  return format(date, "dd/MM/yyyy");
 };

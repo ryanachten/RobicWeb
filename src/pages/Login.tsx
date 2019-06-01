@@ -1,4 +1,6 @@
 import * as React from "react";
+import { compose, graphql } from "react-apollo";
+import { RouteChildrenProps } from "react-router";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -6,8 +8,6 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
-import { compose, graphql } from "react-apollo";
-import { RouteChildrenProps } from "react-router";
 import { LoginUser } from "../constants/mutations";
 
 const styles = (theme: Theme) =>

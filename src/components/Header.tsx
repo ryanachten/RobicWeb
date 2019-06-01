@@ -10,7 +10,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import { Classes } from "jss";
 import createStyles from "@material-ui/core/styles/createStyles";
-import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
+import withStyles from "@material-ui/core/styles/withStyles";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import { transparentize } from "../utils";
 
@@ -37,7 +37,7 @@ type State = {
   drawerOpen: boolean;
 };
 
-class Header extends React.Component<WithStyles<typeof styles>, State> {
+class Header extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {

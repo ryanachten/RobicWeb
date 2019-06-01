@@ -3,36 +3,28 @@ import classnames from "../utils";
 import Typography from "@material-ui/core/Typography";
 import { withStyles, Theme, createStyles } from "@material-ui/core";
 
-export enum TextPositiion {
-  left = "left"
-}
-
 type Props = {
   className?: string;
   classes: any;
   label: string;
-  position?: TextPositiion;
 };
 
 const styles = (theme: Theme) =>
   createStyles({
     text: {
+      margin: theme.spacing.unit * 4,
+      marginLeft: 0,
       textTransform: "lowercase"
-    },
-    leftCorner: {
-      margin: theme.spacing.unit * 4
     }
   });
 
-const PageTitle = ({ className, classes, label, position }: Props) => {
-  const titleStyles: string[] = [classes.text, className];
-
-  if (position === TextPositiion.left) {
-    titleStyles.push(classes.leftCorner);
-  }
-
+const PageTitle = ({ className, classes, label }: Props) => {
   return (
-    <Typography className={classnames(titleStyles)} variant="h2" component="h1">
+    <Typography
+      className={classnames(classes.text, className)}
+      variant="h5"
+      component="h1"
+    >
       {label}
     </Typography>
   );

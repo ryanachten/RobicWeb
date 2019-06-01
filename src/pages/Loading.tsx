@@ -3,8 +3,7 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
-import { CircularProgress } from "@material-ui/core";
-import PageTitle from "../components/PageTitle";
+import { CircularProgress, Typography } from "@material-ui/core";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -36,7 +35,9 @@ class Loading extends React.Component<WithStyles<typeof styles>, State> {
     const classes = this.props.classes;
     return (
       <div className={classes.root}>
-        <PageTitle label="Hold tight, we're loading..." />
+        <Typography className={classes.title} variant="h2" component="h1">
+          hold tight, we're loading...
+        </Typography>
         <CircularProgress />
       </div>
     );

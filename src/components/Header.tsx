@@ -13,6 +13,7 @@ import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import { transparentize } from "../utils";
+import routes from "../constants/routes";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -72,11 +73,17 @@ class Header extends React.Component<Props, State> {
     const { drawerOpen } = this.state;
     const { classes } = this.props;
 
-    const links = [
-      { url: "/", text: "Home", icon: "home" },
-      { url: "/history/", text: "History", icon: "history" },
-      { url: "/exercises/", text: "Exercises", icon: "fitness" },
-      { url: "/exercises/new/", text: "Create Exercise", icon: "create" }
+    const links: MenuLink[] = [
+      { url: routes.HOME.route, text: routes.HOME.label },
+      {
+        url: routes.HISTORY.route,
+        text: routes.HISTORY.label
+      },
+      { url: routes.EXERCISES.route, text: routes.EXERCISES.label },
+      {
+        url: routes.NEW_EXERCISE.route,
+        text: routes.NEW_EXERCISE.label
+      }
     ];
 
     return (

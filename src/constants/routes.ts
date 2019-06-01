@@ -16,8 +16,8 @@ export default {
     label: "New Exercise"
   },
   HISTORY: {
-    route: "/history/",
-    label: "History"
+    route: "/activity/",
+    label: "Activity"
   },
   LOGIN: {
     route: "/login/",

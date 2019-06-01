@@ -21,6 +21,9 @@ const styles = (theme: Theme) =>
       listStyle: "none",
       marginBottom: theme.spacing.unit
     },
+    exerciseDate: {
+      marginLeft: theme.spacing.unit / 2
+    },
     root: {
       padding: theme.spacing.unit * 4
     }
@@ -39,9 +42,6 @@ class Exercises extends React.Component<Props, State> {
   compareDates: (a: ExerciseDefinition, b: ExerciseDefinition) => number;
   constructor(props: Props) {
     super(props);
-    this.state = {
-      selectedExercise: null
-    };
     this.navigateToExercise = this.navigateToExercise.bind(this);
 
     this.compareDates = (a: ExerciseDefinition, b: ExerciseDefinition) => {
@@ -61,6 +61,32 @@ class Exercises extends React.Component<Props, State> {
     this.props.history.push(routes.EXERCISE(exercise.id, exercise.title).route);
   }
 
+  renderExercise(exercise: ExerciseDefinition) {
+    const classes = this.props.classes;
+    const formattedDate: string | null =
+      exercise.history.length > 0
+        ? formatDate(
+            exercise.history[exercise.history.length - 1].session.date,
+            true
+          )
+        : null;
+    return (
+      <li className={classes.exerciseTitle} key={exercise.id}>
+        <Typography
+          onClick={() => this.navigateToExercise(exercise)}
+          variant="h2"
+        >
+          {exercise.title}
+        </Typography>
+        {formattedDate && (
+          <Typography
+            className={classes.exerciseDate}
+          >{`Last completed ${formattedDate}`}</Typography>
+        )}
+      </li>
+    );
+  }
+
   render() {
     const { classes, data } = this.props;
     const { exerciseDefinitions: exercises, loading } = data;
@@ -75,27 +101,9 @@ class Exercises extends React.Component<Props, State> {
               {exercises &&
                 exercises
                   .sort(this.compareDates)
-                  .map((exercise: ExerciseDefinition) => {
-                    return (
-                      <li className={classes.exerciseTitle} key={exercise.id}>
-                        <Typography
-                          onClick={() => this.navigateToExercise(exercise)}
-                          variant="h2"
-                        >
-                          {exercise.title}
-                        </Typography>
-                        {exercise.history.length > 0 && (
-                          <Typography>
-                            {formatDate(
-                              exercise.history[exercise.history.length - 1]
-                                .session.date,
-                              true
-                            )}
-                          </Typography>
-                        )}
-                      </li>
-                    );
-                  })}
+                  .map((exercise: ExerciseDefinition) =>
+                    this.renderExercise(exercise)
+                  )}
             </ul>
           </Fragment>
         )}

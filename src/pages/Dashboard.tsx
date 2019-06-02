@@ -13,9 +13,20 @@ import { Classes } from "jss";
 import { ExerciseDefinition } from "../constants/types";
 import { Typography } from "@material-ui/core";
 import routes from "../constants/routes";
+import Stopwatch from "../components/Stopwatch";
 
 const styles = (theme: Theme) =>
   createStyles({
+    buttonWrapper: {
+      alignItems: "center",
+      display: "flex",
+      marginLeft: theme.spacing.unit,
+      marginTop: theme.spacing.unit * 2
+    },
+    exerciseTitle: {
+      marginBottom: theme.spacing.unit * 2,
+      marginTop: theme.spacing.unit * 4
+    },
     form: {
       display: "flex",
       flexFlow: "row wrap"
@@ -36,16 +47,17 @@ const styles = (theme: Theme) =>
       alignItems: "baseline",
       display: "flex"
     },
-    submitWrapper: {
-      width: "100%"
+    timerButton: {
+      marginLeft: theme.spacing.unit * 2
     }
   });
 
 type State = {
-  selectedExercise: ExerciseDefinition | "";
+  selectedExercise: ExerciseDefinition | null;
   reps: string;
   sets: string;
   weight: string;
+  timerRunning: boolean;
 };
 
 type Props = {
@@ -55,16 +67,28 @@ type Props = {
 };
 
 class Index extends React.Component<Props, State> {
+  stopwatch: any;
+
   constructor(props: Props) {
     super(props);
     this.state = {
-      selectedExercise: "",
+      selectedExercise: null,
       reps: "",
       sets: "",
-      weight: ""
+      weight: "",
+      timerRunning: false
     };
-    this.submitForm = this.submitForm.bind(this);
     this.navigateToCreateExercise = this.navigateToCreateExercise.bind(this);
+    this.submitForm = this.submitForm.bind(this);
+    this.toggleTimer = this.toggleTimer.bind(this);
+  }
+
+  toggleTimer() {
+    const timerRunning = this.state.timerRunning;
+    timerRunning ? this.stopwatch.stop() : this.stopwatch.start();
+    this.setState(prevState => ({
+      timerRunning: !prevState.timerRunning
+    }));
   }
 
   navigateToCreateExercise() {
@@ -80,20 +104,31 @@ class Index extends React.Component<Props, State> {
   submitForm(e: React.FormEvent) {
     e.preventDefault();
     const { reps, sets, weight } = this.state;
-    console.log("reps, sets, weight", reps, sets, weight);
+    console.log("submit");
   }
 
   onSelectExercise = (e: any) => {
+    const exerciseId = e.target.value;
+    const exercise =
+      this.props.data.exerciseDefinitions.find(
+        (def: ExerciseDefinition) => def.id === exerciseId
+      ) || null;
     this.setState({
-      selectedExercise: e.target.value
+      selectedExercise: exercise
     });
   };
 
   renderExerciseForm() {
     const { classes } = this.props;
-    const { reps, sets, weight } = this.state;
+    const { reps, selectedExercise, sets, timerRunning, weight } = this.state;
+    if (!selectedExercise) {
+      return null;
+    }
     return (
       <form onSubmit={this.submitForm}>
+        <Typography className={classes.exerciseTitle} variant="h3">
+          {selectedExercise.title}
+        </Typography>
         <TextField
           label="Sets"
           type="number"
@@ -118,9 +153,19 @@ class Index extends React.Component<Props, State> {
           onChange={event => this.onFieldUpdate("weight", event.target.value)}
           value={weight}
         />
-        <div className="submitWrapper">
-          <Button type="submit">Submit</Button>
+        <div className={classes.buttonWrapper}>
+          <Stopwatch ref={(stopwatch: any) => (this.stopwatch = stopwatch)} />
+          <Button className={classes.timerButton} onClick={this.toggleTimer}>
+            {timerRunning ? "Pause" : "Start"}
+          </Button>
+          <Button
+            className={classes.timerButton}
+            onClick={() => this.stopwatch.reset()}
+          >
+            Reset
+          </Button>
         </div>
+        <Button type="submit">Done</Button>
       </form>
     );
   }
@@ -130,14 +175,13 @@ class Index extends React.Component<Props, State> {
     const { loading } = data;
     const { selectedExercise } = this.state;
     const { exerciseDefinitions: exercises } = data;
-
     return (
       <div className={classes.root}>
         {loading ? (
           <CircularProgress />
         ) : (
           <Fragment>
-            <PageTitle label="Robic" />
+            <PageTitle label="Get started" />
             {exercises.length > 0 ? (
               <div className={classes.selectWrapper}>
                 <Typography className={classes.selectTitle}>
@@ -152,7 +196,7 @@ class Index extends React.Component<Props, State> {
                     value: exercise.id,
                     label: exercise.title
                   }))}
-                  value={selectedExercise}
+                  value={selectedExercise ? selectedExercise.id : ""}
                 />
               </div>
             ) : (

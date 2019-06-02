@@ -12,8 +12,8 @@ export default {
     route: `/exercises/${id}`
   }),
   NEW_EXERCISE: {
-    route: "/exercises/new/",
-    label: "New Exercise"
+    route: "/exercises/create/",
+    label: "Create Exercise"
   },
   HISTORY: {
     route: "/history/",

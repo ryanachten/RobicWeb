@@ -2,15 +2,12 @@ import React, { Fragment } from "react";
 import { compose, graphql } from "react-apollo";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import PageTitle from "../components/PageTitle";
+import Select from "../components/inputs/Select";
 import { GetExercises } from "../constants/queries";
 import { Classes } from "jss";
 import { ExerciseDefinition } from "../constants/types";
@@ -138,24 +135,17 @@ class Index extends React.Component<Props, State> {
               <Typography className={classes.selectTitle}>
                 Select an exercise
               </Typography>
-              <FormControl className={classes.formControl}>
-                <InputLabel htmlFor="exercise">Exercise</InputLabel>
-                <Select
-                  onChange={this.onSelectExercise}
-                  value={selectedExercise}
-                  inputProps={{
-                    name: "exercise",
-                    id: "exercise"
-                  }}
-                >
-                  {exercises &&
-                    exercises.map((exercise: ExerciseDefinition) => (
-                      <MenuItem key={exercise.id} value={exercise.id}>
-                        {exercise.title}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
+              <Select
+                label="Exercise"
+                className={classes.formControl}
+                onChange={this.onSelectExercise}
+                options={exercises.map((exercise: ExerciseDefinition) => ({
+                  id: exercise.id,
+                  value: exercise.id,
+                  label: exercise.title
+                }))}
+                value={selectedExercise}
+              />
             </div>
             {selectedExercise && this.renderExerciseForm()}
           </Fragment>

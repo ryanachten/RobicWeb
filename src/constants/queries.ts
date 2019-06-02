@@ -43,28 +43,33 @@ export const GetExercises = gql`
   }
 `;
 
-export const GetExerciseById = gql`
+export const GetExerciseDefinitionById = gql`
   query GetExerciseDefinition($exerciseId: ID!) {
-    exercise(id: $exerciseId) {
+    exerciseDefinition(id: $exerciseId) {
       id
-      definition {
-        id
-        title
-        unit
-        history {
-          id
+      title
+      unit
+      history {
+        session {
+          date
         }
       }
-      session {
-        id
-        definition {
-          id
-          title
+      personalBest {
+        value {
+          value
         }
-      }
-      sets {
-        reps
-        value
+        setCount {
+          value
+        }
+        totalReps {
+          value
+        }
+        netValue {
+          value
+        }
+        timeTaken {
+          value
+        }
       }
     }
   }

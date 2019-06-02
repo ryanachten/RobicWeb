@@ -4,7 +4,7 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
-import { GetExerciseById } from "../constants/queries";
+import { GetExerciseDefinitionById } from "../constants/queries";
 import { CircularProgress, Typography } from "@material-ui/core";
 import PageTitle from "../components/PageTitle";
 
@@ -39,19 +39,31 @@ class Exercise extends React.Component<Props, State> {
 
   render() {
     const { classes, data } = this.props;
-    console.log("this.props", this.props);
-    const { exercise, loading } = data;
-    console.log("exercise", exercise);
+    const { exerciseDefinition: exercise, loading } = data;
     return (
       <div className={classes.root}>
-        {loading ? <CircularProgress /> : <PageTitle label="Exercise" />}
+        {loading ? (
+          <CircularProgress />
+        ) : exercise ? (
+          <div>
+            <PageTitle label={exercise.title} />
+          </div>
+        ) : (
+          <div>
+            <PageTitle label="Oops!" />
+            <Typography color="error">
+              Sorry, this exercise cannot be found. It may have been deleted or
+              created by a different user.
+            </Typography>
+          </div>
+        )}
       </div>
     );
   }
 }
 
 export default compose(
-  graphql(GetExerciseById, {
+  graphql(GetExerciseDefinitionById, {
     options: (props: any) => ({
       variables: { exerciseId: props.match.params.id }
     })

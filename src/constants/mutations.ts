@@ -24,9 +24,25 @@ export const RegisterUser = gql`
   }
 `;
 
-export const CreateExercise = gql`
+export const AddExerciseDefinition = gql`
   mutation AddExerciseDefinition($title: String!, $unit: String!) {
     addExerciseDefinition(title: $title, unit: $unit) {
+      id
+    }
+  }
+`;
+
+export const AddExercise = gql`
+  mutation AddExercise(
+    $definitionId: ID!
+    $sets: [SetInput]!
+    $timeTaken: String!
+  ) {
+    addExercise(
+      definitionId: $definitionId
+      sets: $sets
+      timeTaken: $timeTaken
+    ) {
       id
     }
   }

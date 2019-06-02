@@ -4,7 +4,7 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
-import { CreateExercise } from "../constants/mutations";
+import { AddExerciseDefinition } from "../constants/mutations";
 import { Unit } from "../constants/types";
 import { Button, TextField, Typography } from "@material-ui/core";
 import PageTitle from "../components/PageTitle";
@@ -122,6 +122,6 @@ class NewExercise extends React.Component<Props, State> {
   }
 }
 
-export default compose(graphql(CreateExercise))(
+export default compose(graphql(AddExerciseDefinition))(
   withStyles(styles)(NewExercise)
 );

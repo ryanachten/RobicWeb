@@ -8,6 +8,7 @@ import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import PageTitle from "../components/PageTitle";
 import Select from "../components/inputs/Select";
+import { AddExercise } from "../constants/mutations";
 import { GetExercises } from "../constants/queries";
 import { Classes } from "jss";
 import { ExerciseDefinition, Set } from "../constants/types";
@@ -65,6 +66,7 @@ type Props = {
   classes: Classes;
   data: any;
   history: any;
+  mutate: any;
 };
 
 class Index extends React.Component<Props, State> {
@@ -121,11 +123,23 @@ class Index extends React.Component<Props, State> {
     this.setState(state);
   }
 
-  submitForm(e: React.FormEvent) {
+  async submitForm(e: React.FormEvent) {
     e.preventDefault();
-    const sets = this.state.sets;
-    const time = this.stopwatch.getTime();
-    console.log("submit", sets, "time", time);
+    const { selectedExercise, sets } = this.state;
+    // Prevent empty exercises being added
+    if (!selectedExercise || (sets.length === 1 && sets[0].reps === 0)) {
+      return null;
+    }
+    const timeTaken = this.stopwatch.getTime();
+    const res = await this.props.mutate({
+      variables: {
+        definitionId: selectedExercise.id,
+        sets,
+        timeTaken
+      },
+      refetchQueries: [{ query: GetExercises }]
+    });
+    console.log("res", res);
   }
 
   onSelectExercise = (e: any) => {
@@ -209,7 +223,7 @@ class Index extends React.Component<Props, State> {
         ) : (
           <Fragment>
             <PageTitle label="Get started" />
-            {exercises.length > 0 ? (
+            {exercises && exercises.length > 0 ? (
               <div className={classes.selectWrapper}>
                 <Typography className={classes.selectTitle}>
                   Select an exercise
@@ -247,4 +261,7 @@ class Index extends React.Component<Props, State> {
   }
 }
 
-export default compose(graphql(GetExercises))(withStyles(styles)(Index));
+export default compose(
+  graphql(GetExercises),
+  graphql(AddExercise)
+)(withStyles(styles)(Index));

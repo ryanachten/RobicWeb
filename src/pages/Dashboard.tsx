@@ -84,6 +84,7 @@ class Index extends React.Component<Props, State> {
     };
     this.addSet = this.addSet.bind(this);
     this.navigateToCreateExercise = this.navigateToCreateExercise.bind(this);
+    this.removeSet = this.removeSet.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.toggleTimer = this.toggleTimer.bind(this);
   }
@@ -104,6 +105,12 @@ class Index extends React.Component<Props, State> {
     const sets = [...this.state.sets];
     const prevSet = sets[sets.length - 1];
     sets.push({ ...prevSet });
+    this.setState({ sets });
+  }
+
+  removeSet(index: number) {
+    const sets = [...this.state.sets];
+    sets.splice(index, 1);
     this.setState({ sets });
   }
 
@@ -155,7 +162,7 @@ class Index extends React.Component<Props, State> {
               value={reps}
             />
             <TextField
-              label="Weight (kg)"
+              label={`Weight (${selectedExercise.unit})`}
               type="number"
               placeholder="5"
               className={classes.input}
@@ -164,6 +171,9 @@ class Index extends React.Component<Props, State> {
               }
               value={value}
             />
+            {index !== 0 && (
+              <Button onClick={() => this.removeSet(index)}>Remove</Button>
+            )}
             {index === sets.length - 1 && (
               <Button onClick={this.addSet}>Add</Button>
             )}

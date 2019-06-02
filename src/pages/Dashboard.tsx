@@ -124,7 +124,8 @@ class Index extends React.Component<Props, State> {
   submitForm(e: React.FormEvent) {
     e.preventDefault();
     const sets = this.state.sets;
-    console.log("submit", sets);
+    const time = this.stopwatch.getTime();
+    console.log("submit", sets, "time", time);
   }
 
   onSelectExercise = (e: any) => {

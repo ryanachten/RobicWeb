@@ -3,7 +3,6 @@
 import * as React from "react";
 import { Typography, Theme } from "@material-ui/core";
 import createStyles from "@material-ui/core/styles/createStyles";
-import withStyles from "@material-ui/core/styles/withStyles";
 
 const styles = (theme: Theme) => createStyles({});
 
@@ -112,7 +111,12 @@ class Stopwatch extends React.Component<Props, State> {
   }
 
   public getTime() {
-    return this.state.times;
+    const times = this.state.times;
+    const date = new Date(0);
+    date.setHours(times[0]);
+    date.setMinutes(times[1]);
+    date.setSeconds(times[2]);
+    return date;
   }
 
   public render() {

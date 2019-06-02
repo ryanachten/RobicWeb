@@ -2,6 +2,11 @@ export enum Unit {
   kg = "kg"
 }
 
+export type Set = {
+  reps: number;
+  value: number;
+};
+
 export type SessionDefinition = {
   date: string;
 };

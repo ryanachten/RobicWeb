@@ -10,7 +10,7 @@ import PageTitle from "../components/PageTitle";
 import Select from "../components/inputs/Select";
 import { GetExercises } from "../constants/queries";
 import { Classes } from "jss";
-import { ExerciseDefinition } from "../constants/types";
+import { ExerciseDefinition, Set } from "../constants/types";
 import { Typography } from "@material-ui/core";
 import routes from "../constants/routes";
 import Stopwatch from "../components/Stopwatch";
@@ -47,6 +47,9 @@ const styles = (theme: Theme) =>
       alignItems: "baseline",
       display: "flex"
     },
+    setWrapper: {
+      display: "flex"
+    },
     timerButton: {
       marginLeft: theme.spacing.unit * 2
     }
@@ -54,9 +57,7 @@ const styles = (theme: Theme) =>
 
 type State = {
   selectedExercise: ExerciseDefinition | null;
-  reps: string;
-  sets: string;
-  weight: string;
+  sets: Set[];
   timerRunning: boolean;
 };
 
@@ -73,11 +74,15 @@ class Index extends React.Component<Props, State> {
     super(props);
     this.state = {
       selectedExercise: null,
-      reps: "",
-      sets: "",
-      weight: "",
+      sets: [
+        {
+          reps: 0,
+          value: 0
+        }
+      ],
       timerRunning: false
     };
+    this.addSet = this.addSet.bind(this);
     this.navigateToCreateExercise = this.navigateToCreateExercise.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.toggleTimer = this.toggleTimer.bind(this);
@@ -95,16 +100,24 @@ class Index extends React.Component<Props, State> {
     this.props.history.push(routes.NEW_EXERCISE.route);
   }
 
-  onFieldUpdate(field: "sets" | "reps" | "weight", value: string) {
+  addSet() {
+    const sets = [...this.state.sets];
+    const prevSet = sets[sets.length - 1];
+    sets.push({ ...prevSet });
+    this.setState({ sets });
+  }
+
+  onFieldUpdate(set: number, field: "reps" | "value", value: string) {
     const state: State = { ...this.state };
-    state[field] = value;
+    // @ts-ignore
+    state.sets[set][field] = value;
     this.setState(state);
   }
 
   submitForm(e: React.FormEvent) {
     e.preventDefault();
-    const { reps, sets, weight } = this.state;
-    console.log("submit");
+    const sets = this.state.sets;
+    console.log("submit", sets);
   }
 
   onSelectExercise = (e: any) => {
@@ -120,7 +133,7 @@ class Index extends React.Component<Props, State> {
 
   renderExerciseForm() {
     const { classes } = this.props;
-    const { reps, selectedExercise, sets, timerRunning, weight } = this.state;
+    const { selectedExercise, sets, timerRunning } = this.state;
     if (!selectedExercise) {
       return null;
     }
@@ -129,30 +142,33 @@ class Index extends React.Component<Props, State> {
         <Typography className={classes.exerciseTitle} variant="h3">
           {selectedExercise.title}
         </Typography>
-        <TextField
-          label="Sets"
-          type="number"
-          placeholder="5"
-          className={classes.input}
-          onChange={event => this.onFieldUpdate("sets", event.target.value)}
-          value={sets}
-        />
-        <TextField
-          label="Reps"
-          type="number"
-          placeholder="5"
-          className={classes.input}
-          onChange={event => this.onFieldUpdate("reps", event.target.value)}
-          value={reps}
-        />
-        <TextField
-          label="Weight (kg)"
-          type="number"
-          placeholder="5"
-          className={classes.input}
-          onChange={event => this.onFieldUpdate("weight", event.target.value)}
-          value={weight}
-        />
+        {sets.map(({ reps, value }: Set, index: number) => (
+          <div className={classes.setWrapper} key={index}>
+            <TextField
+              label="Reps"
+              type="number"
+              placeholder="5"
+              className={classes.input}
+              onChange={event =>
+                this.onFieldUpdate(index, "reps", event.target.value)
+              }
+              value={reps}
+            />
+            <TextField
+              label="Weight (kg)"
+              type="number"
+              placeholder="5"
+              className={classes.input}
+              onChange={event =>
+                this.onFieldUpdate(index, "value", event.target.value)
+              }
+              value={value}
+            />
+            {index === sets.length - 1 && (
+              <Button onClick={this.addSet}>Add</Button>
+            )}
+          </div>
+        ))}
         <div className={classes.buttonWrapper}>
           <Stopwatch ref={(stopwatch: any) => (this.stopwatch = stopwatch)} />
           <Button className={classes.timerButton} onClick={this.toggleTimer}>

@@ -8,7 +8,7 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
-import { RegisterUser } from "../constants/mutations";
+import { LoginUser, RegisterUser } from "../constants/mutations";
 import { Divider } from "@material-ui/core";
 import routes from "../constants/routes";
 
@@ -49,7 +49,8 @@ type State = {
 
 type Props = RouteChildrenProps & {
   classes: Classes;
-  mutate: any;
+  register: any;
+  login: any;
 };
 
 class Register extends React.Component<Props, State> {
@@ -86,9 +87,8 @@ class Register extends React.Component<Props, State> {
         error: new Error("All fields must be completed")
       });
     }
-    // Executes the login mutation with the following query parameters
     try {
-      const registrationResponse = await this.props.mutate({
+      await this.props.register({
         variables: {
           email,
           password,
@@ -96,14 +96,20 @@ class Register extends React.Component<Props, State> {
           lastName
         }
       });
-      console.log("registrationResponse", registrationResponse);
-      // const token = loginResponse.data.loginUser;
-      // if (token) {
-      //   window.localStorage.setItem("token", token);
-      //   /* Workaround: Not sure how to set the auth token on the Apollo client
-      //     after it has been instantiated */
-      //   location.reload();
-      // }
+      const loginResponse = await this.props.login({
+        variables: {
+          email,
+          password
+        }
+      });
+
+      const token = loginResponse.data.loginUser;
+      if (token) {
+        window.localStorage.setItem("token", token);
+        /* Workaround: Not sure how to set the auth token on the Apollo client
+          after it has been instantiated */
+        location.reload();
+      }
     } catch (error) {
       this.setState({
         error
@@ -170,4 +176,7 @@ class Register extends React.Component<Props, State> {
   }
 }
 
-export default compose(graphql(RegisterUser))(withStyles(styles)(Register));
+export default compose(
+  graphql(RegisterUser, { name: "register" }),
+  graphql(LoginUser, { name: "login" })
+)(withStyles(styles)(Register));

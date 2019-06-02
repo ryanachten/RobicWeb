@@ -12,6 +12,7 @@ import { GetExercises } from "../constants/queries";
 import { Classes } from "jss";
 import { ExerciseDefinition } from "../constants/types";
 import { Typography } from "@material-ui/core";
+import routes from "../constants/routes";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -50,6 +51,7 @@ type State = {
 type Props = {
   classes: Classes;
   data: any;
+  history: any;
 };
 
 class Index extends React.Component<Props, State> {
@@ -62,6 +64,11 @@ class Index extends React.Component<Props, State> {
       weight: ""
     };
     this.submitForm = this.submitForm.bind(this);
+    this.navigateToCreateExercise = this.navigateToCreateExercise.bind(this);
+  }
+
+  navigateToCreateExercise() {
+    this.props.history.push(routes.NEW_EXERCISE.route);
   }
 
   onFieldUpdate(field: "sets" | "reps" | "weight", value: string) {
@@ -131,22 +138,36 @@ class Index extends React.Component<Props, State> {
         ) : (
           <Fragment>
             <PageTitle label="Robic" />
-            <div className={classes.selectWrapper}>
-              <Typography className={classes.selectTitle}>
-                Select an exercise
-              </Typography>
-              <Select
-                label="Exercise"
-                className={classes.formControl}
-                onChange={this.onSelectExercise}
-                options={exercises.map((exercise: ExerciseDefinition) => ({
-                  id: exercise.id,
-                  value: exercise.id,
-                  label: exercise.title
-                }))}
-                value={selectedExercise}
-              />
-            </div>
+            {exercises.length > 0 ? (
+              <div className={classes.selectWrapper}>
+                <Typography className={classes.selectTitle}>
+                  Select an exercise
+                </Typography>
+                <Select
+                  label="Exercise"
+                  className={classes.formControl}
+                  onChange={this.onSelectExercise}
+                  options={exercises.map((exercise: ExerciseDefinition) => ({
+                    id: exercise.id,
+                    value: exercise.id,
+                    label: exercise.title
+                  }))}
+                  value={selectedExercise}
+                />
+              </div>
+            ) : (
+              <div>
+                <Typography>
+                  Looks like you don't have any exercises yet
+                </Typography>
+                <Typography
+                  onClick={this.navigateToCreateExercise}
+                  variant="body1"
+                >
+                  Create exercise
+                </Typography>
+              </div>
+            )}
             {selectedExercise && this.renderExerciseForm()}
           </Fragment>
         )}

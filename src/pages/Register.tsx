@@ -8,7 +8,7 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
-import { LoginUser } from "../constants/mutations";
+import { RegisterUser } from "../constants/mutations";
 import { Divider } from "@material-ui/core";
 import routes from "../constants/routes";
 
@@ -40,6 +40,8 @@ const styles = (theme: Theme) =>
   });
 
 type State = {
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
   error: Error | null;
@@ -56,6 +58,8 @@ class Register extends React.Component<Props, State> {
     this.state = {
       email: "",
       password: "",
+      firstName: "",
+      lastName: "",
       error: null
     };
     this.submitForm = this.submitForm.bind(this);
@@ -65,7 +69,10 @@ class Register extends React.Component<Props, State> {
     this.props.history.push(routes.LOGIN.route);
   };
 
-  onFieldUpdate(field: "email" | "password", value: string) {
+  onFieldUpdate(
+    field: "firstName" | "lastName" | "email" | "password",
+    value: string
+  ) {
     const state: State = { ...this.state };
     state[field] = value;
     this.setState(state);
@@ -73,27 +80,30 @@ class Register extends React.Component<Props, State> {
 
   async submitForm(e: React.FormEvent) {
     e.preventDefault();
-    const { email, password } = this.state;
-    if (!email || !password) {
+    const { firstName, lastName, email, password } = this.state;
+    if (!email || !password || !firstName || !lastName) {
       return this.setState({
-        error: new Error("Email and password must be provided")
+        error: new Error("All fields must be completed")
       });
     }
     // Executes the login mutation with the following query parameters
     try {
-      const loginResponse = await this.props.mutate({
+      const registrationResponse = await this.props.mutate({
         variables: {
           email,
-          password
+          password,
+          firstName,
+          lastName
         }
       });
-      const token = loginResponse.data.loginUser;
-      if (token) {
-        window.localStorage.setItem("token", token);
-        /* Workaround: Not sure how to set the auth token on the Apollo client
-          after it has been instantiated */
-        location.reload();
-      }
+      console.log("registrationResponse", registrationResponse);
+      // const token = loginResponse.data.loginUser;
+      // if (token) {
+      //   window.localStorage.setItem("token", token);
+      //   /* Workaround: Not sure how to set the auth token on the Apollo client
+      //     after it has been instantiated */
+      //   location.reload();
+      // }
     } catch (error) {
       this.setState({
         error
@@ -103,13 +113,29 @@ class Register extends React.Component<Props, State> {
 
   render() {
     const { classes } = this.props;
-    const { email, error, password } = this.state;
+    const { firstName, lastName, email, error, password } = this.state;
     return (
       <div className={classes.root}>
         <form onSubmit={this.submitForm}>
           <Typography className={classes.header} variant="h1">
             Register
           </Typography>
+          <TextField
+            label="First Name"
+            className={classes.input}
+            onChange={event =>
+              this.onFieldUpdate("firstName", event.target.value)
+            }
+            value={firstName}
+          />
+          <TextField
+            label="Last Name"
+            className={classes.input}
+            onChange={event =>
+              this.onFieldUpdate("lastName", event.target.value)
+            }
+            value={lastName}
+          />
           <TextField
             label="Email"
             className={classes.input}
@@ -144,4 +170,4 @@ class Register extends React.Component<Props, State> {
   }
 }
 
-export default compose(graphql(LoginUser))(withStyles(styles)(Register));
+export default compose(graphql(RegisterUser))(withStyles(styles)(Register));

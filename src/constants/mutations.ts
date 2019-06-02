@@ -6,6 +6,24 @@ export const LoginUser = gql`
   }
 `;
 
+export const RegisterUser = gql`
+  mutation RegisterUser(
+    $firstName: String!
+    $lastName: String!
+    $email: String!
+    $password: String!
+  ) {
+    registerUser(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+    ) {
+      id
+    }
+  }
+`;
+
 export const CreateExercise = gql`
   mutation AddExerciseDefinition($title: String!, $unit: String!) {
     addExerciseDefinition(title: $title, unit: $unit) {

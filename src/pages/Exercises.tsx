@@ -104,7 +104,7 @@ class Exercises extends React.Component<Props, State> {
           <Fragment>
             <PageTitle label="Exercises" />
             <ul className={classes.exerciseList}>
-              {exercises.length > 1 ? (
+              {exercises.length > 0 ? (
                 exercises
                   .sort(this.compareDates)
                   .map((exercise: ExerciseDefinition) =>

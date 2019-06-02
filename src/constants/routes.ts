@@ -22,5 +22,9 @@ export default {
   LOGIN: {
     route: "/login/",
     label: "Login"
+  },
+  REGISTER: {
+    route: "/register/",
+    label: "Register"
   }
 };

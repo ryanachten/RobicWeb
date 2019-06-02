@@ -8,6 +8,7 @@ import NewExercise from "./pages/NewExercise";
 import Dashboard from "./pages/Dashboard";
 import Loading from "./pages/Loading";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Stub from "./pages/Stub";
 import withRoot from "./withRoot";
 import ApolloClient from "./ApolloClient";
@@ -35,6 +36,7 @@ const AuthedRoutes = () => (
 const UnauthedRoutes = () => (
   <Switch>
     <Route path={routes.LOGIN.route} exact component={Login} />
+    <Route path={routes.REGISTER.route} exact component={Register} />
     <Redirect to={routes.LOGIN.route} />
   </Switch>
 );

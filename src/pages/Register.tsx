@@ -50,7 +50,7 @@ type Props = RouteChildrenProps & {
   mutate: any;
 };
 
-class Login extends React.Component<Props, State> {
+class Register extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -61,8 +61,8 @@ class Login extends React.Component<Props, State> {
     this.submitForm = this.submitForm.bind(this);
   }
 
-  navigateToRegistration = () => {
-    this.props.history.push(routes.REGISTER.route);
+  navigateToLogin = () => {
+    this.props.history.push(routes.LOGIN.route);
   };
 
   onFieldUpdate(field: "email" | "password", value: string) {
@@ -108,7 +108,7 @@ class Login extends React.Component<Props, State> {
       <div className={classes.root}>
         <form onSubmit={this.submitForm}>
           <Typography className={classes.header} variant="h1">
-            Login
+            Register
           </Typography>
           <TextField
             label="Email"
@@ -135,13 +135,13 @@ class Login extends React.Component<Props, State> {
           )}
         </form>
         <Divider />
-        <Typography>Don't have an account?</Typography>
-        <Typography variant="body1" onClick={this.navigateToRegistration}>
-          Register
+        <Typography>Already have an account?</Typography>
+        <Typography variant="body1" onClick={this.navigateToLogin}>
+          Login
         </Typography>
       </div>
     );
   }
 }
 
-export default compose(graphql(LoginUser))(withStyles(styles)(Login));
+export default compose(graphql(LoginUser))(withStyles(styles)(Register));

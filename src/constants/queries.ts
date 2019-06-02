@@ -42,3 +42,30 @@ export const GetExercises = gql`
     }
   }
 `;
+
+export const GetExerciseById = gql`
+  query GetExerciseDefinition($exerciseId: ID!) {
+    exercise(id: $exerciseId) {
+      id
+      definition {
+        id
+        title
+        unit
+        history {
+          id
+        }
+      }
+      session {
+        id
+        definition {
+          id
+          title
+        }
+      }
+      sets {
+        reps
+        value
+      }
+    }
+  }
+`;

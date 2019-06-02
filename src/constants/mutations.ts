@@ -5,3 +5,11 @@ export const LoginUser = gql`
     loginUser(email: $email, password: $password)
   }
 `;
+
+export const CreateExercise = gql`
+  mutation AddExerciseDefinition($title: String!, $unit: String!) {
+    addExerciseDefinition(title: $title, unit: $unit) {
+      id
+    }
+  }
+`;

@@ -4,20 +4,20 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
-import { GetExerciseById } from "../constants/queries";
+import { CreateExercise } from "../constants/mutations";
 import { Unit } from "../constants/types";
-import {
-  Button,
-  CircularProgress,
-  TextField,
-  Typography
-} from "@material-ui/core";
+import { Button, TextField, Typography } from "@material-ui/core";
 import PageTitle from "../components/PageTitle";
 import routes from "../constants/routes";
 import Select from "../components/inputs/Select";
+import { GetExercises } from "../constants/queries";
 
 const styles = (theme: Theme) =>
   createStyles({
+    error: {
+      marginBottom: theme.spacing.unit * 2,
+      marginTop: theme.spacing.unit * 2
+    },
     root: {
       padding: theme.spacing.unit * 4
     },
@@ -29,6 +29,7 @@ const styles = (theme: Theme) =>
 type State = {
   title: string;
   unit: string;
+  error: string;
 };
 
 type Props = {
@@ -36,6 +37,7 @@ type Props = {
   data: any;
   loading: boolean;
   history: any;
+  mutate: any;
 };
 
 class NewExercise extends React.Component<Props, State> {
@@ -43,8 +45,10 @@ class NewExercise extends React.Component<Props, State> {
     super(props);
     this.state = {
       title: "",
-      unit: ""
+      unit: "",
+      error: ""
     };
+    this.submitForm = this.submitForm.bind(this);
   }
 
   onFieldUpdate(field: "title" | "unit", value: string) {
@@ -53,65 +57,71 @@ class NewExercise extends React.Component<Props, State> {
     this.setState(state);
   }
 
-  submitForm(e: React.FormEvent) {
+  async submitForm(e: React.FormEvent) {
     e.preventDefault();
     const { title, unit } = this.state;
-    console.log("title, unit", title, unit);
+    if (!title || !unit) {
+      return this.setState({
+        error: "Please complete title and unit fields"
+      });
+    }
+    try {
+      await this.props.mutate({
+        variables: {
+          title,
+          unit
+        },
+        refetchQueries: [{ query: GetExercises }]
+      });
+      this.props.history.push(routes.EXERCISES.route);
+    } catch (error) {
+      return this.setState({
+        error
+      });
+    }
   }
 
   render() {
-    const { classes, data } = this.props;
-    const { title, unit } = this.state;
-    console.log("this.props", this.props);
-    const { exercise, loading } = data;
-    console.log("exercise", exercise);
+    const { classes } = this.props;
+    const { error, title, unit } = this.state;
     return (
       <div className={classes.root}>
-        {loading ? (
-          <CircularProgress />
-        ) : (
-          <Fragment>
-            <PageTitle label={routes.NEW_EXERCISE.label} />
-            <form onSubmit={this.submitForm}>
-              <TextField
-                label="Title"
-                placeholder="Exercise title"
-                className={classes.input}
-                onChange={event =>
-                  this.onFieldUpdate("title", event.target.value)
-                }
-                value={title}
-              />
-              <Select
-                label="Unit"
-                className={classes.formControl}
-                onChange={event =>
-                  this.onFieldUpdate("unit", event.target.value)
-                }
-                options={[
-                  {
-                    id: Unit.kg,
-                    value: Unit.kg,
-                    label: Unit.kg
-                  }
-                ]}
-                value={unit}
-              />
-              <div className="submitWrapper">
-                <Button type="submit">Submit</Button>
-              </div>
-            </form>
-          </Fragment>
-        )}
+        <PageTitle label={routes.NEW_EXERCISE.label} />
+        <form onSubmit={this.submitForm}>
+          <TextField
+            label="Title"
+            placeholder="Exercise title"
+            className={classes.input}
+            onChange={event => this.onFieldUpdate("title", event.target.value)}
+            value={title}
+          />
+          <Select
+            label="Unit"
+            className={classes.formControl}
+            onChange={event => this.onFieldUpdate("unit", event.target.value)}
+            options={[
+              {
+                id: Unit.kg,
+                value: Unit.kg,
+                label: Unit.kg
+              }
+            ]}
+            value={unit}
+          />
+          {error && (
+            <Typography className={classes.error} color="error">
+              {error}
+            </Typography>
+          )}
+          <div className="submitWrapper">
+            <Button type="submit">Submit</Button>
+          </div>
+        </form>
       </div>
     );
   }
 }
 
-export default compose(
-  graphql(GetExerciseById, {
-    options: (props: any) => ({
-      variables: { exerciseId: props.match.params.id }
-    })
-  })
-)(withStyles(styles)(NewExercise));
+export default compose(graphql(CreateExercise))(
+  withStyles(styles)(NewExercise)
+);

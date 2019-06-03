@@ -48,9 +48,7 @@ export const GetExerciseDefinitionById = gql`
       title
       unit
       history {
-        session {
-          date
-        }
+        date
       }
       personalBest {
         value {

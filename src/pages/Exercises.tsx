@@ -49,11 +49,11 @@ class Exercises extends React.Component<Props, State> {
     this.compareDates = (a: ExerciseDefinition, b: ExerciseDefinition) => {
       const a_latestSession =
         a.history.length > 0
-          ? a.history[a.history.length - 1].session.date
+          ? a.history[a.history.length - 1].date
           : new Date();
       const b_latestSession =
         b.history.length > 0
-          ? b.history[b.history.length - 1].session.date
+          ? b.history[b.history.length - 1].date
           : new Date();
       return isAfter(parse(a_latestSession), parse(b_latestSession)) ? 1 : -1;
     };
@@ -71,10 +71,7 @@ class Exercises extends React.Component<Props, State> {
     const classes = this.props.classes;
     const formattedDate: string | null =
       exercise.history.length > 0
-        ? formatDate(
-            exercise.history[exercise.history.length - 1].session.date,
-            true
-          )
+        ? formatDate(exercise.history[exercise.history.length - 1].date, true)
         : null;
     return (
       <li className={classes.exerciseTitle} key={exercise.id}>
@@ -96,6 +93,8 @@ class Exercises extends React.Component<Props, State> {
   render() {
     const { classes, data } = this.props;
     const { exerciseDefinitions: exercises, loading } = data;
+    console.log("exercises", exercises);
+
     return (
       <div className={classes.root}>
         {loading ? (

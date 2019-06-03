@@ -7,8 +7,12 @@ export type Set = {
   value: number;
 };
 
-export type SessionDefinition = {
+export type Exercise = {
+  id: string;
   date: string;
+  definiton: ExerciseDefinition;
+  sets: Set[];
+  netValue: number;
 };
 
 export type PersonalBest = {
@@ -20,7 +24,7 @@ export type PersonalBest = {
 };
 
 export type ExerciseDefinition = {
-  history: { session: SessionDefinition }[];
+  history: Exercise[];
   id: string;
   personalBest: PersonalBest;
   title: string;

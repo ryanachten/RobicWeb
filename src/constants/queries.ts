@@ -49,6 +49,11 @@ export const GetExerciseDefinitionById = gql`
       unit
       history {
         date
+        sets {
+          reps
+          value
+        }
+        timeTaken
       }
       personalBest {
         value {

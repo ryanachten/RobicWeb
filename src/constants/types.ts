@@ -11,8 +11,9 @@ export type Exercise = {
   id: string;
   date: string;
   definiton: ExerciseDefinition;
-  sets: Set[];
   netValue: number;
+  sets: Set[];
+  timeTaken: string;
 };
 
 export type PersonalBest = {

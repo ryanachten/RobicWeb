@@ -7,9 +7,17 @@ import { Classes } from "jss";
 import { GetExerciseDefinitionById } from "../constants/queries";
 import { CircularProgress, Typography } from "@material-ui/core";
 import PageTitle from "../components/PageTitle";
+import { Exercise, Set, ExerciseDefinition } from "../constants/types";
+import { formatDate, formatTime } from "../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
+    historyItem: {
+      display: "flex",
+      "& *": {
+        margin: theme.spacing.unit
+      }
+    },
     exerciseList: {
       padding: 0
     },
@@ -32,22 +40,56 @@ type Props = {
   history: any;
 };
 
-class Exercise extends React.Component<Props, State> {
+class ExercisePage extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    this.renderExerciseDefinition = this.renderExerciseDefinition.bind(this);
+  }
+
+  renderExerciseDefinition(exerciseDefinition: ExerciseDefinition) {
+    const classes = this.props.classes;
+    const { history, title, unit } = exerciseDefinition;
+    return (
+      <div>
+        <PageTitle label={title} />
+
+        {history.length > 0 ? (
+          history.map(({ date, sets, timeTaken }: Exercise) => {
+            const time = formatTime(timeTaken);
+            return (
+              <div key={date}>
+                <Typography variant="h6">History</Typography>
+                <div className={classes.historyItem}>
+                  <Typography>{formatDate(date, true)}</Typography>
+                  {sets.map(({ reps, value }: Set, index: number) => (
+                    <Typography
+                      key={index}
+                    >{`Reps: ${reps} Value: ${value}${unit}`}</Typography>
+                  ))}
+                  <Typography>{`Time: ${time.hours}:${time.minutes}:${
+                    time.seconds
+                  }`}</Typography>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <Typography>Exercise has not been attempted</Typography>
+        )}
+      </div>
+    );
   }
 
   render() {
     const { classes, data } = this.props;
-    const { exerciseDefinition: exercise, loading } = data;
+    const { exerciseDefinition, loading } = data;
+
     return (
       <div className={classes.root}>
         {loading ? (
           <CircularProgress />
-        ) : exercise ? (
-          <div>
-            <PageTitle label={exercise.title} />
-          </div>
+        ) : exerciseDefinition ? (
+          this.renderExerciseDefinition(exerciseDefinition)
         ) : (
           <div>
             <PageTitle label="Oops!" />
@@ -68,4 +110,4 @@ export default compose(
       variables: { exerciseId: props.match.params.id }
     })
   })
-)(withStyles(styles)(Exercise));
+)(withStyles(styles)(ExercisePage));

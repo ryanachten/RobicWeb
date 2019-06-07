@@ -29,5 +29,17 @@ export const formatDate = (
       ? `${distanceInWordsToNow(date)} ago`
       : `in ${distanceInWordsToNow(date)}`;
   }
-  return format(date, "dd/MM/yyyy");
+  return format(date, "DD/MM/YYYY");
+};
+
+export const formatTime = (timeTaken: string) => {
+  const date = new Date(timeTaken);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+  return {
+    hours: hours < 10 ? `0${hours}` : hours,
+    minutes: minutes < 10 ? `0${minutes}` : minutes,
+    seconds: seconds < 10 ? `0${seconds}` : seconds
+  };
 };

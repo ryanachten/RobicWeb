@@ -44,9 +44,6 @@ export const AddExercise = gql`
       timeTaken: $timeTaken
     ) {
       id
-      history {
-        date
-      }
     }
   }
 `;

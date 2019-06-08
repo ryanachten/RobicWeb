@@ -12,12 +12,6 @@ import { formatDate, formatTime } from "../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
-    historyItem: {
-      display: "flex",
-      "& *": {
-        margin: theme.spacing.unit
-      }
-    },
     exerciseList: {
       padding: 0
     },
@@ -26,8 +20,30 @@ const styles = (theme: Theme) =>
       listStyle: "none",
       marginBottom: theme.spacing.unit
     },
+    header: {
+      marginBottom: theme.spacing.unit * 2
+    },
+    historyList: {
+      margin: 0,
+      padding: 0,
+      paddingLeft: theme.spacing.unit * 2
+    },
+    reps: {
+      marginRight: theme.spacing.unit * 2
+    },
     root: {
       padding: theme.spacing.unit * 4
+    },
+    sessionHeader: {
+      display: "flex",
+      justifyContent: "space-between",
+      maxWidth: 400
+    },
+    sessionItem: {
+      marginBottom: theme.spacing.unit * 2
+    },
+    setItem: {
+      display: "flex"
     }
   });
 
@@ -52,24 +68,30 @@ class ExercisePage extends React.Component<Props, State> {
     return (
       <div>
         <PageTitle label={title} />
-
+        <div className={classes.header}>
+          <Typography variant="h6">History</Typography>
+          <Typography>{`Sessions: ${history.length}`}</Typography>
+        </div>
         {history.length > 0 ? (
           history.map(({ date, sets, timeTaken }: Exercise) => {
             const time = formatTime(timeTaken);
             return (
-              <div key={date}>
-                <Typography variant="h6">History</Typography>
-                <div className={classes.historyItem}>
+              <div className={classes.sessionItem} key={date}>
+                <div className={classes.sessionHeader}>
                   <Typography>{formatDate(date, true)}</Typography>
-                  {sets.map(({ reps, value }: Set, index: number) => (
-                    <Typography
-                      key={index}
-                    >{`Reps: ${reps} Value: ${value}${unit}`}</Typography>
-                  ))}
                   <Typography>{`Time: ${time.hours}:${time.minutes}:${
                     time.seconds
                   }`}</Typography>
                 </div>
+                <ul className={classes.historyList}>
+                  {sets.map(({ reps, value }: Set, index: number) => (
+                    <li className={classes.setItem} key={index}>
+                      <Typography className={classes.reps}>{`${index +
+                        1}. Reps: ${reps}`}</Typography>
+                      <Typography>{`Value: ${value}${unit}`}</Typography>
+                    </li>
+                  ))}
+                </ul>
               </div>
             );
           })

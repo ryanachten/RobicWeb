@@ -10,7 +10,7 @@ import { CircularProgress, Typography } from "@material-ui/core";
 import PageTitle from "../components/PageTitle";
 import routes from "../constants/routes";
 import { formatDate } from "../utils";
-import { parse, isAfter } from "date-fns";
+import { parse, isAfter, compareDesc } from "date-fns";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -50,12 +50,12 @@ class Exercises extends React.Component<Props, State> {
       const a_latestSession =
         a.history.length > 0
           ? a.history[a.history.length - 1].date
-          : new Date();
+          : new Date(0);
       const b_latestSession =
         b.history.length > 0
           ? b.history[b.history.length - 1].date
-          : new Date();
-      return isAfter(parse(a_latestSession), parse(b_latestSession)) ? 1 : -1;
+          : new Date(0);
+      return compareDesc(a_latestSession, b_latestSession);
     };
   }
 
@@ -93,8 +93,6 @@ class Exercises extends React.Component<Props, State> {
   render() {
     const { classes, data } = this.props;
     const { exerciseDefinitions: exercises, loading } = data;
-    console.log("exercises", exercises);
-
     return (
       <div className={classes.root}>
         {loading ? (

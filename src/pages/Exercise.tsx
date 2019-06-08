@@ -9,6 +9,7 @@ import { CircularProgress, Typography } from "@material-ui/core";
 import PageTitle from "../components/PageTitle";
 import { Exercise, Set, ExerciseDefinition } from "../constants/types";
 import { formatDate, formatTime } from "../utils";
+import { compareDesc } from "date-fns";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -73,28 +74,28 @@ class ExercisePage extends React.Component<Props, State> {
           <Typography>{`Sessions: ${history.length}`}</Typography>
         </div>
         {history.length > 0 ? (
-          history.map(({ date, sets, timeTaken }: Exercise) => {
-            const time = formatTime(timeTaken);
-            return (
-              <div className={classes.sessionItem} key={date}>
-                <div className={classes.sessionHeader}>
-                  <Typography>{formatDate(date, true)}</Typography>
-                  <Typography>{`Time: ${time.hours}:${time.minutes}:${
-                    time.seconds
-                  }`}</Typography>
+          history
+            .sort((a, b) => compareDesc(a.date, b.date))
+            .map(({ date, sets, timeTaken }: Exercise) => {
+              const { hours, minutes, seconds } = formatTime(timeTaken);
+              return (
+                <div className={classes.sessionItem} key={date}>
+                  <div className={classes.sessionHeader}>
+                    <Typography>{formatDate(date, true)}</Typography>
+                    <Typography>{`Time: ${hours}:${minutes}:${seconds}`}</Typography>
+                  </div>
+                  <ul className={classes.historyList}>
+                    {sets.map(({ reps, value }: Set, index: number) => (
+                      <li className={classes.setItem} key={index}>
+                        <Typography className={classes.reps}>{`${index +
+                          1}. Reps: ${reps}`}</Typography>
+                        <Typography>{`Value: ${value}${unit}`}</Typography>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className={classes.historyList}>
-                  {sets.map(({ reps, value }: Set, index: number) => (
-                    <li className={classes.setItem} key={index}>
-                      <Typography className={classes.reps}>{`${index +
-                        1}. Reps: ${reps}`}</Typography>
-                      <Typography>{`Value: ${value}${unit}`}</Typography>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            );
-          })
+              );
+            })
         ) : (
           <Typography>Exercise has not been attempted</Typography>
         )}

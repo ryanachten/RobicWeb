@@ -10,7 +10,7 @@ import { CircularProgress, Typography } from "@material-ui/core";
 import PageTitle from "../components/PageTitle";
 import routes from "../constants/routes";
 import { formatDate } from "../utils";
-import { parse, isAfter, compareDesc } from "date-fns";
+import { compareDesc } from "date-fns";
 
 const styles = (theme: Theme) =>
   createStyles({

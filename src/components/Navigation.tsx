@@ -1,13 +1,11 @@
-import * as React from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { withRouter, RouteComponentProps } from "react-router";
 import AppBar from "@material-ui/core/AppBar";
-import MuiLink from "@material-ui/core/Link";
 import Toolbar from "@material-ui/core/Toolbar";
 import { Classes } from "jss";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
-import routes from "../constants/routes";
 import {
   withWidth,
   BottomNavigation,
@@ -15,7 +13,8 @@ import {
   Typography
 } from "@material-ui/core";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
-import { withRouter, RouteComponentProps } from "react-router";
+import routes from "../constants/routes";
+import Link from "../components/Link";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -54,21 +53,7 @@ class Navigation extends React.Component<Props, State> {
   }
 
   navigateToRoute(route: string) {
-    console.log("this.props", this.props);
-
-    const history = this.props.history;
-    history && this.props.history.push(route);
-  }
-
-  renderLink(link: MenuLink) {
-    const { text, url } = link;
-    return (
-      <Link key={url} to={url} className={this.props.classes.link}>
-        <MuiLink color="inherit" component="span" variant="body1">
-          {text}
-        </MuiLink>
-      </Link>
-    );
+    this.props.history.push(route);
   }
 
   render() {
@@ -82,14 +67,11 @@ class Navigation extends React.Component<Props, State> {
             <Toolbar>
               <Typography variant="h5">robic</Typography>
               <div className={classes.spacer} />
-              {this.renderLink({
-                url: routes.HOME.route,
-                text: routes.HOME.label
-              })}
-              {this.renderLink({
-                url: routes.EXERCISES.route,
-                text: routes.EXERCISES.label
-              })}
+              <Link url={routes.HOME.route} label={routes.HOME.label} />
+              <Link
+                url={routes.EXERCISES.route}
+                label={routes.EXERCISES.label}
+              />
             </Toolbar>
           </AppBar>
         )}

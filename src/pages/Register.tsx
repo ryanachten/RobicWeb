@@ -11,6 +11,7 @@ import { Classes } from "jss";
 import { LoginUser, RegisterUser } from "../constants/mutations";
 import { Divider } from "@material-ui/core";
 import routes from "../constants/routes";
+import Link from "../components/Link";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -65,10 +66,6 @@ class Register extends React.Component<Props, State> {
     };
     this.submitForm = this.submitForm.bind(this);
   }
-
-  navigateToLogin = () => {
-    this.props.history.push(routes.LOGIN.route);
-  };
 
   onFieldUpdate(
     field: "firstName" | "lastName" | "email" | "password",
@@ -168,9 +165,7 @@ class Register extends React.Component<Props, State> {
         </form>
         <Divider />
         <Typography>Already have an account?</Typography>
-        <Typography variant="body1" onClick={this.navigateToLogin}>
-          Login
-        </Typography>
+        <Link label="Login" url={routes.LOGIN.route} />
       </div>
     );
   }

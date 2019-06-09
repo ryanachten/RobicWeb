@@ -5,6 +5,7 @@ import { Classes } from "jss";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
+import classnames from "../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -16,13 +17,14 @@ const styles = (theme: Theme) =>
   });
 
 type Props = {
+  className?: string;
+  classes: Classes;
   label: string;
   url: string;
-  classes: Classes;
 };
 
 const Link = ({ classes, label, url }: Props) => (
-  <RouterLink key={url} to={url} className={classes.link}>
+  <RouterLink key={url} to={url} className={classnames(classes.link)}>
     <MuiLink color="inherit" component="span" variant="body1">
       {label}
     </MuiLink>

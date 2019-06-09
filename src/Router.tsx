@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ApolloProvider, graphql } from "react-apollo";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import Header from "./components/Header";
+import Navigation from "./components/Navigation";
 import Exercise from "./pages/Exercise";
 import Exercises from "./pages/Exercises";
 import NewExercise from "./pages/NewExercise";
@@ -16,8 +16,7 @@ import routes from "./constants/routes";
 import { GetCurrentUser } from "./constants/queries";
 
 const AuthedRoutes = () => (
-  <div>
-    <Header />
+  <Navigation>
     <Switch>
       <Route path={routes.HOME.route} exact component={Dashboard} />
       <Route
@@ -30,7 +29,7 @@ const AuthedRoutes = () => (
       <Route path={routes.EXERCISE().route} component={Exercise} />} />
       <Redirect to={routes.HOME.route} />
     </Switch>
-  </div>
+  </Navigation>
 );
 
 const UnauthedRoutes = () => (

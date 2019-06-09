@@ -11,6 +11,7 @@ import PageTitle from "../components/PageTitle";
 import routes from "../constants/routes";
 import { formatDate } from "../utils";
 import { compareDesc } from "date-fns";
+import Link from "../components/Link";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -100,6 +101,10 @@ class Exercises extends React.Component<Props, State> {
         ) : (
           <Fragment>
             <PageTitle label="Exercises" />
+            <Link
+              label={routes.NEW_EXERCISE.label}
+              url={routes.NEW_EXERCISE.route}
+            />
             <ul className={classes.exerciseList}>
               {exercises.length > 0 ? (
                 exercises

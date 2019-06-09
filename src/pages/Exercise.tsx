@@ -10,6 +10,8 @@ import PageTitle from "../components/PageTitle";
 import { Exercise, Set, ExerciseDefinition } from "../constants/types";
 import { formatDate, formatTime } from "../utils";
 import { compareDesc } from "date-fns";
+import Link from "../components/Link";
+import routes from "../constants/routes";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -68,7 +70,13 @@ class ExercisePage extends React.Component<Props, State> {
     const { history, title, unit } = exerciseDefinition;
     return (
       <div>
-        <PageTitle label={title} />
+        <PageTitle
+          label={title}
+          breadcrumb={{
+            label: `Back to ${routes.EXERCISES.label}`,
+            url: routes.EXERCISES.route
+          }}
+        />
         <div className={classes.header}>
           <Typography variant="h6">History</Typography>
           <Typography>{`Sessions: ${history.length}`}</Typography>

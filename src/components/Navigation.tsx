@@ -24,9 +24,7 @@ const styles = (theme: Theme) =>
       width: "100%"
     },
     link: {
-      color: theme.palette.text.primary,
-      margin: theme.spacing.unit * 2,
-      textDecoration: "none"
+      margin: theme.spacing.unit * 2
     },
     spacer: {
       flexGrow: 1
@@ -67,8 +65,13 @@ class Navigation extends React.Component<Props, State> {
             <Toolbar>
               <Typography variant="h5">robic</Typography>
               <div className={classes.spacer} />
-              <Link url={routes.HOME.route} label={routes.HOME.label} />
               <Link
+                className={classes.link}
+                url={routes.HOME.route}
+                label={routes.HOME.label}
+              />
+              <Link
+                className={classes.link}
                 url={routes.EXERCISES.route}
                 label={routes.EXERCISES.label}
               />

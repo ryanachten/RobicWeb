@@ -165,7 +165,7 @@ class Register extends React.Component<Props, State> {
         </form>
         <Divider />
         <Typography>Already have an account?</Typography>
-        <Link label="Login" url={routes.LOGIN.route} />
+        <Link label={routes.LOGIN.label} url={routes.LOGIN.route} />
       </div>
     );
   }

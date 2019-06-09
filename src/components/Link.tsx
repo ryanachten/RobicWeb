@@ -11,7 +11,6 @@ const styles = (theme: Theme) =>
   createStyles({
     link: {
       color: theme.palette.text.primary,
-      margin: theme.spacing.unit * 2,
       textDecoration: "none"
     }
   });
@@ -23,8 +22,12 @@ type Props = {
   url: string;
 };
 
-const Link = ({ classes, label, url }: Props) => (
-  <RouterLink key={url} to={url} className={classnames(classes.link)}>
+const Link = ({ className, classes, label, url }: Props) => (
+  <RouterLink
+    className={classnames(className, classes.link)}
+    key={url}
+    to={url}
+  >
     <MuiLink color="inherit" component="span" variant="body1">
       {label}
     </MuiLink>

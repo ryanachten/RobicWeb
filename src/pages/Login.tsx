@@ -133,7 +133,7 @@ class Login extends React.Component<Props, State> {
         </form>
         <Divider />
         <Typography>Don't have an account?</Typography>
-        <Link label="Register" url={routes.REGISTER.route} />
+        <Link label={routes.REGISTER.label} url={routes.REGISTER.route} />
       </div>
     );
   }

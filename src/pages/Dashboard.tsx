@@ -11,10 +11,11 @@ import Select from "../components/inputs/Select";
 import { AddExercise } from "../constants/mutations";
 import { GetExercises } from "../constants/queries";
 import { Classes } from "jss";
-import { ExerciseDefinition, Set } from "../constants/types";
+import { ExerciseDefinition, Set, Exercise, Unit } from "../constants/types";
 import { Typography } from "@material-ui/core";
 import routes from "../constants/routes";
 import Stopwatch from "../components/Stopwatch";
+import { formatDate, formatTime } from "../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -35,6 +36,16 @@ const styles = (theme: Theme) =>
     formControl: {
       width: "150px"
     },
+    historyHeader: {
+      alignItems: "center",
+      display: "flex"
+    },
+    historyTitle: {
+      marginRight: theme.spacing.unit * 2
+    },
+    historyWrapper: {
+      marginBottom: theme.spacing.unit * 4
+    },
     input: {
       padding: theme.spacing.unit * 2
     },
@@ -47,6 +58,9 @@ const styles = (theme: Theme) =>
     selectWrapper: {
       alignItems: "baseline",
       display: "flex"
+    },
+    setItem: {
+      marginRight: theme.spacing.unit * 2
     },
     setWrapper: {
       display: "flex"
@@ -153,17 +167,50 @@ class Index extends React.Component<Props, State> {
     });
   };
 
+  renderHistory(history: Exercise[], unit: Unit) {
+    const { date, sets, timeTaken } = history[history.length - 1];
+    const classes = this.props.classes;
+    return (
+      <div className={classes.historyWrapper}>
+        <div className={classes.historyHeader}>
+          <Typography className={classes.historyTitle} variant="subtitle1">
+            Last session
+          </Typography>
+          <Typography color="textSecondary">{`${formatDate(
+            date,
+            true
+          )}`}</Typography>
+        </div>
+        <div className={classes.setWrapper}>
+          {sets.map(({ reps, value }, index) => (
+            <div key={index}>
+              <Typography
+                className={classes.setItem}
+                color="textSecondary"
+              >{`${reps} reps x ${value} ${unit}`}</Typography>
+            </div>
+          ))}
+          <Typography className={classes.setItem} color="textSecondary">
+            {formatTime(timeTaken)}
+          </Typography>
+        </div>
+      </div>
+    );
+  }
+
   renderExerciseForm() {
     const { classes } = this.props;
     const { selectedExercise, sets, timerRunning } = this.state;
     if (!selectedExercise) {
       return null;
     }
+    const { history, title, unit } = selectedExercise;
     return (
       <form onSubmit={this.submitForm}>
         <Typography className={classes.exerciseTitle} variant="h3">
-          {selectedExercise.title}
+          {title}
         </Typography>
+        {history && this.renderHistory(history, unit)}
         {sets.map(({ reps, value }: Set, index: number) => (
           <div className={classes.setWrapper} key={index}>
             <TextField
@@ -177,7 +224,7 @@ class Index extends React.Component<Props, State> {
               value={reps}
             />
             <TextField
-              label={`Weight (${selectedExercise.unit})`}
+              label={`Weight (${unit})`}
               type="number"
               placeholder="5"
               className={classes.input}
@@ -232,11 +279,13 @@ class Index extends React.Component<Props, State> {
                   label="Exercise"
                   className={classes.formControl}
                   onChange={this.onSelectExercise}
-                  options={exercises.map((exercise: ExerciseDefinition) => ({
-                    id: exercise.id,
-                    value: exercise.id,
-                    label: exercise.title
-                  }))}
+                  options={exercises.map(
+                    ({ id, title }: ExerciseDefinition) => ({
+                      id,
+                      value: id,
+                      label: title
+                    })
+                  )}
                   value={selectedExercise ? selectedExercise.id : ""}
                 />
               </div>

@@ -19,6 +19,11 @@ export const GetExercises = gql`
       unit
       history {
         date
+        sets {
+          reps
+          value
+        }
+        timeTaken
       }
       personalBest {
         value {

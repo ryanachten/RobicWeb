@@ -85,12 +85,11 @@ class ExercisePage extends React.Component<Props, State> {
           history
             .sort((a, b) => compareDesc(a.date, b.date))
             .map(({ date, sets, timeTaken }: Exercise) => {
-              const { hours, minutes, seconds } = formatTime(timeTaken);
               return (
                 <div className={classes.sessionItem} key={date}>
                   <div className={classes.sessionHeader}>
                     <Typography>{formatDate(date, true)}</Typography>
-                    <Typography>{`Time: ${hours}:${minutes}:${seconds}`}</Typography>
+                    <Typography>{`Time: ${formatTime(timeTaken)}`}</Typography>
                   </div>
                   <ul className={classes.historyList}>
                     {sets.map(({ reps, value }: Set, index: number) => (

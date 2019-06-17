@@ -10,7 +10,7 @@ import classnames from "../utils";
 const styles = (theme: Theme) =>
   createStyles({
     link: {
-      color: theme.palette.text.primary,
+      color: theme.palette.primary.main,
       textDecoration: "none"
     }
   });

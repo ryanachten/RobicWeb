@@ -151,7 +151,6 @@ class Index extends React.Component<Props, State> {
       },
       refetchQueries: [{ query: GetExercises }]
     });
-    console.log("res", res);
   }
 
   onSelectExercise = (e: any) => {
@@ -208,7 +207,7 @@ class Index extends React.Component<Props, State> {
         <Typography className={classes.exerciseTitle} variant="h3">
           {title}
         </Typography>
-        {history && this.renderHistory(history, unit)}
+        {history && history.length > 0 && this.renderHistory(history, unit)}
         {sets.map(({ reps, value }: Set, index: number) => (
           <div className={classes.setWrapper} key={index}>
             <TextField

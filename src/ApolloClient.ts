@@ -1,8 +1,8 @@
 import ApolloClient from "apollo-boost";
+import { API_URL } from "./constants/API";
 
 const client = new ApolloClient({
-  uri: "https://robic-server.herokuapp.com/graphql",
-  // uri: "http://localhost:4000/graphql",
+  uri: API_URL,
   request: async operation => {
     const token = window.localStorage.getItem("token");
     operation.setContext({

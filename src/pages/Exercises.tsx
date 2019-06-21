@@ -12,6 +12,7 @@ import routes from "../constants/routes";
 import { formatDate } from "../utils";
 import { compareDesc } from "date-fns";
 import Link from "../components/Link";
+import PageRoot from "../components/PageRoot";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -25,9 +26,6 @@ const styles = (theme: Theme) =>
     },
     exerciseDate: {
       marginLeft: theme.spacing.unit / 2
-    },
-    root: {
-      padding: theme.spacing.unit * 4
     }
   });
 
@@ -95,7 +93,7 @@ class Exercises extends React.Component<Props, State> {
     const { classes, data } = this.props;
     const { exerciseDefinitions: exercises, loading } = data;
     return (
-      <div className={classes.root}>
+      <PageRoot>
         {loading ? (
           <CircularProgress />
         ) : (
@@ -128,7 +126,7 @@ class Exercises extends React.Component<Props, State> {
             </ul>
           </Fragment>
         )}
-      </div>
+      </PageRoot>
     );
   }
 }

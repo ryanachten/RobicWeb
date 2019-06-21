@@ -11,15 +11,13 @@ import PageTitle from "../components/PageTitle";
 import routes from "../constants/routes";
 import Select from "../components/inputs/Select";
 import { GetExercises } from "../constants/queries";
+import PageRoot from "../components/PageRoot";
 
 const styles = (theme: Theme) =>
   createStyles({
     error: {
       marginBottom: theme.spacing.unit * 2,
       marginTop: theme.spacing.unit * 2
-    },
-    root: {
-      padding: theme.spacing.unit * 4
     },
     submitWrapper: {
       width: "100%"
@@ -85,7 +83,7 @@ class NewExercise extends React.Component<Props, State> {
     const { classes } = this.props;
     const { error, title, unit } = this.state;
     return (
-      <div className={classes.root}>
+      <PageRoot>
         <PageTitle label={routes.NEW_EXERCISE.label} />
         <form onSubmit={this.submitForm}>
           <TextField
@@ -117,7 +115,7 @@ class NewExercise extends React.Component<Props, State> {
             <Button type="submit">Submit</Button>
           </div>
         </form>
-      </div>
+      </PageRoot>
     );
   }
 }

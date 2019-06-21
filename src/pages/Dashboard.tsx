@@ -16,6 +16,7 @@ import { Typography } from "@material-ui/core";
 import routes from "../constants/routes";
 import Stopwatch from "../components/Stopwatch";
 import { formatDate, formatTime } from "../utils";
+import PageRoot from "../components/PageRoot";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -48,9 +49,6 @@ const styles = (theme: Theme) =>
     },
     input: {
       padding: theme.spacing.unit * 2
-    },
-    root: {
-      padding: theme.spacing.unit * 4
     },
     selectTitle: {
       marginRight: theme.spacing.unit
@@ -264,7 +262,7 @@ class Index extends React.Component<Props, State> {
     const { selectedExercise } = this.state;
     const { exerciseDefinitions: exercises } = data;
     return (
-      <div className={classes.root}>
+      <PageRoot>
         {loading ? (
           <CircularProgress />
         ) : (
@@ -305,7 +303,7 @@ class Index extends React.Component<Props, State> {
             {selectedExercise && this.renderExerciseForm()}
           </Fragment>
         )}
-      </div>
+      </PageRoot>
     );
   }
 }

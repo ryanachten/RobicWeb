@@ -10,8 +10,8 @@ import PageTitle from "../components/PageTitle";
 import { Exercise, Set, ExerciseDefinition } from "../constants/types";
 import { formatDate, formatTime } from "../utils";
 import { compareDesc } from "date-fns";
-import Link from "../components/Link";
 import routes from "../constants/routes";
+import PageRoot from "../components/PageRoot";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -33,9 +33,6 @@ const styles = (theme: Theme) =>
     },
     reps: {
       marginRight: theme.spacing.unit * 2
-    },
-    root: {
-      padding: theme.spacing.unit * 4
     },
     sessionHeader: {
       display: "flex",
@@ -115,7 +112,7 @@ class ExercisePage extends React.Component<Props, State> {
     const { exerciseDefinition, loading } = data;
 
     return (
-      <div className={classes.root}>
+      <PageRoot>
         {loading ? (
           <CircularProgress />
         ) : exerciseDefinition ? (
@@ -129,7 +126,7 @@ class ExercisePage extends React.Component<Props, State> {
             </Typography>
           </div>
         )}
-      </div>
+      </PageRoot>
     );
   }
 }

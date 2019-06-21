@@ -15,6 +15,7 @@ import {
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import routes from "../constants/routes";
 import Link from "../components/Link";
+import { isMobile } from "../constants/sizes";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -56,11 +57,9 @@ class Navigation extends React.Component<Props, State> {
 
   render() {
     const { children, classes, width } = this.props;
-    const isMobile = width === "xs";
-
     return (
       <div>
-        {!isMobile && (
+        {!isMobile(width) && (
           <AppBar color="inherit" position="static">
             <Toolbar>
               <Typography variant="h5">robic</Typography>

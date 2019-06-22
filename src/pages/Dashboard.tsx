@@ -13,7 +13,13 @@ import { Typography } from "@material-ui/core";
 import routes from "../constants/routes";
 import Stopwatch from "../components/Stopwatch";
 import { formatDate, formatTime } from "../utils";
-import { LoadingSplash, PageRoot, PageTitle, Select } from "../components";
+import {
+  LoadingSplash,
+  PageRoot,
+  PageTitle,
+  Select,
+  Link
+} from "../components";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -94,7 +100,6 @@ class Index extends React.Component<Props, State> {
       timerRunning: false
     };
     this.addSet = this.addSet.bind(this);
-    this.navigateToCreateExercise = this.navigateToCreateExercise.bind(this);
     this.removeSet = this.removeSet.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.toggleTimer = this.toggleTimer.bind(this);
@@ -106,10 +111,6 @@ class Index extends React.Component<Props, State> {
     this.setState(prevState => ({
       timerRunning: !prevState.timerRunning
     }));
-  }
-
-  navigateToCreateExercise() {
-    this.props.history.push(routes.NEW_EXERCISE.route);
   }
 
   addSet() {
@@ -289,12 +290,7 @@ class Index extends React.Component<Props, State> {
                 <Typography>
                   Looks like you don't have any exercises yet
                 </Typography>
-                <Typography
-                  onClick={this.navigateToCreateExercise}
-                  variant="body1"
-                >
-                  Create exercise
-                </Typography>
+                <Link label="Create exercise" url={routes.NEW_EXERCISE.route} />
               </div>
             )}
             {selectedExercise && this.renderExerciseForm()}

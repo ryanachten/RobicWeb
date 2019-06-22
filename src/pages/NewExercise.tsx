@@ -85,8 +85,8 @@ class NewExercise extends React.Component<Props, State> {
         <PageTitle
           label={routes.NEW_EXERCISE.label}
           breadcrumb={{
-            label: `Back to ${routes.EXERCISES.label}`,
-            url: routes.EXERCISES.route
+            label: "Back",
+            onClick: () => this.props.history.goBack()
           }}
         />
         <form onSubmit={this.submitForm}>

@@ -7,7 +7,8 @@ import { Link } from "../Link";
 type Props = {
   breadcrumb?: {
     label: string;
-    url: string;
+    onClick?: () => void;
+    url?: string;
   };
   className?: string;
   classes: any;
@@ -36,7 +37,13 @@ const PageTitle = ({ className, classes, label, breadcrumb }: Props) => {
       >
         {label}
       </Typography>
-      {breadcrumb && <Link label={breadcrumb.label} url={breadcrumb.url} />}
+      {breadcrumb && (
+        <Link
+          label={breadcrumb.label}
+          url={breadcrumb.url}
+          onClick={breadcrumb.onClick}
+        />
+      )}
     </div>
   );
 };

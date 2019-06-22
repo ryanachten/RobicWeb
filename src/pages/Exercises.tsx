@@ -40,7 +40,6 @@ class Exercises extends React.Component<Props, State> {
   compareDates: (a: ExerciseDefinition, b: ExerciseDefinition) => number;
   constructor(props: Props) {
     super(props);
-    this.navigateToCreateExercise = this.navigateToCreateExercise.bind(this);
     this.navigateToExercise = this.navigateToExercise.bind(this);
 
     this.compareDates = (a: ExerciseDefinition, b: ExerciseDefinition) => {
@@ -54,10 +53,6 @@ class Exercises extends React.Component<Props, State> {
           : new Date(0);
       return compareDesc(a_latestSession, b_latestSession);
     };
-  }
-
-  navigateToCreateExercise() {
-    this.props.history.push(routes.NEW_EXERCISE.route);
   }
 
   navigateToExercise(exercise: ExerciseDefinition) {
@@ -112,12 +107,6 @@ class Exercises extends React.Component<Props, State> {
                 <div>
                   <Typography>
                     Looks like you don't have any exercises yet
-                  </Typography>
-                  <Typography
-                    onClick={this.navigateToCreateExercise}
-                    variant="body1"
-                  >
-                    Create exercise
                   </Typography>
                 </div>
               )}

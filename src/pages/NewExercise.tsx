@@ -18,7 +18,11 @@ const styles = (theme: Theme) =>
       marginTop: theme.spacing.unit * 2
     },
     submitWrapper: {
+      marginTop: theme.spacing.unit * 2,
       width: "100%"
+    },
+    titleInput: {
+      marginRight: theme.spacing.unit * 2
     }
   });
 
@@ -93,13 +97,12 @@ class NewExercise extends React.Component<Props, State> {
           <TextField
             label="Title"
             placeholder="Exercise title"
-            className={classes.input}
+            className={classes.titleInput}
             onChange={event => this.onFieldUpdate("title", event.target.value)}
             value={title}
           />
           <Select
             label="Unit"
-            className={classes.formControl}
             onChange={event => this.onFieldUpdate("unit", event.target.value)}
             options={[
               {
@@ -115,7 +118,7 @@ class NewExercise extends React.Component<Props, State> {
               {error}
             </Typography>
           )}
-          <div className="submitWrapper">
+          <div className={classes.submitWrapper}>
             <Button type="submit">Submit</Button>
           </div>
         </form>

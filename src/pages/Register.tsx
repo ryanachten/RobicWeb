@@ -23,7 +23,10 @@ const styles = (theme: Theme) =>
       flexFlow: "row wrap"
     },
     header: {
-      marginBottom: theme.spacing.unit * 2
+      marginBottom: theme.spacing.unit * 2,
+      [theme.breakpoints.only("xs")]: {
+        wordBreak: "break-all"
+      }
     },
     input: {
       margin: theme.spacing.unit
@@ -32,8 +35,9 @@ const styles = (theme: Theme) =>
       alignItems: "center",
       display: "flex",
       flexDirection: "column",
-      height: "100vh",
-      justifyContent: "center"
+      minHeight: "100vh",
+      justifyContent: "center",
+      padding: theme.spacing.unit * 4
     },
     submitWrapper: {
       width: "100%"

@@ -80,6 +80,15 @@ class Exercises extends React.Component<Props, State> {
     };
   }
 
+  componentDidMount() {
+    if (!this.props.data.loading) {
+      this.setState({
+        exercises: this.props.data.exerciseDefinitions,
+        search: ""
+      });
+    }
+  }
+
   componentDidUpdate(prevProps: Props) {
     if (prevProps.data.loading && !this.props.data.loading) {
       this.setState({

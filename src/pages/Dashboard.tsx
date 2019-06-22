@@ -246,7 +246,9 @@ class Index extends React.Component<Props, State> {
             Reset
           </Button>
         </div>
-        <Button type="submit">Done</Button>
+        <Button color="primary" type="submit">
+          Done
+        </Button>
       </form>
     );
   }

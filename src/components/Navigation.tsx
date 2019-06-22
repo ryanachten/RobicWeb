@@ -80,7 +80,7 @@ class Navigation extends React.Component<Props, State> {
 
         {children}
 
-        {isMobile && (
+        {isMobile(width) && (
           <BottomNavigation
             className={classes.bottomNav}
             showLabels

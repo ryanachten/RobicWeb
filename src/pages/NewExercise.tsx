@@ -82,7 +82,13 @@ class NewExercise extends React.Component<Props, State> {
     const { error, title, unit } = this.state;
     return (
       <PageRoot>
-        <PageTitle label={routes.NEW_EXERCISE.label} />
+        <PageTitle
+          label={routes.NEW_EXERCISE.label}
+          breadcrumb={{
+            label: `Back to ${routes.EXERCISES.label}`,
+            url: routes.EXERCISES.route
+          }}
+        />
         <form onSubmit={this.submitForm}>
           <TextField
             label="Title"

@@ -107,7 +107,7 @@ class ExercisePage extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes, data } = this.props;
+    const { data } = this.props;
     const { exerciseDefinition, loading } = data;
 
     return (

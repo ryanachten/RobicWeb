@@ -162,5 +162,5 @@ class Navigation extends React.Component<Props, State> {
   }
 }
 
-const styled = withStyles(styles)(withWidth()(Navigation));
+export const styled = withStyles(styles)(withWidth()(Navigation));
 export default withRouter(styled);

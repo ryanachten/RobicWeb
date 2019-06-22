@@ -29,6 +29,10 @@ const styles = (theme: Theme) =>
       marginLeft: theme.spacing.unit,
       marginTop: theme.spacing.unit * 2
     },
+    createExerciseLink: {
+      display: "block",
+      marginBottom: theme.spacing.unit * 2
+    },
     exerciseTitle: {
       marginBottom: theme.spacing.unit * 2,
       marginTop: theme.spacing.unit * 4
@@ -287,10 +291,14 @@ class Index extends React.Component<Props, State> {
               </div>
             ) : (
               <div>
+                <Link
+                  className={classes.createExerciseLink}
+                  label="Create Exercise"
+                  url={routes.NEW_EXERCISE.route}
+                />
                 <Typography>
                   Looks like you don't have any exercises yet
                 </Typography>
-                <Link label="Create exercise" url={routes.NEW_EXERCISE.route} />
               </div>
             )}
             {selectedExercise && this.renderExerciseForm()}

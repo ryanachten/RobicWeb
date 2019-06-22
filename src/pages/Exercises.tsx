@@ -3,10 +3,11 @@ import { compose, graphql } from "react-apollo";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
+import SearchIcon from "@material-ui/icons/Search";
 import { Classes } from "jss";
 import { GetExercises } from "../constants/queries";
 import { ExerciseDefinition } from "../constants/types";
-import { Typography } from "@material-ui/core";
+import { Typography, TextField } from "@material-ui/core";
 import routes from "../constants/routes";
 import { formatDate } from "../utils";
 import { compareDesc } from "date-fns";
@@ -14,6 +15,9 @@ import { Link, PageRoot, PageTitle, LoadingSplash } from "../components";
 
 const styles = (theme: Theme) =>
   createStyles({
+    createLink: {
+      marginRight: theme.spacing.unit * 4
+    },
     exerciseList: {
       padding: 0
     },
@@ -27,10 +31,23 @@ const styles = (theme: Theme) =>
     },
     exerciseDate: {
       marginLeft: theme.spacing.unit / 2
+    },
+    header: {
+      alignItems: "baseline",
+      display: "flex",
+      flexFlow: "row wrap",
+      marginBottom: theme.spacing.unit * 4
+    },
+    search: {
+      alignItems: "baseline",
+      display: "flex"
     }
   });
 
-type State = {};
+type State = {
+  exercises: ExerciseDefinition[];
+  search: string;
+};
 
 type Props = {
   classes: Classes;
@@ -43,7 +60,12 @@ class Exercises extends React.Component<Props, State> {
   compareDates: (a: ExerciseDefinition, b: ExerciseDefinition) => number;
   constructor(props: Props) {
     super(props);
+    this.state = {
+      exercises: [],
+      search: ""
+    };
     this.navigateToExercise = this.navigateToExercise.bind(this);
+    this.onUpdateSearch = this.onUpdateSearch.bind(this);
 
     this.compareDates = (a: ExerciseDefinition, b: ExerciseDefinition) => {
       const a_latestSession =
@@ -56,6 +78,27 @@ class Exercises extends React.Component<Props, State> {
           : new Date(0);
       return compareDesc(a_latestSession, b_latestSession);
     };
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.data.loading && !this.props.data.loading) {
+      this.setState({
+        exercises: this.props.data.exerciseDefinitions,
+        search: ""
+      });
+    }
+  }
+
+  onUpdateSearch(e: any) {
+    const search = e.target.value;
+    const exercises = this.props.data.exerciseDefinitions;
+    const results = exercises.filter((exercise: ExerciseDefinition) =>
+      exercise.title.toLowerCase().includes(search.toLowerCase())
+    );
+    this.setState({
+      search,
+      exercises: results
+    });
   }
 
   navigateToExercise(exercise: ExerciseDefinition) {
@@ -87,7 +130,8 @@ class Exercises extends React.Component<Props, State> {
 
   render() {
     const { classes, data } = this.props;
-    const { exerciseDefinitions: exercises, loading } = data;
+    const { exercises, search } = this.state;
+    const { loading } = data;
     return (
       <PageRoot>
         {loading ? (
@@ -95,10 +139,21 @@ class Exercises extends React.Component<Props, State> {
         ) : (
           <Fragment>
             <PageTitle label="Exercises" />
-            <Link
-              label={routes.NEW_EXERCISE.label}
-              url={routes.NEW_EXERCISE.route}
-            />
+            <div className={classes.header}>
+              <Link
+                className={classes.createLink}
+                label={routes.NEW_EXERCISE.label}
+                url={routes.NEW_EXERCISE.route}
+              />
+              <div className={classes.search}>
+                <TextField
+                  label="Search"
+                  onChange={this.onUpdateSearch}
+                  value={search}
+                />
+                <SearchIcon />
+              </div>
+            </div>
             <ul className={classes.exerciseList}>
               {exercises.length > 0 ? (
                 exercises
@@ -109,7 +164,9 @@ class Exercises extends React.Component<Props, State> {
               ) : (
                 <div>
                   <Typography>
-                    Looks like you don't have any exercises yet
+                    {search
+                      ? `Oops! No exercises match '${search}'`
+                      : "Looks like you don't have any exercises yet"}
                   </Typography>
                 </div>
               )}

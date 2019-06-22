@@ -1,17 +1,16 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { compose, graphql } from "react-apollo";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import { GetExerciseDefinitionById } from "../constants/queries";
-import { CircularProgress, Typography } from "@material-ui/core";
-import PageTitle from "../components/PageTitle";
+import { Typography } from "@material-ui/core";
 import { Exercise, Set, ExerciseDefinition } from "../constants/types";
 import { formatDate, formatTime } from "../utils";
 import { compareDesc } from "date-fns";
 import routes from "../constants/routes";
-import PageRoot from "../components/PageRoot";
+import { PageRoot, PageTitle, LoadingSplash } from "../components";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -114,7 +113,7 @@ class ExercisePage extends React.Component<Props, State> {
     return (
       <PageRoot>
         {loading ? (
-          <CircularProgress />
+          <LoadingSplash />
         ) : exerciseDefinition ? (
           this.renderExerciseDefinition(exerciseDefinition)
         ) : (

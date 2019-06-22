@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import routes from "../constants/routes";
-import Link from "../components/Link";
+import { Link } from "../components/Link";
 import { isMobile } from "../constants/sizes";
 
 const styles = (theme: Theme) =>

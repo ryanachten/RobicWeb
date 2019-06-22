@@ -1,8 +1,8 @@
 import React from "react";
-import classnames from "../utils";
+import classnames from "../../utils";
 import Typography from "@material-ui/core/Typography";
 import { withStyles, Theme, createStyles } from "@material-ui/core";
-import Link from "./Link";
+import { Link } from "../Link";
 
 type Props = {
   breadcrumb?: {
@@ -41,4 +41,5 @@ const PageTitle = ({ className, classes, label, breadcrumb }: Props) => {
   );
 };
 
-export default withStyles(styles)(PageTitle);
+const styled = withStyles(styles)(PageTitle);
+export { styled as PageTitle };

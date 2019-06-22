@@ -34,4 +34,5 @@ const Link = ({ className, classes, label, url }: Props) => (
   </RouterLink>
 );
 
-export default withStyles(styles)(Link);
+const styled = withStyles(styles)(Link);
+export { styled as Link };

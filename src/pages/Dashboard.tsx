@@ -1,13 +1,10 @@
 import React, { Fragment } from "react";
 import { compose, graphql } from "react-apollo";
 import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import TextField from "@material-ui/core/TextField";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
-import PageTitle from "../components/PageTitle";
-import Select from "../components/inputs/Select";
 import { AddExercise } from "../constants/mutations";
 import { GetExercises } from "../constants/queries";
 import { Classes } from "jss";
@@ -16,7 +13,7 @@ import { Typography } from "@material-ui/core";
 import routes from "../constants/routes";
 import Stopwatch from "../components/Stopwatch";
 import { formatDate, formatTime } from "../utils";
-import PageRoot from "../components/PageRoot";
+import { LoadingSplash, PageRoot, PageTitle, Select } from "../components";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -129,8 +126,7 @@ class Index extends React.Component<Props, State> {
   }
 
   onFieldUpdate(set: number, field: "reps" | "value", value: string) {
-    const state: State = { ...this.state };
-    // @ts-ignore
+    const state: any = { ...this.state };
     state.sets[set][field] = value;
     this.setState(state);
   }
@@ -143,7 +139,7 @@ class Index extends React.Component<Props, State> {
       return null;
     }
     const timeTaken = this.stopwatch.getTime();
-    const res = await this.props.mutate({
+    await this.props.mutate({
       variables: {
         definitionId: selectedExercise.id,
         sets,
@@ -263,7 +259,7 @@ class Index extends React.Component<Props, State> {
     return (
       <PageRoot>
         {loading ? (
-          <CircularProgress />
+          <LoadingSplash />
         ) : (
           <Fragment>
             <PageTitle label="Get started" />

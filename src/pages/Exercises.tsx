@@ -6,13 +6,11 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import { GetExercises } from "../constants/queries";
 import { ExerciseDefinition } from "../constants/types";
-import { CircularProgress, Typography } from "@material-ui/core";
-import PageTitle from "../components/PageTitle";
+import { Typography } from "@material-ui/core";
 import routes from "../constants/routes";
 import { formatDate } from "../utils";
 import { compareDesc } from "date-fns";
-import Link from "../components/Link";
-import PageRoot from "../components/PageRoot";
+import { Link, PageRoot, PageTitle, LoadingSplash } from "../components";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -95,7 +93,7 @@ class Exercises extends React.Component<Props, State> {
     return (
       <PageRoot>
         {loading ? (
-          <CircularProgress />
+          <LoadingSplash />
         ) : (
           <Fragment>
             <PageTitle label="Exercises" />

@@ -7,11 +7,9 @@ import { Classes } from "jss";
 import { AddExerciseDefinition } from "../constants/mutations";
 import { Unit } from "../constants/types";
 import { Button, TextField, Typography } from "@material-ui/core";
-import PageTitle from "../components/PageTitle";
 import routes from "../constants/routes";
-import Select from "../components/inputs/Select";
 import { GetExercises } from "../constants/queries";
-import PageRoot from "../components/PageRoot";
+import { Select, PageRoot, PageTitle } from "../components";
 
 const styles = (theme: Theme) =>
   createStyles({

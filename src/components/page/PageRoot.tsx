@@ -1,7 +1,7 @@
 import React from "react";
 import { withStyles, createStyles, Theme } from "@material-ui/core";
 import { Classes } from "jss";
-import classnames from "../utils";
+import classnames from "../../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -22,4 +22,5 @@ const PageRoot = ({ children, classes }: Props) => {
   return <div className={classnames(activeClasses)}>{children}</div>;
 };
 
-export default withStyles(styles)(PageRoot);
+const styled = withStyles(styles)(PageRoot);
+export { styled as PageRoot };

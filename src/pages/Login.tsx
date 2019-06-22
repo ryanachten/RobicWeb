@@ -11,7 +11,7 @@ import { Classes } from "jss";
 import { LoginUser } from "../constants/mutations";
 import { Divider } from "@material-ui/core";
 import routes from "../constants/routes";
-import Link from "../components/Link";
+import { Link } from "../components";
 
 const styles = (theme: Theme) =>
   createStyles({

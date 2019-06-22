@@ -2,7 +2,7 @@ import React from "react";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
+import MuiSelect from "@material-ui/core/Select";
 
 type Option = {
   id: string;
@@ -18,10 +18,16 @@ type Props = {
   value: any;
 };
 
-export default ({ className, label, options, onChange, value }: Props) => (
+export const Select = ({
+  className,
+  label,
+  options,
+  onChange,
+  value
+}: Props) => (
   <FormControl className={className}>
     <InputLabel htmlFor={label}>{label}</InputLabel>
-    <Select
+    <MuiSelect
       onChange={onChange}
       value={value}
       inputProps={{
@@ -35,6 +41,6 @@ export default ({ className, label, options, onChange, value }: Props) => (
             {option.label}
           </MenuItem>
         ))}
-    </Select>
+    </MuiSelect>
   </FormControl>
 );

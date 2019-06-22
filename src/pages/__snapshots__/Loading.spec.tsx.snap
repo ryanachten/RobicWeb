@@ -4,11 +4,11 @@ exports[`Page: Loading renders correctly 1`] = `
 <div
   className="Loading-root-1"
 >
-  <h2
+  <h1
     className="MuiTypography-root-3 MuiTypography-h2-16 Loading-title-2"
   >
-    Hold tight, we're loading...
-  </h2>
+    hold tight, we're loading...
+  </h1>
   <div
     className="MuiCircularProgress-root-39 MuiCircularProgress-colorPrimary-42 MuiCircularProgress-indeterminate-41"
     role="progressbar"

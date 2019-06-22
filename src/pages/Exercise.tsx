@@ -43,6 +43,9 @@ const styles = (theme: Theme) =>
     },
     setItem: {
       display: "flex"
+    },
+    title: {
+      marginBottom: theme.spacing.unit * 3
     }
   });
 
@@ -67,12 +70,15 @@ class ExercisePage extends React.Component<Props, State> {
     return (
       <div>
         <PageTitle
-          label={title}
+          label="Exercise"
           breadcrumb={{
             label: `Back to ${routes.EXERCISES.label}`,
             url: routes.EXERCISES.route
           }}
         />
+        <Typography className={classes.title} component="h1" variant="h2">
+          {title}
+        </Typography>
         <div className={classes.header}>
           <Typography variant="h6">History</Typography>
           <Typography>{`Sessions: ${history.length}`}</Typography>

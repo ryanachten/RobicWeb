@@ -40,7 +40,7 @@ const styles = (theme: Theme) =>
       minWidth: "48px"
     },
     exerciseTitle: {
-      marginBottom: theme.spacing.unit * 2,
+      marginBottom: theme.spacing.unit * 3,
       marginTop: theme.spacing.unit * 4
     },
     form: {

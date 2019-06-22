@@ -1,4 +1,4 @@
-import React, { ReactElement, SyntheticEvent, Fragment } from "react";
+import React, { SyntheticEvent, Fragment } from "react";
 import { withRouter, RouteComponentProps } from "react-router";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -76,6 +76,8 @@ class Navigation extends React.Component<Props, State> {
   }
 
   onLogout() {
+    window.localStorage.removeItem("token");
+    location.reload();
     this.setState({
       anchorEl: null
     });
@@ -90,14 +92,14 @@ class Navigation extends React.Component<Props, State> {
     return (
       <Fragment>
         <IconButton
-          aria-controls="simple-menu"
+          aria-controls="profile-menu"
           aria-haspopup="true"
           onClick={this.onMenuClick}
         >
           <PersonIcon />
         </IconButton>
         <Menu
-          id="simple-menu"
+          id="profile-menu"
           anchorEl={anchorEl}
           keepMounted
           open={Boolean(anchorEl)}

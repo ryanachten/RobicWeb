@@ -20,7 +20,10 @@ const styles = (theme: Theme) =>
     exerciseTitle: {
       cursor: "pointer",
       listStyle: "none",
-      marginBottom: theme.spacing.unit
+      marginBottom: theme.spacing.unit,
+      [theme.breakpoints.only("xs")]: {
+        wordBreak: "break-all"
+      }
     },
     exerciseDate: {
       marginLeft: theme.spacing.unit / 2

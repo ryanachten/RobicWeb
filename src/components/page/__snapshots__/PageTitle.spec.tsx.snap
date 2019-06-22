@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Component: PageTitle renders correctly 1`] = `
+<div
+  className="PageTitle-wrapper-1"
+>
+  <h1
+    className="MuiTypography-root-3 MuiTypography-h5-19 PageTitle-text-2"
+  >
+    Testing
+  </h1>
+  <a
+    className="Link-link-39"
+    href="/testing"
+    onClick={[Function]}
+  >
+    <span
+      className="MuiTypography-root-3 MuiTypography-body1-12 MuiTypography-colorInherit-32 MuiTypography-inline-38 MuiLink-root-40 MuiLink-underlineHover-42"
+    >
+      Testing
+    </span>
+  </a>
+</div>
+`;

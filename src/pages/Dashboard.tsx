@@ -9,7 +9,9 @@ import { AddExercise } from "../constants/mutations";
 import { GetExercises } from "../constants/queries";
 import { Classes } from "jss";
 import { ExerciseDefinition, Set, Exercise, Unit } from "../constants/types";
-import { Typography } from "@material-ui/core";
+import { Typography, IconButton } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
 import routes from "../constants/routes";
 import Stopwatch from "../components/Stopwatch";
 import { formatDate, formatTime } from "../utils";
@@ -32,6 +34,10 @@ const styles = (theme: Theme) =>
     createExerciseLink: {
       display: "block",
       marginBottom: theme.spacing.unit * 2
+    },
+    iconButton: {
+      height: "48px",
+      minWidth: "48px"
     },
     exerciseTitle: {
       marginBottom: theme.spacing.unit * 2,
@@ -68,6 +74,7 @@ const styles = (theme: Theme) =>
       marginRight: theme.spacing.unit * 2
     },
     setWrapper: {
+      alignItems: "center",
       display: "flex"
     },
     timerButton: {
@@ -231,11 +238,22 @@ class Index extends React.Component<Props, State> {
               }
               value={value}
             />
-            {index !== 0 && (
-              <Button onClick={() => this.removeSet(index)}>Remove</Button>
+            {index !== 0 ? (
+              <IconButton
+                className={classes.iconButton}
+                onClick={() => this.removeSet(index)}
+              >
+                <RemoveIcon />
+              </IconButton>
+            ) : (
+              <div className={classes.iconButton} />
             )}
-            {index === sets.length - 1 && (
-              <Button onClick={this.addSet}>Add</Button>
+            {index === sets.length - 1 ? (
+              <IconButton className={classes.iconButton} onClick={this.addSet}>
+                <AddIcon />
+              </IconButton>
+            ) : (
+              <div className={classes.iconButton} />
             )}
           </div>
         ))}

@@ -1,7 +1,10 @@
-import React from "react";
+import React, { ReactElement, SyntheticEvent, Fragment } from "react";
 import { withRouter, RouteComponentProps } from "react-router";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
+import PersonIcon from "@material-ui/icons/Person";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 import { Classes } from "jss";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -10,7 +13,8 @@ import {
   withWidth,
   BottomNavigation,
   BottomNavigationAction,
-  Typography
+  Typography,
+  IconButton
 } from "@material-ui/core";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import routes from "../constants/routes";
@@ -26,6 +30,12 @@ const styles = (theme: Theme) =>
     },
     link: {
       margin: theme.spacing.unit * 2
+    },
+    mobileProfileWrapper: {
+      padding: theme.spacing.unit * 2,
+      position: "fixed",
+      right: 0,
+      top: 0
     },
     spacer: {
       flexGrow: 1
@@ -43,23 +53,71 @@ type Props = RouteComponentProps & {
   width: Breakpoint;
 };
 
-type State = {};
+type State = {
+  anchorEl: any;
+};
 
 class Navigation extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    this.state = {
+      anchorEl: null
+    };
+    this.onMenuClick = this.onMenuClick.bind(this);
+    this.onLogout = this.onLogout.bind(this);
     this.navigateToRoute = this.navigateToRoute.bind(this);
+    this.renderProfileMenu = this.renderProfileMenu.bind(this);
+  }
+
+  onMenuClick(event: SyntheticEvent) {
+    this.setState({
+      anchorEl: event.currentTarget
+    });
+  }
+
+  onLogout() {
+    this.setState({
+      anchorEl: null
+    });
   }
 
   navigateToRoute(route: string) {
     this.props.history.push(route);
   }
 
+  renderProfileMenu() {
+    const anchorEl = this.state.anchorEl;
+    return (
+      <Fragment>
+        <IconButton
+          aria-controls="simple-menu"
+          aria-haspopup="true"
+          onClick={this.onMenuClick}
+        >
+          <PersonIcon />
+        </IconButton>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={this.onLogout}
+        >
+          <MenuItem onClick={this.onLogout}>Logout</MenuItem>
+        </Menu>
+      </Fragment>
+    );
+  }
+
   render() {
     const { children, classes, width } = this.props;
     return (
       <div>
-        {!isMobile(width) && (
+        {isMobile(width) ? (
+          <div className={classes.mobileProfileWrapper}>
+            {this.renderProfileMenu()}
+          </div>
+        ) : (
           <AppBar color="inherit" position="static">
             <Toolbar>
               <Typography variant="h5">robic</Typography>
@@ -74,6 +132,7 @@ class Navigation extends React.Component<Props, State> {
                 url={routes.EXERCISES.route}
                 label={routes.EXERCISES.label}
               />
+              {this.renderProfileMenu()}
             </Toolbar>
           </AppBar>
         )}

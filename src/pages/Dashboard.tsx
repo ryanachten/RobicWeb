@@ -66,6 +66,9 @@ const styles = (theme: Theme) =>
     selectTitle: {
       marginRight: theme.spacing.unit
     },
+    selectMessage: {
+      marginTop: theme.spacing.unit * 4
+    },
     selectWrapper: {
       alignItems: "baseline",
       display: "flex"
@@ -319,7 +322,17 @@ class Index extends React.Component<Props, State> {
                 </Typography>
               </div>
             )}
-            {selectedExercise && this.renderExerciseForm()}
+            {selectedExercise ? (
+              this.renderExerciseForm()
+            ) : (
+              <Typography
+                className={classes.selectMessage}
+                color="textSecondary"
+                variant="h5"
+              >
+                select an exercise to get started...
+              </Typography>
+            )}
           </Fragment>
         )}
       </PageRoot>

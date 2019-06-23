@@ -26,7 +26,7 @@ const styles = (theme: Theme) =>
     exerciseTitle: {
       cursor: "pointer",
       listStyle: "none",
-      marginBottom: theme.spacing.unit
+      marginBottom: theme.spacing.unit * 2
     },
     exerciseDate: {
       marginLeft: theme.spacing.unit / 2
@@ -76,7 +76,12 @@ class Exercises extends React.Component<Props, State> {
         b.history.length > 0
           ? b.history[b.history.length - 1].date
           : new Date(0);
-      return compareDesc(a_latestSession, b_latestSession);
+      const res = compareDesc(a_latestSession, b_latestSession);
+      if (res !== 0) {
+        return res;
+      }
+      // In the case where dates are the same, sort alphabetically
+      return a.title >= b.title ? 1 : -1;
     };
   }
 

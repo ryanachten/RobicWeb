@@ -100,6 +100,7 @@ type Props = {
 
 class Index extends React.Component<Props, State> {
   stopwatch: any;
+  sortExericises: (a: ExerciseDefinition, b: ExerciseDefinition) => number;
 
   constructor(props: Props) {
     super(props);
@@ -117,6 +118,9 @@ class Index extends React.Component<Props, State> {
     this.removeSet = this.removeSet.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.toggleTimer = this.toggleTimer.bind(this);
+    this.sortExericises = (a: ExerciseDefinition, b: ExerciseDefinition) => {
+      return a.title >= b.title ? 1 : -1;
+    };
   }
 
   toggleTimer() {
@@ -300,13 +304,13 @@ class Index extends React.Component<Props, State> {
                   label="Exercise"
                   className={classes.formControl}
                   onChange={this.onSelectExercise}
-                  options={exercises.map(
-                    ({ id, title }: ExerciseDefinition) => ({
+                  options={exercises
+                    .sort(this.sortExericises)
+                    .map(({ id, title }: ExerciseDefinition) => ({
                       id,
                       value: id,
                       label: title
-                    })
-                  )}
+                    }))}
                   value={selectedExercise ? selectedExercise.id : ""}
                 />
               </div>

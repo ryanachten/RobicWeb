@@ -1,10 +1,7 @@
 // Time functionality via https://codepen.io/_Billy_Brown/pen/dbJeh
 
 import * as React from "react";
-import { Typography, Theme } from "@material-ui/core";
-import createStyles from "@material-ui/core/styles/createStyles";
-
-const styles = (theme: Theme) => createStyles({});
+import { Typography } from "@material-ui/core";
 
 type Props = {
   ref: any;

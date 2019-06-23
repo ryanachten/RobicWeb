@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Component: Stopwatch renders correctly 1`] = `
+<div
+  style={
+    Object {
+      "display": "flex",
+    }
+  }
+>
+  <p
+    className="MuiTypography-root-1 MuiTypography-h5-17"
+  >
+    00:
+  </p>
+  <p
+    className="MuiTypography-root-1 MuiTypography-h5-17"
+  >
+    00:
+  </p>
+  <p
+    className="MuiTypography-root-1 MuiTypography-h5-17"
+  >
+    00
+  </p>
+</div>
+`;

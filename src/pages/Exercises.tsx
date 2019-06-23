@@ -7,11 +7,13 @@ import SearchIcon from "@material-ui/icons/Search";
 import { Classes } from "jss";
 import { GetExercises } from "../constants/queries";
 import { ExerciseDefinition } from "../constants/types";
-import { Typography, TextField } from "@material-ui/core";
+import { Typography, TextField, withWidth } from "@material-ui/core";
 import routes from "../constants/routes";
 import { formatDate } from "../utils";
 import { compareDesc } from "date-fns";
 import { Link, PageRoot, PageTitle, LoadingSplash } from "../components";
+import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
+import { isMobile } from "../constants/sizes";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -24,10 +26,7 @@ const styles = (theme: Theme) =>
     exerciseTitle: {
       cursor: "pointer",
       listStyle: "none",
-      marginBottom: theme.spacing.unit,
-      [theme.breakpoints.only("xs")]: {
-        wordBreak: "break-all"
-      }
+      marginBottom: theme.spacing.unit
     },
     exerciseDate: {
       marginLeft: theme.spacing.unit / 2
@@ -54,6 +53,7 @@ type Props = {
   data: any;
   loading: boolean;
   history: any;
+  width: Breakpoint;
 };
 
 class Exercises extends React.Component<Props, State> {
@@ -115,7 +115,7 @@ class Exercises extends React.Component<Props, State> {
   }
 
   renderExercise(exercise: ExerciseDefinition) {
-    const classes = this.props.classes;
+    const { classes, width } = this.props;
     const formattedDate: string | null =
       exercise.history.length > 0
         ? formatDate(exercise.history[exercise.history.length - 1].date, true)
@@ -124,7 +124,7 @@ class Exercises extends React.Component<Props, State> {
       <li className={classes.exerciseTitle} key={exercise.id}>
         <Typography
           onClick={() => this.navigateToExercise(exercise)}
-          variant="h2"
+          variant={isMobile(width) ? "h3" : "h2"}
         >
           {exercise.title}
         </Typography>
@@ -187,4 +187,6 @@ class Exercises extends React.Component<Props, State> {
   }
 }
 
-export default compose(graphql(GetExercises))(withStyles(styles)(Exercises));
+export default compose(graphql(GetExercises))(
+  withStyles(styles)(withWidth()(Exercises))
+);

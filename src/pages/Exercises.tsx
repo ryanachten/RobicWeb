@@ -81,7 +81,6 @@ class Exercises extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    console.log("componentDidMount", this.props);
     if (!this.props.data.loading) {
       this.setState({
         exercises: this.props.data.exerciseDefinitions,
@@ -91,16 +90,24 @@ class Exercises extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    console.log("componentDidUpdate", this.props);
-    const wasLoading = prevProps.data.loading && !this.props.data.loading;
+    const {
+      loading: prevLoading,
+      exerciseDefinitions: prevExercises
+    } = prevProps.data;
+    const {
+      loading: curLoading,
+      exerciseDefinitions: curExercises
+    } = this.props.data;
+
+    const wasLoading = prevLoading && !curLoading;
     const exercisesHaveUpdated =
-      this.props.data.exerciseDefinitions &&
-      prevProps.data.exerciseDefinitions &&
-      this.props.data.exerciseDefinitions.length !==
-        prevProps.data.exerciseDefinitions.length;
+      curExercises &&
+      prevExercises &&
+      curExercises.length !== prevExercises.length;
+
     if (wasLoading || exercisesHaveUpdated) {
       this.setState({
-        exercises: this.props.data.exerciseDefinitions,
+        exercises: curExercises,
         search: ""
       });
     }

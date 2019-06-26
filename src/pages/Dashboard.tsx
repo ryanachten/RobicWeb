@@ -166,6 +166,17 @@ class Index extends React.Component<Props, State> {
       },
       refetchQueries: [{ query: GetExercises }]
     });
+    this.stopwatch.stop();
+    this.setState({
+      selectedExercise: null,
+      sets: [
+        {
+          reps: 0,
+          value: 0
+        }
+      ],
+      timerRunning: false
+    });
   }
 
   onSelectExercise = (e: any) => {

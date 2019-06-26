@@ -110,9 +110,9 @@ class Stopwatch extends React.Component<Props, State> {
   public getTime() {
     const times = this.state.times;
     const date = new Date(0);
-    date.setHours(times[0]);
-    date.setMinutes(times[1]);
-    date.setSeconds(times[2]);
+    date.setMinutes(times[0]);
+    date.setSeconds(times[1]);
+    date.setMilliseconds(times[2]);
     return date;
   }
 

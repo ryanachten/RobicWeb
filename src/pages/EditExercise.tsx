@@ -6,7 +6,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import { AddExerciseDefinition } from "../constants/mutations";
 import routes from "../constants/routes";
-import { GetExercises } from "../constants/queries";
+import { GetExercises, GetExerciseDefinitionById } from "../constants/queries";
 import { PageRoot, PageTitle } from "../components";
 import ExerciseForm, {
   State as FormFields
@@ -70,6 +70,7 @@ class EditExercise extends React.Component<Props, State> {
   }
 }
 
-export default compose(graphql(AddExerciseDefinition))(
-  withStyles(styles)(EditExercise)
-);
+export default compose(
+  graphql(AddExerciseDefinition, { name: "addExercise" }),
+  graphql(GetExerciseDefinitionById, { name: "getExercise" })
+)(withStyles(styles)(EditExercise));

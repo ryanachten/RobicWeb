@@ -3,9 +3,10 @@ import { compose, graphql } from "react-apollo";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
+import EditIcon from "@material-ui/icons/Edit";
 import { Classes } from "jss";
 import { GetExerciseDefinitionById } from "../constants/queries";
-import { Typography } from "@material-ui/core";
+import { Typography, IconButton } from "@material-ui/core";
 import { Exercise, Set, ExerciseDefinition } from "../constants/types";
 import { formatDate, formatTime } from "../utils";
 import { compareDesc } from "date-fns";
@@ -46,6 +47,11 @@ const styles = (theme: Theme) =>
     },
     title: {
       marginBottom: theme.spacing.unit * 3
+    },
+    titleWrapper: {
+      alignItems: "center",
+      display: "flex",
+      flexFlow: "row"
     }
   });
 
@@ -56,12 +62,19 @@ type Props = {
   data: any;
   loading: boolean;
   history: any;
+  match: any;
 };
 
 class ExercisePage extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    this.editExercise = this.editExercise.bind(this);
     this.renderExerciseDefinition = this.renderExerciseDefinition.bind(this);
+  }
+
+  editExercise() {
+    const { history, match } = this.props;
+    history.push(`${routes.EDIT_EXERCISE(match.params.id).route}`);
   }
 
   renderExerciseDefinition(exerciseDefinition: ExerciseDefinition) {
@@ -76,9 +89,14 @@ class ExercisePage extends React.Component<Props, State> {
             url: routes.EXERCISES.route
           }}
         />
-        <Typography className={classes.title} component="h1" variant="h2">
-          {title}
-        </Typography>
+        <div className={classes.titleWrapper}>
+          <Typography className={classes.title} component="h1" variant="h2">
+            {title}
+          </Typography>
+          <IconButton onClick={this.editExercise}>
+            <EditIcon />
+          </IconButton>
+        </div>
         <div className={classes.header}>
           <Typography variant="h6">History</Typography>
           <Typography>{`Sessions: ${history.length}`}</Typography>

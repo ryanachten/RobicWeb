@@ -7,7 +7,7 @@ import { Classes } from "jss";
 import { AddExerciseDefinition } from "../constants/mutations";
 import routes from "../constants/routes";
 import { GetExercises, GetExerciseDefinitionById } from "../constants/queries";
-import { PageRoot, PageTitle } from "../components";
+import { PageRoot, PageTitle, LoadingSplash } from "../components";
 import ExerciseForm, {
   State as FormFields
 } from "../components/inputs/ExerciseForm";
@@ -54,17 +54,25 @@ class EditExercise extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes } = this.props;
+    const { data } = this.props;
+    const { exerciseDefinition, loading } = data;
     return (
       <PageRoot>
         <PageTitle
-          label={routes.NEW_EXERCISE.label}
+          label={routes.EDIT_EXERCISE().label}
           breadcrumb={{
             label: "Back",
             onClick: () => this.props.history.goBack()
           }}
         />
-        <ExerciseForm onSubmit={fields => this.submitForm(fields)} />
+        {loading ? (
+          <LoadingSplash />
+        ) : (
+          <ExerciseForm
+            exerciseDefinition={exerciseDefinition}
+            onSubmit={fields => this.submitForm(fields)}
+          />
+        )}
       </PageRoot>
     );
   }
@@ -72,5 +80,9 @@ class EditExercise extends React.Component<Props, State> {
 
 export default compose(
   graphql(AddExerciseDefinition, { name: "addExercise" }),
-  graphql(GetExerciseDefinitionById, { name: "getExercise" })
+  graphql(GetExerciseDefinitionById, {
+    options: (props: any) => ({
+      variables: { exerciseId: props.match.params.id }
+    })
+  })
 )(withStyles(styles)(EditExercise));

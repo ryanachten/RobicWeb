@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import { Classes } from "jss";
 import { Select } from "./Select";
-import { Unit } from "../../constants/types";
+import { Unit, ExerciseDefinition } from "../../constants/types";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -34,16 +34,18 @@ export type State = {
 
 type Props = {
   classes: Classes;
+  exerciseDefinition?: ExerciseDefinition;
   onSubmit: (state: State) => void;
 };
 
 class ExerciseForm extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    const exercise = props.exerciseDefinition;
     this.state = {
       error: "",
-      title: "",
-      unit: ""
+      title: exercise ? exercise.title : "",
+      unit: exercise ? exercise.unit : ""
     };
     this.submitForm = this.submitForm.bind(this);
   }

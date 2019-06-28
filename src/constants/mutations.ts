@@ -47,3 +47,19 @@ export const AddExercise = gql`
     }
   }
 `;
+
+export const UpdateExercise = gql`
+  mutation UpdateExerciseDefinition(
+    $exerciseId: ID!
+    $title: String!
+    $unit: String!
+  ) {
+    updateExerciseDefinition(
+      exerciseId: $exerciseId
+      title: $title
+      unit: $unit
+    ) {
+      id
+    }
+  }
+`;

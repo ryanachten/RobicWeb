@@ -4,7 +4,7 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
-import { AddExerciseDefinition } from "../constants/mutations";
+import { AddExerciseDefinition, UpdateExercise } from "../constants/mutations";
 import routes from "../constants/routes";
 import { GetExercises, GetExerciseDefinitionById } from "../constants/queries";
 import { PageRoot, PageTitle, LoadingSplash } from "../components";
@@ -21,6 +21,7 @@ type Props = {
   data: any;
   loading: boolean;
   history: any;
+  match: any;
   mutate: any;
 };
 
@@ -37,9 +38,11 @@ class EditExercise extends React.Component<Props, State> {
         error: "Please complete title and unit fields"
       });
     }
+    const exerciseId = this.props.match.params.id;
     try {
       await this.props.mutate({
         variables: {
+          exerciseId,
           title,
           unit
         },
@@ -79,7 +82,7 @@ class EditExercise extends React.Component<Props, State> {
 }
 
 export default compose(
-  graphql(AddExerciseDefinition, { name: "addExercise" }),
+  graphql(UpdateExercise),
   graphql(GetExerciseDefinitionById, {
     options: (props: any) => ({
       variables: { exerciseId: props.match.params.id }

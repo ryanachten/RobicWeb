@@ -4,7 +4,7 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
-import { AddExerciseDefinition, UpdateExercise } from "../constants/mutations";
+import { UpdateExercise } from "../constants/mutations";
 import routes from "../constants/routes";
 import { GetExercises, GetExerciseDefinitionById } from "../constants/queries";
 import { PageRoot, PageTitle, LoadingSplash } from "../components";
@@ -33,11 +33,6 @@ class EditExercise extends React.Component<Props, State> {
 
   async submitForm(fields: FormFields) {
     const { title, unit } = fields;
-    if (!title || !unit) {
-      return this.setState({
-        error: "Please complete title and unit fields"
-      });
-    }
     const exerciseId = this.props.match.params.id;
     try {
       await this.props.mutate({

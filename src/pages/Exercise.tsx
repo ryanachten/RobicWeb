@@ -45,13 +45,11 @@ const styles = (theme: Theme) =>
     setItem: {
       display: "flex"
     },
-    title: {
-      marginBottom: theme.spacing.unit * 3
-    },
     titleWrapper: {
       alignItems: "center",
       display: "flex",
-      flexFlow: "row"
+      flexFlow: "row",
+      marginBottom: theme.spacing.unit * 3
     }
   });
 
@@ -90,7 +88,7 @@ class ExercisePage extends React.Component<Props, State> {
           }}
         />
         <div className={classes.titleWrapper}>
-          <Typography className={classes.title} component="h1" variant="h2">
+          <Typography component="h1" variant="h2">
             {title}
           </Typography>
           <IconButton onClick={this.editExercise}>

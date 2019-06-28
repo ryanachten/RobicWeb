@@ -26,7 +26,8 @@ const styles = (theme: Theme) =>
     exerciseTitle: {
       cursor: "pointer",
       listStyle: "none",
-      marginBottom: theme.spacing.unit * 2
+      marginBottom: theme.spacing.unit * 2,
+      textTransform: "capitalize"
     },
     exerciseDate: {
       marginLeft: theme.spacing.unit / 2

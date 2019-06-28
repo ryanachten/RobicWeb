@@ -15,14 +15,6 @@ import { PageRoot, PageTitle, LoadingSplash } from "../components";
 
 const styles = (theme: Theme) =>
   createStyles({
-    exerciseList: {
-      padding: 0
-    },
-    exerciseTitle: {
-      cursor: "pointer",
-      listStyle: "none",
-      marginBottom: theme.spacing.unit
-    },
     header: {
       marginBottom: theme.spacing.unit * 2
     },
@@ -49,7 +41,8 @@ const styles = (theme: Theme) =>
       alignItems: "center",
       display: "flex",
       flexFlow: "row",
-      marginBottom: theme.spacing.unit * 3
+      marginBottom: theme.spacing.unit * 3,
+      textTransform: "capitalize"
     }
   });
 

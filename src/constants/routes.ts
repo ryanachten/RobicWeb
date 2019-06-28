@@ -3,6 +3,10 @@ export default {
     route: "/",
     label: "Dashboard"
   },
+  EDIT_EXERCISE: (id: string = ":id", label: string = "Edit Exercise") => ({
+    label,
+    route: `/exercises/edit/${id}`
+  }),
   EXERCISES: {
     route: "/exercises/",
     label: "Exercises"
@@ -14,10 +18,6 @@ export default {
   NEW_EXERCISE: {
     route: "/exercises/create/",
     label: "Create Exercise"
-  },
-  HISTORY: {
-    route: "/activity/",
-    label: "Activity"
   },
   LOGIN: {
     route: "/login/",

@@ -14,16 +14,13 @@ import withRoot from "./withRoot";
 import ApolloClient from "./ApolloClient";
 import routes from "./constants/routes";
 import { GetCurrentUser } from "./constants/queries";
+import EditExercise from "./pages/EditExercise";
 
 const AuthedRoutes = () => (
   <Navigation>
     <Switch>
       <Route path={routes.HOME.route} exact component={Dashboard} />
-      <Route
-        path={routes.HISTORY.route}
-        exact
-        component={() => <Stub pageName={routes.HISTORY.label} />}
-      />
+      <Route path={routes.EDIT_EXERCISE().route} component={EditExercise} />} />
       <Route path={routes.EXERCISES.route} exact component={Exercises} />
       <Route path={routes.NEW_EXERCISE.route} exact component={NewExercise} />
       <Route path={routes.EXERCISE().route} component={Exercise} />} />

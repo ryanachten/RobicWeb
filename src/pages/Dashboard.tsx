@@ -221,6 +221,20 @@ class Index extends React.Component<Props, State> {
     );
   }
 
+  getUnitLabel(unit: Unit) {
+    switch (unit) {
+      case Unit.kg: {
+        return "Weight";
+      }
+      case Unit.min: {
+        return "Time";
+      }
+      default: {
+        return "Weight";
+      }
+    }
+  }
+
   renderExerciseForm() {
     const { classes } = this.props;
     const { selectedExercise, sets, timerRunning } = this.state;
@@ -247,7 +261,7 @@ class Index extends React.Component<Props, State> {
               value={reps}
             />
             <TextField
-              label={`Weight (${unit})`}
+              label={`${this.getUnitLabel(unit)} (${unit})`}
               type="number"
               placeholder="5"
               className={classes.input}

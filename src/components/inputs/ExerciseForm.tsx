@@ -81,6 +81,11 @@ class ExerciseForm extends React.Component<Props, State> {
               id: Unit.kg,
               value: Unit.kg,
               label: Unit.kg
+            },
+            {
+              id: Unit.min,
+              value: Unit.min,
+              label: Unit.min
             }
           ]}
           value={unit}

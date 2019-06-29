@@ -1,5 +1,6 @@
 export enum Unit {
-  kg = "kg"
+  kg = "kg",
+  min = "min"
 }
 
 export type Set = {

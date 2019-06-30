@@ -6,13 +6,21 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import EditIcon from "@material-ui/icons/Edit";
 import { Classes } from "jss";
 import { GetExerciseDefinitionById } from "../constants/queries";
-import { Typography, IconButton } from "@material-ui/core";
+import {
+  Typography,
+  IconButton,
+  withWidth,
+  Tabs,
+  Tab
+} from "@material-ui/core";
 import { Exercise, Set, ExerciseDefinition } from "../constants/types";
 import { formatDate, formatTime } from "../utils";
 import { compareDesc } from "date-fns";
 import routes from "../constants/routes";
 import { PageRoot, PageTitle, LoadingSplash } from "../components";
 import { VictoryChart, VictoryTheme, VictoryLine, VictoryStack } from "victory";
+import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
+import { isMobile } from "../constants/sizes";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -58,7 +66,15 @@ const styles = (theme: Theme) =>
     }
   });
 
-type State = {};
+enum TabMode {
+  REPS = "reps",
+  SETS = "sets",
+  VALUE = "value"
+}
+
+type State = {
+  tabMode: TabMode;
+};
 
 type Props = {
   classes: Classes;
@@ -67,15 +83,20 @@ type Props = {
   history: any;
   match: any;
   theme: Theme;
+  width: Breakpoint;
 };
 
 class ExercisePage extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    this.state = {
+      tabMode: TabMode.REPS
+    };
     this.editExercise = this.editExercise.bind(this);
     this.renderExerciseDefinition = this.renderExerciseDefinition.bind(this);
     this.renderChart = this.renderChart.bind(this);
     this.renderCharts = this.renderCharts.bind(this);
+    this.onTabChange = this.onTabChange.bind(this);
   }
 
   editExercise() {
@@ -83,13 +104,21 @@ class ExercisePage extends React.Component<Props, State> {
     history.push(`${routes.EDIT_EXERCISE(match.params.id).route}`);
   }
 
+  onTabChange(e: any, tabMode: TabMode) {
+    this.setState({
+      tabMode
+    });
+  }
+
   renderChart(label: string, data: any) {
-    const { classes, theme } = this.props;
+    const { classes, theme, width } = this.props;
     return (
       <div className={classes.chart}>
-        <Typography className={classes.chartLabel} variant="subtitle1">
-          {label}
-        </Typography>
+        {!isMobile(width) && (
+          <Typography className={classes.chartLabel} variant="subtitle1">
+            {label}
+          </Typography>
+        )}
         <VictoryChart theme={VictoryTheme.material}>
           <VictoryLine
             data={data}
@@ -103,10 +132,11 @@ class ExercisePage extends React.Component<Props, State> {
   }
 
   renderCharts() {
-    const { classes, theme } = this.props;
+    const { classes, width } = this.props;
+    const tabMode = this.state.tabMode;
     const history = this.props.data.exerciseDefinition.history;
     const graphData = history.reduce(
-      (data: any, { date, sets }: Exercise, index: number) => {
+      (data: any, { sets }: Exercise, index: number) => {
         // Get average reps
         const reps =
           sets.reduce((total, set) => total + set.reps, 0) / sets.length;
@@ -121,7 +151,23 @@ class ExercisePage extends React.Component<Props, State> {
       },
       { reps: [], sets: [], values: [] }
     );
-    return (
+    return isMobile(width) ? (
+      <div>
+        <Tabs
+          indicatorColor="primary"
+          onChange={this.onTabChange}
+          value={tabMode}
+        >
+          <Tab label="Reps" value={TabMode.REPS} />
+          <Tab label="Sets" value={TabMode.SETS} />
+          <Tab label="Values" value={TabMode.VALUE} />
+        </Tabs>
+        {tabMode === TabMode.REPS && this.renderChart("Reps", graphData.reps)}
+        {tabMode === TabMode.VALUE &&
+          this.renderChart("Values", graphData.values)}
+        {tabMode === TabMode.SETS && this.renderChart("Sets", graphData.sets)}
+      </div>
+    ) : (
       <div className={classes.chartWrapper}>
         {this.renderChart("Reps", graphData.reps)}
         {this.renderChart("Values", graphData.values)}
@@ -150,7 +196,7 @@ class ExercisePage extends React.Component<Props, State> {
             <EditIcon />
           </IconButton>
         </div>
-        {this.renderCharts()}
+        {history.length > 1 && this.renderCharts()}
         <div className={classes.header}>
           <Typography variant="h6">History</Typography>
           <Typography>{`Sessions: ${history.length}`}</Typography>
@@ -214,4 +260,4 @@ export default compose(
       variables: { exerciseId: props.match.params.id }
     })
   })
-)(withStyles(styles, { withTheme: true })(ExercisePage));
+)(withWidth()(withStyles(styles, { withTheme: true })(ExercisePage)));

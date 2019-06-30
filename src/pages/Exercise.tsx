@@ -14,7 +14,7 @@ import {
   Tab
 } from "@material-ui/core";
 import { Exercise, Set, ExerciseDefinition } from "../constants/types";
-import { formatDate, formatTime } from "../utils";
+import { formatDate, formatTime, getUnitLabel } from "../utils";
 import { compareDesc } from "date-fns";
 import routes from "../constants/routes";
 import { PageRoot, PageTitle, LoadingSplash } from "../components";
@@ -134,7 +134,7 @@ class ExercisePage extends React.Component<Props, State> {
   renderCharts() {
     const { classes, width } = this.props;
     const tabMode = this.state.tabMode;
-    const history = this.props.data.exerciseDefinition.history;
+    const { history, unit } = this.props.data.exerciseDefinition;
     const graphData = history.reduce(
       (data: any, { sets }: Exercise, index: number) => {
         // Get average reps
@@ -160,7 +160,7 @@ class ExercisePage extends React.Component<Props, State> {
         >
           <Tab label="Reps" value={TabMode.REPS} />
           <Tab label="Sets" value={TabMode.SETS} />
-          <Tab label="Values" value={TabMode.VALUE} />
+          <Tab label={getUnitLabel(unit)} value={TabMode.VALUE} />
         </Tabs>
         {tabMode === TabMode.REPS && this.renderChart("Reps", graphData.reps)}
         {tabMode === TabMode.VALUE &&
@@ -170,7 +170,7 @@ class ExercisePage extends React.Component<Props, State> {
     ) : (
       <div className={classes.chartWrapper}>
         {this.renderChart("Reps", graphData.reps)}
-        {this.renderChart("Values", graphData.values)}
+        {this.renderChart(getUnitLabel(unit), graphData.values)}
         {this.renderChart("Sets", graphData.sets)}
       </div>
     );

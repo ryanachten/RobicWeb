@@ -14,7 +14,7 @@ import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import routes from "../constants/routes";
 import Stopwatch from "../components/Stopwatch";
-import { formatDate, formatTime } from "../utils";
+import { formatDate, formatTime, getUnitLabel } from "../utils";
 import {
   LoadingSplash,
   PageRoot,
@@ -221,20 +221,6 @@ class Index extends React.Component<Props, State> {
     );
   }
 
-  getUnitLabel(unit: Unit) {
-    switch (unit) {
-      case Unit.kg: {
-        return "Weight";
-      }
-      case Unit.min: {
-        return "Time";
-      }
-      default: {
-        return "Weight";
-      }
-    }
-  }
-
   renderExerciseForm() {
     const { classes } = this.props;
     const { selectedExercise, sets, timerRunning } = this.state;
@@ -261,7 +247,7 @@ class Index extends React.Component<Props, State> {
               value={reps}
             />
             <TextField
-              label={`${this.getUnitLabel(unit)} (${unit})`}
+              label={`${getUnitLabel(unit)} (${unit})`}
               type="number"
               placeholder="5"
               className={classes.input}

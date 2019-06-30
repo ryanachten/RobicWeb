@@ -8,6 +8,7 @@ import {
 } from "date-fns";
 // @ts-ignore
 import classnames from "classnames";
+import { Unit } from "../constants/types";
 
 export default classnames;
 
@@ -40,4 +41,18 @@ export const formatTime = (timeTaken: string) => {
   return `${minutes < 10 ? `0${minutes}` : minutes}:${
     seconds < 10 ? `0${seconds}` : seconds
   }:${millis < 10 ? `0${millis}` : millis}`;
+};
+
+export const getUnitLabel = (unit: Unit) => {
+  switch (unit) {
+    case Unit.kg: {
+      return "Weight";
+    }
+    case Unit.min: {
+      return "Time";
+    }
+    default: {
+      return "Weight";
+    }
+  }
 };

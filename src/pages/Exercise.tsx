@@ -12,9 +12,21 @@ import { formatDate, formatTime } from "../utils";
 import { compareDesc } from "date-fns";
 import routes from "../constants/routes";
 import { PageRoot, PageTitle, LoadingSplash } from "../components";
+import { VictoryChart, VictoryTheme, VictoryLine, VictoryStack } from "victory";
 
 const styles = (theme: Theme) =>
   createStyles({
+    chart: {
+      maxHeight: "500px",
+      maxWidth: "500px"
+    },
+    chartLabel: {
+      textAlign: "center"
+    },
+    chartWrapper: {
+      display: "flex",
+      flexFlow: "row wrap"
+    },
     header: {
       marginBottom: theme.spacing.unit * 2
     },
@@ -54,6 +66,7 @@ type Props = {
   loading: boolean;
   history: any;
   match: any;
+  theme: Theme;
 };
 
 class ExercisePage extends React.Component<Props, State> {
@@ -61,11 +74,63 @@ class ExercisePage extends React.Component<Props, State> {
     super(props);
     this.editExercise = this.editExercise.bind(this);
     this.renderExerciseDefinition = this.renderExerciseDefinition.bind(this);
+    this.renderChart = this.renderChart.bind(this);
   }
 
   editExercise() {
     const { history, match } = this.props;
     history.push(`${routes.EDIT_EXERCISE(match.params.id).route}`);
+  }
+
+  renderChart() {
+    const { classes, theme } = this.props;
+    const history = this.props.data.exerciseDefinition.history;
+    const graphData = history.reduce(
+      (data: any, { date, sets }: Exercise, index: number) => {
+        // Get average reps
+        const reps =
+          sets.reduce((total, set) => total + set.reps, 0) / sets.length;
+        // Get average value
+        const value =
+          sets.reduce((total, set) => total + set.value, 0) / sets.length;
+
+        return {
+          reps: [...data.reps, { x: index, y: reps }],
+          values: [...data.values, { x: index, y: value }]
+        };
+      },
+      { reps: [], values: [] }
+    );
+    return (
+      <div className={classes.chartWrapper}>
+        <div className={classes.chart}>
+          <Typography className={classes.chartLabel} variant="subtitle1">
+            Reps
+          </Typography>
+          <VictoryChart theme={VictoryTheme.material}>
+            <VictoryLine
+              data={graphData.reps}
+              style={{
+                data: { stroke: theme.palette.primary.main }
+              }}
+            />
+          </VictoryChart>
+        </div>
+        <div className={classes.chart}>
+          <Typography className={classes.chartLabel} variant="subtitle1">
+            Values
+          </Typography>
+          <VictoryChart theme={VictoryTheme.material}>
+            <VictoryLine
+              data={graphData.values}
+              style={{
+                data: { stroke: theme.palette.primary.main }
+              }}
+            />
+          </VictoryChart>
+        </div>
+      </div>
+    );
   }
 
   renderExerciseDefinition(exerciseDefinition: ExerciseDefinition) {
@@ -88,6 +153,7 @@ class ExercisePage extends React.Component<Props, State> {
             <EditIcon />
           </IconButton>
         </div>
+        {this.renderChart()}
         <div className={classes.header}>
           <Typography variant="h6">History</Typography>
           <Typography>{`Sessions: ${history.length}`}</Typography>
@@ -151,4 +217,4 @@ export default compose(
       variables: { exerciseId: props.match.params.id }
     })
   })
-)(withStyles(styles)(ExercisePage));
+)(withStyles(styles, { withTheme: true })(ExercisePage));

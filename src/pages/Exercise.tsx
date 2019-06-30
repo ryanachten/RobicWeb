@@ -67,6 +67,7 @@ const styles = (theme: Theme) =>
   });
 
 enum TabMode {
+  NET = "net",
   REPS = "reps",
   SETS = "sets",
   VALUE = "value"
@@ -145,33 +146,41 @@ class ExercisePage extends React.Component<Props, State> {
           // Get average value
           const value =
             sets.reduce((total, set) => total + set.value, 0) / sets.length;
+
+          const total = sets.reduce((total, set) => total + set.value, 0);
           return {
             reps: [...data.reps, { x: index, y: reps }],
             sets: [...data.sets, { x: index, y: sets.length }],
+            total: [...data.total, { x: index, y: total }],
             values: [...data.values, { x: index, y: value }]
           };
         },
-        { reps: [], sets: [], values: [] }
+        { reps: [], sets: [], total: [], values: [] }
       );
     return isMobile(width) ? (
       <div>
         <Tabs
           indicatorColor="primary"
           onChange={this.onTabChange}
+          scrollButtons="on"
           value={tabMode}
+          variant="scrollable"
         >
-          <Tab label={getUnitLabel(unit)} value={TabMode.VALUE} />
+          <Tab label={`${unit} (Avg)`} value={TabMode.VALUE} />
+          <Tab label={`${unit} (Net)`} value={TabMode.NET} />
           <Tab label="Reps" value={TabMode.REPS} />
           <Tab label="Sets" value={TabMode.SETS} />
         </Tabs>
         {tabMode === TabMode.REPS && this.renderChart("Reps", graphData.reps)}
+        {tabMode === TabMode.NET && this.renderChart("Net", graphData.total)}
         {tabMode === TabMode.VALUE &&
           this.renderChart("Values", graphData.values)}
         {tabMode === TabMode.SETS && this.renderChart("Sets", graphData.sets)}
       </div>
     ) : (
       <div className={classes.chartWrapper}>
-        {this.renderChart(getUnitLabel(unit), graphData.values)}
+        {this.renderChart(`${getUnitLabel(unit)} (Avg)`, graphData.values)}
+        {this.renderChart(`${getUnitLabel(unit)} (Net)`, graphData.total)}
         {this.renderChart("Reps", graphData.reps)}
         {this.renderChart("Sets", graphData.sets)}
       </div>

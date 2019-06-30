@@ -75,6 +75,7 @@ class ExercisePage extends React.Component<Props, State> {
     this.editExercise = this.editExercise.bind(this);
     this.renderExerciseDefinition = this.renderExerciseDefinition.bind(this);
     this.renderChart = this.renderChart.bind(this);
+    this.renderCharts = this.renderCharts.bind(this);
   }
 
   editExercise() {
@@ -82,7 +83,26 @@ class ExercisePage extends React.Component<Props, State> {
     history.push(`${routes.EDIT_EXERCISE(match.params.id).route}`);
   }
 
-  renderChart() {
+  renderChart(label: string, data: any) {
+    const { classes, theme } = this.props;
+    return (
+      <div className={classes.chart}>
+        <Typography className={classes.chartLabel} variant="subtitle1">
+          {label}
+        </Typography>
+        <VictoryChart theme={VictoryTheme.material}>
+          <VictoryLine
+            data={data}
+            style={{
+              data: { stroke: theme.palette.primary.main }
+            }}
+          />
+        </VictoryChart>
+      </div>
+    );
+  }
+
+  renderCharts() {
     const { classes, theme } = this.props;
     const history = this.props.data.exerciseDefinition.history;
     const graphData = history.reduce(
@@ -93,42 +113,19 @@ class ExercisePage extends React.Component<Props, State> {
         // Get average value
         const value =
           sets.reduce((total, set) => total + set.value, 0) / sets.length;
-
         return {
           reps: [...data.reps, { x: index, y: reps }],
+          sets: [...data.sets, { x: index, y: sets.length }],
           values: [...data.values, { x: index, y: value }]
         };
       },
-      { reps: [], values: [] }
+      { reps: [], sets: [], values: [] }
     );
     return (
       <div className={classes.chartWrapper}>
-        <div className={classes.chart}>
-          <Typography className={classes.chartLabel} variant="subtitle1">
-            Reps
-          </Typography>
-          <VictoryChart theme={VictoryTheme.material}>
-            <VictoryLine
-              data={graphData.reps}
-              style={{
-                data: { stroke: theme.palette.primary.main }
-              }}
-            />
-          </VictoryChart>
-        </div>
-        <div className={classes.chart}>
-          <Typography className={classes.chartLabel} variant="subtitle1">
-            Values
-          </Typography>
-          <VictoryChart theme={VictoryTheme.material}>
-            <VictoryLine
-              data={graphData.values}
-              style={{
-                data: { stroke: theme.palette.primary.main }
-              }}
-            />
-          </VictoryChart>
-        </div>
+        {this.renderChart("Reps", graphData.reps)}
+        {this.renderChart("Values", graphData.values)}
+        {this.renderChart("Sets", graphData.sets)}
       </div>
     );
   }
@@ -153,7 +150,7 @@ class ExercisePage extends React.Component<Props, State> {
             <EditIcon />
           </IconButton>
         </div>
-        {this.renderChart()}
+        {this.renderCharts()}
         <div className={classes.header}>
           <Typography variant="h6">History</Typography>
           <Typography>{`Sessions: ${history.length}`}</Typography>

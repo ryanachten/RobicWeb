@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import { Exercise, Set, ExerciseDefinition } from "../constants/types";
 import { formatDate, formatTime, getUnitLabel } from "../utils";
-import { compareDesc } from "date-fns";
+import { compareDesc, compareAsc } from "date-fns";
 import routes from "../constants/routes";
 import { PageRoot, PageTitle, LoadingSplash } from "../components";
 import { VictoryChart, VictoryTheme, VictoryLine, VictoryStack } from "victory";
@@ -90,7 +90,7 @@ class ExercisePage extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      tabMode: TabMode.REPS
+      tabMode: TabMode.VALUE
     };
     this.editExercise = this.editExercise.bind(this);
     this.renderExerciseDefinition = this.renderExerciseDefinition.bind(this);
@@ -135,22 +135,24 @@ class ExercisePage extends React.Component<Props, State> {
     const { classes, width } = this.props;
     const tabMode = this.state.tabMode;
     const { history, unit } = this.props.data.exerciseDefinition;
-    const graphData = history.reduce(
-      (data: any, { sets }: Exercise, index: number) => {
-        // Get average reps
-        const reps =
-          sets.reduce((total, set) => total + set.reps, 0) / sets.length;
-        // Get average value
-        const value =
-          sets.reduce((total, set) => total + set.value, 0) / sets.length;
-        return {
-          reps: [...data.reps, { x: index, y: reps }],
-          sets: [...data.sets, { x: index, y: sets.length }],
-          values: [...data.values, { x: index, y: value }]
-        };
-      },
-      { reps: [], sets: [], values: [] }
-    );
+    const graphData = history
+      .sort((a: any, b: any) => compareAsc(a.date, b.date))
+      .reduce(
+        (data: any, { sets }: Exercise, index: number) => {
+          // Get average reps
+          const reps =
+            sets.reduce((total, set) => total + set.reps, 0) / sets.length;
+          // Get average value
+          const value =
+            sets.reduce((total, set) => total + set.value, 0) / sets.length;
+          return {
+            reps: [...data.reps, { x: index, y: reps }],
+            sets: [...data.sets, { x: index, y: sets.length }],
+            values: [...data.values, { x: index, y: value }]
+          };
+        },
+        { reps: [], sets: [], values: [] }
+      );
     return isMobile(width) ? (
       <div>
         <Tabs
@@ -158,9 +160,9 @@ class ExercisePage extends React.Component<Props, State> {
           onChange={this.onTabChange}
           value={tabMode}
         >
+          <Tab label={getUnitLabel(unit)} value={TabMode.VALUE} />
           <Tab label="Reps" value={TabMode.REPS} />
           <Tab label="Sets" value={TabMode.SETS} />
-          <Tab label={getUnitLabel(unit)} value={TabMode.VALUE} />
         </Tabs>
         {tabMode === TabMode.REPS && this.renderChart("Reps", graphData.reps)}
         {tabMode === TabMode.VALUE &&
@@ -169,8 +171,8 @@ class ExercisePage extends React.Component<Props, State> {
       </div>
     ) : (
       <div className={classes.chartWrapper}>
-        {this.renderChart("Reps", graphData.reps)}
         {this.renderChart(getUnitLabel(unit), graphData.values)}
+        {this.renderChart("Reps", graphData.reps)}
         {this.renderChart("Sets", graphData.sets)}
       </div>
     );

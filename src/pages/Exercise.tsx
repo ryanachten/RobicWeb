@@ -146,8 +146,11 @@ class ExercisePage extends React.Component<Props, State> {
           // Get average value
           const value =
             sets.reduce((total, set) => total + set.value, 0) / sets.length;
-
-          const total = sets.reduce((total, set) => total + set.value, 0);
+          // Get net value (sets * (reps * value))
+          const total = sets.reduce(
+            (total, set) => total + set.value * set.reps,
+            0
+          );
           return {
             reps: [...data.reps, { x: index, y: reps }],
             sets: [...data.sets, { x: index, y: sets.length }],

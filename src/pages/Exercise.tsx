@@ -70,6 +70,7 @@ enum TabMode {
   NET = "net",
   REPS = "reps",
   SETS = "sets",
+  TIME = "time",
   VALUE = "value"
 }
 
@@ -139,7 +140,7 @@ class ExercisePage extends React.Component<Props, State> {
     const graphData = history
       .sort((a: any, b: any) => compareAsc(a.date, b.date))
       .reduce(
-        (data: any, { sets }: Exercise, index: number) => {
+        (data: any, { sets, timeTaken }: Exercise, index: number) => {
           // Get average reps
           const reps =
             sets.reduce((total, set) => total + set.reps, 0) / sets.length;
@@ -151,14 +152,24 @@ class ExercisePage extends React.Component<Props, State> {
             (total, set) => total + set.value * set.reps,
             0
           );
+          // Convert time into millis, then mins, then divide by set count
+          const date = new Date(timeTaken);
+          const millis =
+            date.getMinutes() * 60000 +
+            date.getSeconds() * 1000 +
+            date.getMilliseconds();
+          const minutes = millis / 60000;
+          const minPerSet = (minutes / sets.length).toFixed(2);
+
           return {
             reps: [...data.reps, { x: index, y: reps }],
             sets: [...data.sets, { x: index, y: sets.length }],
+            timeTaken: [...data.timeTaken, { x: index, y: minPerSet }],
             total: [...data.total, { x: index, y: total }],
             values: [...data.values, { x: index, y: value }]
           };
         },
-        { reps: [], sets: [], total: [], values: [] }
+        { reps: [], sets: [], timeTaken: [], total: [], values: [] }
       );
     return isMobile(width) ? (
       <div>
@@ -173,12 +184,15 @@ class ExercisePage extends React.Component<Props, State> {
           <Tab label={`${unit} (Net)`} value={TabMode.NET} />
           <Tab label="Reps" value={TabMode.REPS} />
           <Tab label="Sets" value={TabMode.SETS} />
+          <Tab label="Min / Set" value={TabMode.TIME} />
         </Tabs>
         {tabMode === TabMode.REPS && this.renderChart("Reps", graphData.reps)}
         {tabMode === TabMode.NET && this.renderChart("Net", graphData.total)}
         {tabMode === TabMode.VALUE &&
           this.renderChart("Values", graphData.values)}
         {tabMode === TabMode.SETS && this.renderChart("Sets", graphData.sets)}
+        {tabMode === TabMode.TIME &&
+          this.renderChart("Min / Set", graphData.timeTaken)}
       </div>
     ) : (
       <div className={classes.chartWrapper}>
@@ -186,6 +200,7 @@ class ExercisePage extends React.Component<Props, State> {
         {this.renderChart(`${getUnitLabel(unit)} (Net)`, graphData.total)}
         {this.renderChart("Reps", graphData.reps)}
         {this.renderChart("Sets", graphData.sets)}
+        {this.renderChart("Min / Set", graphData.timeTaken)}
       </div>
     );
   }

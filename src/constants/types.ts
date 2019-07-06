@@ -1,3 +1,23 @@
+export enum MuscleGroup {
+  CHEST = "chest",
+  FOREARMS = "forearms",
+  LATS = "lats",
+  MIDDLE_BACK = "middle back",
+  LOWER_BACK = "lower back",
+  NECK = "neck",
+  HAMS = "hamstrings",
+  QUADS = "quadriceps",
+  CALVES = "calves",
+  TRICEPS = "triceps",
+  TRAPS = "traps",
+  SHOULDERS = "shoulders",
+  ABS = "abdominals",
+  GLUTES = "glutes",
+  BICEPS = "biceps",
+  ADDUCTORS = "adductors",
+  ABDUCTORS = "abductors"
+}
+
 export enum Unit {
   kg = "kg",
   min = "min"

@@ -25,8 +25,16 @@ export const RegisterUser = gql`
 `;
 
 export const AddExerciseDefinition = gql`
-  mutation AddExerciseDefinition($title: String!, $unit: String!) {
-    addExerciseDefinition(title: $title, unit: $unit) {
+  mutation AddExerciseDefinition(
+    $title: String!
+    $unit: String!
+    $primaryMuscleGroup: String!
+  ) {
+    addExerciseDefinition(
+      title: $title
+      unit: $unit
+      primaryMuscleGroup: $primaryMuscleGroup
+    ) {
       id
     }
   }
@@ -53,11 +61,13 @@ export const UpdateExercise = gql`
     $exerciseId: ID!
     $title: String!
     $unit: String!
+    $primaryMuscleGroup: String!
   ) {
     updateExerciseDefinition(
       exerciseId: $exerciseId
       title: $title
       unit: $unit
+      primaryMuscleGroup: $primaryMuscleGroup
     ) {
       id
     }

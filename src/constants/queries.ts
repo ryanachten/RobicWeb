@@ -17,6 +17,7 @@ export const GetExercises = gql`
       id
       title
       unit
+      primaryMuscleGroup
       history {
         date
         sets {
@@ -52,6 +53,7 @@ export const GetExerciseDefinitionById = gql`
       id
       title
       unit
+      primaryMuscleGroup
       history {
         date
         sets {

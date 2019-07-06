@@ -1,21 +1,21 @@
 export enum MuscleGroup {
-  CHEST = "chest",
-  FOREARMS = "forearms",
-  LATS = "lats",
-  MIDDLE_BACK = "middle back",
-  LOWER_BACK = "lower back",
-  NECK = "neck",
-  HAMS = "hamstrings",
-  QUADS = "quadriceps",
-  CALVES = "calves",
-  TRICEPS = "triceps",
-  TRAPS = "traps",
-  SHOULDERS = "shoulders",
-  ABS = "abdominals",
-  GLUTES = "glutes",
-  BICEPS = "biceps",
-  ADDUCTORS = "adductors",
-  ABDUCTORS = "abductors"
+  CHEST = "Chest",
+  FOREARMS = "Forearms",
+  LATS = "Lats",
+  MIDDLE_BACK = "Middle Back",
+  LOWER_BACK = "Lower Back",
+  NECK = "Neck",
+  HAMS = "Hamstrings",
+  QUADS = "Quadriceps",
+  CALVES = "Calves",
+  TRICEPS = "Triceps",
+  TRAPS = "Traps",
+  SHOULDERS = "Shoulders",
+  ABS = "Abdominals",
+  GLUTES = "Glutes",
+  BICEPS = "Biceps",
+  ADDUCTORS = "Adductors",
+  ABDUCTORS = "Abductors"
 }
 
 export enum Unit {
@@ -49,6 +49,7 @@ export type ExerciseDefinition = {
   history: Exercise[];
   id: string;
   personalBest: PersonalBest;
+  primaryMuscleGroup: MuscleGroup;
   title: string;
   unit: Unit;
 };

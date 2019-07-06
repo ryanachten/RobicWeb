@@ -37,7 +37,7 @@ export type State = {
   title: string;
   unit: string;
   error: string;
-  primaryMuscle: MuscleGroup | "";
+  primaryMuscleGroup: MuscleGroup | "";
 };
 
 type Props = {
@@ -54,13 +54,13 @@ class ExerciseForm extends React.Component<Props, State> {
       error: "",
       title: exercise ? exercise.title : "",
       unit: exercise ? exercise.unit : "",
-      primaryMuscle: ""
+      primaryMuscleGroup: exercise ? exercise.primaryMuscleGroup : ""
     };
     this.renderMuscleOptions = this.renderMuscleOptions.bind(this);
     this.submitForm = this.submitForm.bind(this);
   }
 
-  onFieldUpdate(field: "primaryMuscle" | "title" | "unit", value: string) {
+  onFieldUpdate(field: "primaryMuscleGroup" | "title" | "unit", value: string) {
     const state: any = { ...this.state };
     state[field] = value;
     this.setState(state);
@@ -72,7 +72,7 @@ class ExerciseForm extends React.Component<Props, State> {
   }
 
   renderMuscleOptions() {
-    const { primaryMuscle } = this.state;
+    const { primaryMuscleGroup } = this.state;
     const { classes } = this.props;
     const muscles = Object.keys(MuscleGroup).map((key: any) => ({
       id: MuscleGroup[key],
@@ -84,14 +84,14 @@ class ExerciseForm extends React.Component<Props, State> {
         className={classes.muscleSelect}
         label="Primary Muscle Group"
         onChange={event =>
-          this.onFieldUpdate("primaryMuscle", event.target.value)
+          this.onFieldUpdate("primaryMuscleGroup", event.target.value)
         }
         options={muscles.map(muscle => ({
           id: muscle.value,
           label: muscle.label,
           value: muscle.value
         }))}
-        value={primaryMuscle}
+        value={primaryMuscleGroup}
       />
     );
   }

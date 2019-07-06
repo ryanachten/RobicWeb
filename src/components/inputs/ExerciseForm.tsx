@@ -54,7 +54,7 @@ class ExerciseForm extends React.Component<Props, State> {
       error: "",
       title: exercise ? exercise.title : "",
       unit: exercise ? exercise.unit : "",
-      primaryMuscleGroup: exercise ? exercise.primaryMuscleGroup : ""
+      primaryMuscleGroup: exercise ? exercise.primaryMuscleGroup || "" : ""
     };
     this.renderMuscleOptions = this.renderMuscleOptions.bind(this);
     this.submitForm = this.submitForm.bind(this);

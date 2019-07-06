@@ -14,11 +14,18 @@ import {
   Tab
 } from "@material-ui/core";
 import { Exercise, Set, ExerciseDefinition } from "../constants/types";
-import { formatDate, formatTime, getUnitLabel } from "../utils";
+import { formatDate, formatTime, getUnitLabel, transparentize } from "../utils";
 import { compareDesc, compareAsc } from "date-fns";
 import routes from "../constants/routes";
 import { PageRoot, PageTitle, LoadingSplash } from "../components";
-import { VictoryChart, VictoryTheme, VictoryLine, VictoryStack } from "victory";
+import {
+  VictoryChart,
+  VictoryTheme,
+  VictoryLine,
+  VictoryVoronoiContainer,
+  VictoryTooltip,
+  VictoryLabel
+} from "victory";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
 
@@ -121,7 +128,23 @@ class ExercisePage extends React.Component<Props, State> {
             {label}
           </Typography>
         )}
-        <VictoryChart theme={VictoryTheme.material}>
+        <VictoryChart
+          theme={VictoryTheme.material}
+          containerComponent={
+            <VictoryVoronoiContainer
+              labels={d => formatDate(d.date)}
+              labelComponent={
+                <VictoryTooltip
+                  flyoutStyle={{
+                    fill: theme.palette.common.white,
+                    stroke: transparentize(theme.palette.common.black, 0.1)
+                  }}
+                  style={{ fill: theme.palette.text.primary }}
+                />
+              }
+            />
+          }
+        >
           <VictoryLine
             data={data}
             style={{
@@ -140,7 +163,8 @@ class ExercisePage extends React.Component<Props, State> {
     const graphData = history
       .sort((a: any, b: any) => compareAsc(a.date, b.date))
       .reduce(
-        (data: any, { sets, timeTaken }: Exercise, index: number) => {
+        (data: any, exercise: Exercise, index: number) => {
+          const { sets, timeTaken } = exercise;
           // Get average reps
           const reps =
             sets.reduce((total, set) => total + set.reps, 0) / sets.length;
@@ -153,20 +177,33 @@ class ExercisePage extends React.Component<Props, State> {
             0
           );
           // Convert time into millis, then mins, then divide by set count
-          const date = new Date(timeTaken);
-          const millis =
-            date.getMinutes() * 60000 +
-            date.getSeconds() * 1000 +
-            date.getMilliseconds();
-          const minutes = millis / 60000;
-          const minPerSet = (minutes / sets.length).toFixed(2);
+
+          const minPerSet = () => {
+            // Avoid plotting times which weren't taken
+            if (!timeTaken || timeTaken === "1970-01-01T00:00:00.000Z") {
+              return null;
+            }
+            const date = new Date(timeTaken);
+            const millis =
+              date.getMinutes() * 60000 +
+              date.getSeconds() * 1000 +
+              date.getMilliseconds();
+            const minutes = millis / 60000;
+            return (minutes / sets.length).toFixed(2);
+          };
 
           return {
-            reps: [...data.reps, { x: index, y: reps }],
-            sets: [...data.sets, { x: index, y: sets.length }],
-            timeTaken: [...data.timeTaken, { x: index, y: minPerSet }],
-            total: [...data.total, { x: index, y: total }],
-            values: [...data.values, { x: index, y: value }]
+            reps: [...data.reps, { ...exercise, unit, x: index, y: reps }],
+            sets: [
+              ...data.sets,
+              { ...exercise, unit, x: index, y: sets.length }
+            ],
+            timeTaken: [
+              ...data.timeTaken,
+              { ...exercise, unit, x: index, y: minPerSet() }
+            ],
+            total: [...data.total, { ...exercise, unit, x: index, y: total }],
+            values: [...data.values, { ...exercise, unit, x: index, y: value }]
           };
         },
         { reps: [], sets: [], timeTaken: [], total: [], values: [] }

@@ -1,14 +1,13 @@
 import React from "react";
 import { withStyles, createStyles, Theme } from "@material-ui/core";
 import { MuscleGroup } from "../../constants/types";
-import classes from "*.module.css";
 import { Classes } from "jss";
 import { transparentize } from "../../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
     root: {
-      maxWidth: "400px"
+      maxWidth: "500px"
     }
   });
 
@@ -23,7 +22,7 @@ const FullBody = ({ classes, selected, theme }: Props) => {
     if (muscle && selected.includes(muscle)) {
       return theme.palette.primary.light;
     }
-    return transparentize(theme.palette.text.disabled, 0.2);
+    return transparentize(theme.palette.text.disabled, 0.1);
   };
   return (
     <div className={classes.root}>

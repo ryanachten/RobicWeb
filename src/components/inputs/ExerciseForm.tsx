@@ -5,7 +5,12 @@ import {
   Typography,
   withStyles,
   createStyles,
-  Theme
+  Theme,
+  FormControl,
+  FormLabel,
+  FormGroup,
+  FormControlLabel,
+  Checkbox
 } from "@material-ui/core";
 import { Classes } from "jss";
 import { Select } from "./Select";
@@ -19,18 +24,21 @@ const styles = (theme: Theme) =>
       marginTop: theme.spacing.unit * 2
     },
     muscleSelect: {
-      marginRight: theme.spacing.unit * 2,
-      minWidth: "200px"
+      maxHeight: "200px",
+      overflowY: "auto"
+    },
+    muscleSelectWrapper: {
+      margin: theme.spacing.unit
     },
     submitWrapper: {
       marginTop: theme.spacing.unit * 2,
       width: "100%"
     },
     titleInput: {
-      marginRight: theme.spacing.unit * 2
+      margin: theme.spacing.unit
     },
     unitSelect: {
-      marginRight: theme.spacing.unit * 2
+      margin: theme.spacing.unit
     }
   });
 
@@ -57,14 +65,22 @@ class ExerciseForm extends React.Component<Props, State> {
       unit: exercise ? exercise.unit : "",
       primaryMuscleGroup: exercise ? exercise.primaryMuscleGroup : []
     };
+    this.onToggleMuscleGroup = this.onToggleMuscleGroup.bind(this);
     this.renderMuscleOptions = this.renderMuscleOptions.bind(this);
     this.submitForm = this.submitForm.bind(this);
   }
 
-  onFieldUpdate(field: "primaryMuscleGroup" | "title" | "unit", value: string) {
+  onFieldUpdate(field: "title" | "unit", value: string) {
     const state: any = { ...this.state };
     state[field] = value;
     this.setState(state);
+  }
+
+  onToggleMuscleGroup(muscleGroup: MuscleGroup, active: boolean) {
+    const muscleGroups = active
+      ? [...this.state.primaryMuscleGroup, muscleGroup]
+      : this.state.primaryMuscleGroup.filter(mg => mg !== muscleGroup);
+    this.setState({ primaryMuscleGroup: muscleGroups });
   }
 
   submitForm(e: React.FormEvent) {
@@ -83,19 +99,31 @@ class ExerciseForm extends React.Component<Props, State> {
         label: MuscleGroup[key]
       }));
     return (
-      <Select
-        className={classes.muscleSelect}
-        label="Primary Muscle Group"
-        onChange={event =>
-          this.onFieldUpdate("primaryMuscleGroup", event.target.value)
-        }
-        options={muscles.map(muscle => ({
-          id: muscle.value,
-          label: muscle.label,
-          value: muscle.value
-        }))}
-        value={primaryMuscleGroup}
-      />
+      <FormControl className={classes.muscleSelectWrapper}>
+        <Typography color="textSecondary" variant="caption">
+          Primary Muscle Groups
+        </Typography>
+        <div className={classes.muscleSelect}>
+          <FormGroup>
+            {muscles.map(muscle => (
+              <FormControlLabel
+                key={muscle.value}
+                control={
+                  <Checkbox
+                    color="primary"
+                    checked={primaryMuscleGroup.includes(muscle.value as any)}
+                    onChange={(e: any, checked: boolean) =>
+                      this.onToggleMuscleGroup(e.target.value, checked)
+                    }
+                    value={muscle.value}
+                  />
+                }
+                label={muscle.label}
+              />
+            ))}
+          </FormGroup>
+        </div>
+      </FormControl>
     );
   }
 

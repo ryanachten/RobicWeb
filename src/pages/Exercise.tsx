@@ -23,11 +23,11 @@ import {
   VictoryTheme,
   VictoryLine,
   VictoryVoronoiContainer,
-  VictoryTooltip,
-  VictoryLabel
+  VictoryTooltip
 } from "victory";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
+import { FullBody } from "../components/muscles/FullBody";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -244,7 +244,8 @@ class ExercisePage extends React.Component<Props, State> {
 
   renderExerciseDefinition(exerciseDefinition: ExerciseDefinition) {
     const classes = this.props.classes;
-    const { history, title, unit } = exerciseDefinition;
+    const { history, primaryMuscleGroup, title, unit } = exerciseDefinition;
+    console.log("primaryMuscleGroup", primaryMuscleGroup);
     return (
       <div>
         <PageTitle
@@ -262,6 +263,7 @@ class ExercisePage extends React.Component<Props, State> {
             <EditIcon />
           </IconButton>
         </div>
+        {primaryMuscleGroup && <FullBody selected={[primaryMuscleGroup]} />}
         {history.length > 1 && this.renderCharts()}
         <div className={classes.header}>
           <Typography variant="h6">History</Typography>

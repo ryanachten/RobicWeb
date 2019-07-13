@@ -4,21 +4,16 @@ import { MuscleGroup } from "../../constants/types";
 import { Classes } from "jss";
 import { transparentize } from "../../utils";
 
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-      maxWidth: "500px"
-    }
-  });
+const styles = (theme: Theme) => createStyles({});
 
 type Props = {
+  className?: string;
   classes: Classes;
   selected: MuscleGroup[];
   theme: Theme;
 };
 
-const FrontBody = ({ classes, selected, theme }: Props) => {
+const FrontBody = ({ className, selected, theme }: Props) => {
   const fill = (muscle?: MuscleGroup) => {
     if (muscle && selected.includes(muscle)) {
       return theme.palette.primary.light;
@@ -26,7 +21,7 @@ const FrontBody = ({ classes, selected, theme }: Props) => {
     return transparentize(theme.palette.text.disabled, 0.1);
   };
   return (
-    <div className={classes.root}>
+    <div className={className}>
       <svg
         id="full-body"
         xmlns="http://www.w3.org/2000/svg"

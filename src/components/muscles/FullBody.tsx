@@ -8,7 +8,13 @@ import BackBody from "./BackBody";
 const styles = (theme: Theme) =>
   createStyles({
     root: {
-      display: "flex"
+      display: "flex",
+      flexFlow: "row wrap"
+    },
+    side: {
+      flexGrow: 1,
+      maxWidth: "500px",
+      minWidth: "200px"
     }
   });
 
@@ -20,8 +26,8 @@ type Props = {
 const FullBody = ({ classes, selected }: Props) => {
   return (
     <div className={classes.root}>
-      <FrontBody selected={selected} />
-      <BackBody selected={selected} />
+      <FrontBody className={classes.side} selected={selected} />
+      <BackBody className={classes.side} selected={selected} />
     </div>
   );
 };

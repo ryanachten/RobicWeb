@@ -69,7 +69,7 @@ class EditExercise extends React.Component<Props, State> {
         ) : (
           <ExerciseForm
             exerciseDefinition={exerciseDefinition}
-            onSubmit={fields => this.submitForm(fields)}
+            onSubmit={(fields: any) => this.submitForm(fields)}
           />
         )}
       </PageRoot>

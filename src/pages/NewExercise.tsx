@@ -65,7 +65,7 @@ class NewExercise extends React.Component<Props, State> {
             onClick: () => this.props.history.goBack()
           }}
         />
-        <ExerciseForm onSubmit={fields => this.submitForm(fields)} />
+        <ExerciseForm onSubmit={(fields: any) => this.submitForm(fields)} />
       </PageRoot>
     );
   }

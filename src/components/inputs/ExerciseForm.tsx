@@ -135,10 +135,10 @@ class ExerciseForm extends React.Component<Props, State> {
             {error}
           </Typography>
         )}
-        {primaryMuscleGroup && <FullBody selected={[primaryMuscleGroup]} />}
         <div className={classes.submitWrapper}>
           <Button type="submit">Submit</Button>
         </div>
+        {primaryMuscleGroup && <FullBody selected={[primaryMuscleGroup]} />}
       </form>
     );
   }

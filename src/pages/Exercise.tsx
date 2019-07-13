@@ -263,7 +263,7 @@ class ExercisePage extends React.Component<Props, State> {
             <EditIcon />
           </IconButton>
         </div>
-        {primaryMuscleGroup && <FullBody selected={[primaryMuscleGroup]} />}
+        {primaryMuscleGroup && <FullBody selected={primaryMuscleGroup} />}
         {history.length > 1 && this.renderCharts()}
         <div className={classes.header}>
           <Typography variant="h6">History</Typography>

@@ -38,7 +38,7 @@ export type State = {
   title: string;
   unit: string;
   error: string;
-  primaryMuscleGroup: MuscleGroup | "";
+  primaryMuscleGroup: MuscleGroup[];
 };
 
 type Props = {
@@ -55,7 +55,7 @@ class ExerciseForm extends React.Component<Props, State> {
       error: "",
       title: exercise ? exercise.title : "",
       unit: exercise ? exercise.unit : "",
-      primaryMuscleGroup: exercise ? exercise.primaryMuscleGroup || "" : ""
+      primaryMuscleGroup: exercise ? exercise.primaryMuscleGroup : []
     };
     this.renderMuscleOptions = this.renderMuscleOptions.bind(this);
     this.submitForm = this.submitForm.bind(this);
@@ -102,6 +102,7 @@ class ExerciseForm extends React.Component<Props, State> {
   render() {
     const { classes } = this.props;
     const { error, primaryMuscleGroup, title, unit } = this.state;
+    console.log("primaryMuscleGroup", primaryMuscleGroup);
     return (
       <form onSubmit={this.submitForm}>
         <TextField
@@ -138,7 +139,7 @@ class ExerciseForm extends React.Component<Props, State> {
         <div className={classes.submitWrapper}>
           <Button type="submit">Submit</Button>
         </div>
-        {primaryMuscleGroup && <FullBody selected={[primaryMuscleGroup]} />}
+        {primaryMuscleGroup && <FullBody selected={primaryMuscleGroup} />}
       </form>
     );
   }

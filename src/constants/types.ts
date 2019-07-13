@@ -49,7 +49,7 @@ export type ExerciseDefinition = {
   history: Exercise[];
   id: string;
   personalBest: PersonalBest;
-  primaryMuscleGroup: MuscleGroup;
+  primaryMuscleGroup: MuscleGroup[];
   title: string;
   unit: Unit;
 };

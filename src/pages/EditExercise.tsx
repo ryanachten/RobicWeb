@@ -32,7 +32,7 @@ class EditExercise extends React.Component<Props, State> {
   }
 
   async submitForm(fields: FormFields) {
-    const { title, unit, primaryMuscleGroup } = fields;
+    const { title, unit, primaryMuscleGroup, type, childExerciseIds } = fields;
     const exerciseId = this.props.match.params.id;
     try {
       await this.props.mutate({
@@ -40,7 +40,9 @@ class EditExercise extends React.Component<Props, State> {
           exerciseId,
           title,
           unit,
-          primaryMuscleGroup
+          primaryMuscleGroup,
+          type,
+          childExercises: childExerciseIds
         },
         refetchQueries: [{ query: GetExercises }]
       });

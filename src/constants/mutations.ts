@@ -29,11 +29,15 @@ export const AddExerciseDefinition = gql`
     $title: String!
     $unit: String!
     $primaryMuscleGroup: [String]!
+    $type: String!
+    $childExercises: [ID]!
   ) {
     addExerciseDefinition(
       title: $title
       unit: $unit
       primaryMuscleGroup: $primaryMuscleGroup
+      type: $type
+      childExercises: $childExercises
     ) {
       id
     }

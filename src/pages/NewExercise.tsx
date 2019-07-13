@@ -31,18 +31,21 @@ class NewExercise extends React.Component<Props, State> {
   }
 
   async submitForm(fields: FormFields) {
-    const { title, unit, primaryMuscleGroup } = fields;
+    const { title, unit, primaryMuscleGroup, type, childExerciseIds } = fields;
     if (!title || !unit || !primaryMuscleGroup) {
       return this.setState({
         error: "Please complete title, unit and primary muscle group fields"
       });
     }
+
     try {
       await this.props.mutate({
         variables: {
           title,
           unit,
-          primaryMuscleGroup
+          primaryMuscleGroup,
+          type,
+          childExercises: childExerciseIds
         },
         refetchQueries: [{ query: GetExercises }]
       });

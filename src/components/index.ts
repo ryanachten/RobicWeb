@@ -5,6 +5,7 @@ export * from "./page/PageTitle";
 
 // Input components
 export * from "./inputs/ExerciseForm";
+export * from "./inputs/MultiSelect";
 export * from "./inputs/Select";
 
 // Misc components

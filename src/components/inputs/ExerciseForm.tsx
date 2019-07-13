@@ -5,11 +5,7 @@ import {
   Typography,
   withStyles,
   createStyles,
-  Theme,
-  FormControl,
-  FormGroup,
-  FormControlLabel,
-  Checkbox
+  Theme
 } from "@material-ui/core";
 import { Classes } from "jss";
 import { Select } from "./Select";
@@ -20,16 +16,15 @@ import {
   ExerciseType
 } from "../../constants/types";
 import { FullBody } from "../muscles/FullBody";
+import { compose, graphql } from "react-apollo";
+import { GetExercises } from "../../constants/queries";
+import { MultiSelect } from "./MultiSelect";
 
 const styles = (theme: Theme) =>
   createStyles({
     error: {
       marginBottom: theme.spacing.unit * 2,
       marginTop: theme.spacing.unit * 2
-    },
-    muscleSelect: {
-      maxHeight: "200px",
-      overflowY: "auto"
     },
     muscleSelectWrapper: {
       margin: theme.spacing.unit
@@ -44,6 +39,7 @@ const styles = (theme: Theme) =>
   });
 
 export type State = {
+  childExerciseIds: string[];
   error: string;
   primaryMuscleGroup: MuscleGroup[];
   title: string;
@@ -53,6 +49,7 @@ export type State = {
 
 type Props = {
   classes: Classes;
+  data: any;
   exerciseDefinition?: ExerciseDefinition;
   onSubmit: (state: State) => void;
 };
@@ -62,6 +59,7 @@ class ExerciseForm extends React.Component<Props, State> {
     super(props);
     const exercise = props.exerciseDefinition;
     this.state = {
+      childExerciseIds: [], //TODO: get from exercise
       error: "",
       title: exercise ? exercise.title : "",
       type: exercise
@@ -88,9 +86,39 @@ class ExerciseForm extends React.Component<Props, State> {
     this.setState({ primaryMuscleGroup: muscleGroups });
   }
 
+  onToggleExercise(exerciseId: string, active: boolean) {
+    const exercises = active
+      ? [...this.state.childExerciseIds, exerciseId]
+      : this.state.childExerciseIds.filter(id => id !== exerciseId);
+    this.setState({ childExerciseIds: exercises });
+  }
+
   submitForm(e: React.FormEvent) {
     e.preventDefault();
     this.props.onSubmit(this.state);
+  }
+
+  renderExerciseOptions() {
+    const { classes, data } = this.props;
+    const { exerciseDefinitions } = data;
+    const childExerciseIds = this.state.childExerciseIds;
+    const exercises = exerciseDefinitions
+      .sort()
+      .map((exercise: ExerciseDefinition) => ({
+        checked: childExerciseIds.includes(exercise.id),
+        value: exercise.id,
+        label: exercise.title
+      }));
+    return (
+      <MultiSelect
+        className={classes.muscleSelectWrapper}
+        label="Exercises"
+        options={exercises}
+        onChange={(value: any, checked: boolean) =>
+          this.onToggleExercise(value, checked)
+        }
+      />
+    );
   }
 
   renderMuscleOptions() {
@@ -99,42 +127,26 @@ class ExerciseForm extends React.Component<Props, State> {
     const muscles = Object.keys(MuscleGroup)
       .sort()
       .map((key: any) => ({
-        id: MuscleGroup[key],
+        checked: primaryMuscleGroup.includes(MuscleGroup[key] as any),
         value: MuscleGroup[key],
         label: MuscleGroup[key]
       }));
     return (
-      <FormControl className={classes.muscleSelectWrapper}>
-        <Typography color="textSecondary" variant="caption">
-          Primary Muscle Groups
-        </Typography>
-        <div className={classes.muscleSelect}>
-          <FormGroup>
-            {muscles.map(muscle => (
-              <FormControlLabel
-                key={muscle.value}
-                control={
-                  <Checkbox
-                    color="primary"
-                    checked={primaryMuscleGroup.includes(muscle.value as any)}
-                    onChange={(e: any, checked: boolean) =>
-                      this.onToggleMuscleGroup(e.target.value, checked)
-                    }
-                    value={muscle.value}
-                  />
-                }
-                label={muscle.label}
-              />
-            ))}
-          </FormGroup>
-        </div>
-      </FormControl>
+      <MultiSelect
+        className={classes.muscleSelectWrapper}
+        label="Primary Muscle Groups"
+        options={muscles}
+        onChange={(value: any, checked: boolean) =>
+          this.onToggleMuscleGroup(value, checked)
+        }
+      />
     );
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, data } = this.props;
     const { error, primaryMuscleGroup, title, type, unit } = this.state;
+    const { exerciseDefinitions } = data;
     return (
       <form onSubmit={this.submitForm}>
         <TextField
@@ -177,6 +189,7 @@ class ExerciseForm extends React.Component<Props, State> {
           value={unit}
         />
         {this.renderMuscleOptions()}
+        {exerciseDefinitions && this.renderExerciseOptions()}
         {error && (
           <Typography className={classes.error} color="error">
             {error}
@@ -191,4 +204,4 @@ class ExerciseForm extends React.Component<Props, State> {
   }
 }
 
-export default withStyles(styles)(ExerciseForm);
+export default compose(graphql(GetExercises))(withStyles(styles)(ExerciseForm));

@@ -2,7 +2,7 @@ export enum MuscleGroup {
   CHEST = "Chest",
   FOREARMS = "Forearms",
   LATS = "Lats",
-  MIDDLE_BACK = "Middle Back",
+  // MIDDLE_BACK = "Middle Back",
   LOWER_BACK = "Lower Back",
   NECK = "Neck",
   HAMS = "Hamstrings",
@@ -13,9 +13,9 @@ export enum MuscleGroup {
   SHOULDERS = "Shoulders",
   ABS = "Abdominals",
   GLUTES = "Glutes",
-  BICEPS = "Biceps",
-  ADDUCTORS = "Adductors",
-  ABDUCTORS = "Abductors"
+  BICEPS = "Biceps"
+  // ADDUCTORS = "Adductors",
+  // ABDUCTORS = "Abductors"
 }
 
 export enum Unit {

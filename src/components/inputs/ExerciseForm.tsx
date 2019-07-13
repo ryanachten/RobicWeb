@@ -10,6 +10,7 @@ import {
 import { Classes } from "jss";
 import { Select } from "./Select";
 import { Unit, ExerciseDefinition, MuscleGroup } from "../../constants/types";
+import { FullBody } from "../muscles/FullBody";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -74,11 +75,13 @@ class ExerciseForm extends React.Component<Props, State> {
   renderMuscleOptions() {
     const { primaryMuscleGroup } = this.state;
     const { classes } = this.props;
-    const muscles = Object.keys(MuscleGroup).map((key: any) => ({
-      id: MuscleGroup[key],
-      value: MuscleGroup[key],
-      label: MuscleGroup[key]
-    }));
+    const muscles = Object.keys(MuscleGroup)
+      .sort()
+      .map((key: any) => ({
+        id: MuscleGroup[key],
+        value: MuscleGroup[key],
+        label: MuscleGroup[key]
+      }));
     return (
       <Select
         className={classes.muscleSelect}
@@ -98,7 +101,7 @@ class ExerciseForm extends React.Component<Props, State> {
 
   render() {
     const { classes } = this.props;
-    const { error, title, unit } = this.state;
+    const { error, primaryMuscleGroup, title, unit } = this.state;
     return (
       <form onSubmit={this.submitForm}>
         <TextField
@@ -132,6 +135,7 @@ class ExerciseForm extends React.Component<Props, State> {
             {error}
           </Typography>
         )}
+        {primaryMuscleGroup && <FullBody selected={[primaryMuscleGroup]} />}
         <div className={classes.submitWrapper}>
           <Button type="submit">Submit</Button>
         </div>

@@ -32,12 +32,6 @@ class NewExercise extends React.Component<Props, State> {
 
   async submitForm(fields: FormFields) {
     const { title, unit, primaryMuscleGroup, type, childExerciseIds } = fields;
-    if (!title || !unit || !primaryMuscleGroup) {
-      return this.setState({
-        error: "Please complete title, unit and primary muscle group fields"
-      });
-    }
-
     try {
       await this.props.mutate({
         variables: {
@@ -51,9 +45,7 @@ class NewExercise extends React.Component<Props, State> {
       });
       this.props.history.push(routes.EXERCISES.route);
     } catch (error) {
-      return this.setState({
-        error
-      });
+      // TODO: pass error state to ExerciseForm
     }
   }
 

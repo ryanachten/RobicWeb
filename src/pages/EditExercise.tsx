@@ -48,9 +48,7 @@ class EditExercise extends React.Component<Props, State> {
       });
       this.props.history.push(routes.EXERCISES.route);
     } catch (error) {
-      return this.setState({
-        error
-      });
+      // TODO: pass error state to ExerciseForm
     }
   }
 

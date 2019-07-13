@@ -98,6 +98,27 @@ class ExerciseForm extends React.Component<Props, State> {
 
   submitForm(e: React.FormEvent) {
     e.preventDefault();
+    const {
+      title,
+      unit,
+      primaryMuscleGroup,
+      type,
+      childExerciseIds
+    } = this.state;
+    if (!title || !unit || !primaryMuscleGroup) {
+      return this.setState({
+        error: "Please complete title, unit and primary muscle group fields"
+      });
+    }
+    if (
+      (type === ExerciseType.CIRCUIT || type === ExerciseType.SUPERSET) &&
+      childExerciseIds.length < 2
+    ) {
+      return this.setState({
+        error: "Please add at least 2 exercises"
+      });
+    }
+
     this.props.onSubmit(this.state);
   }
 

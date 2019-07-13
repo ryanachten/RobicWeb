@@ -59,7 +59,10 @@ class ExerciseForm extends React.Component<Props, State> {
     super(props);
     const exercise = props.exerciseDefinition;
     this.state = {
-      childExerciseIds: [], //TODO: get from exercise
+      childExerciseIds:
+        exercise && exercise.childExercises
+          ? exercise.childExercises.map(exercise => exercise.id)
+          : [],
       error: "",
       title: exercise ? exercise.title : "",
       type: exercise
@@ -147,6 +150,8 @@ class ExerciseForm extends React.Component<Props, State> {
     const { classes, data } = this.props;
     const { error, primaryMuscleGroup, title, type, unit } = this.state;
     const { exerciseDefinitions } = data;
+    const showChildExcerises =
+      type === ExerciseType.CIRCUIT || type === ExerciseType.SUPERSET;
     return (
       <form onSubmit={this.submitForm}>
         <TextField
@@ -189,7 +194,9 @@ class ExerciseForm extends React.Component<Props, State> {
           value={unit}
         />
         {this.renderMuscleOptions()}
-        {exerciseDefinitions && this.renderExerciseOptions()}
+        {showChildExcerises &&
+          exerciseDefinitions &&
+          this.renderExerciseOptions()}
         {error && (
           <Typography className={classes.error} color="error">
             {error}

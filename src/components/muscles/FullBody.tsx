@@ -2,7 +2,6 @@ import React from "react";
 import { withStyles, createStyles, Theme } from "@material-ui/core";
 import { MuscleGroup } from "../../constants/types";
 import { Classes } from "jss";
-import { transparentize } from "../../utils";
 import FrontBody from "./FrontBody";
 import BackBody from "./BackBody";
 

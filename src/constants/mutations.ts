@@ -62,12 +62,16 @@ export const UpdateExercise = gql`
     $title: String!
     $unit: String!
     $primaryMuscleGroup: [String]!
+    $type: String!
+    $childExercises: [ID]!
   ) {
     updateExerciseDefinition(
       exerciseId: $exerciseId
       title: $title
       unit: $unit
       primaryMuscleGroup: $primaryMuscleGroup
+      type: $type
+      childExercises: $childExercises
     ) {
       id
     }

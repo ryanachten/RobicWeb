@@ -28,7 +28,7 @@ export const AddExerciseDefinition = gql`
   mutation AddExerciseDefinition(
     $title: String!
     $unit: String!
-    $primaryMuscleGroup: String!
+    $primaryMuscleGroup: [String]!
   ) {
     addExerciseDefinition(
       title: $title
@@ -61,7 +61,7 @@ export const UpdateExercise = gql`
     $exerciseId: ID!
     $title: String!
     $unit: String!
-    $primaryMuscleGroup: String!
+    $primaryMuscleGroup: [String]!
   ) {
     updateExerciseDefinition(
       exerciseId: $exerciseId

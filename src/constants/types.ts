@@ -28,6 +28,12 @@ export type Set = {
   value: number;
 };
 
+export enum ExerciseType {
+  CIRCUIT = "Circuit",
+  STANDARD = "Standard",
+  SUPERSET = "Superset"
+}
+
 export type Exercise = {
   id: string;
   date: string;
@@ -51,6 +57,7 @@ export type ExerciseDefinition = {
   personalBest: PersonalBest;
   primaryMuscleGroup: MuscleGroup[];
   title: string;
+  type: ExerciseType;
   unit: Unit;
 };
 

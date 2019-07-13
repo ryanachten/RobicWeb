@@ -7,14 +7,18 @@ import {
   createStyles,
   Theme,
   FormControl,
-  FormLabel,
   FormGroup,
   FormControlLabel,
   Checkbox
 } from "@material-ui/core";
 import { Classes } from "jss";
 import { Select } from "./Select";
-import { Unit, ExerciseDefinition, MuscleGroup } from "../../constants/types";
+import {
+  Unit,
+  ExerciseDefinition,
+  MuscleGroup,
+  ExerciseType
+} from "../../constants/types";
 import { FullBody } from "../muscles/FullBody";
 
 const styles = (theme: Theme) =>
@@ -34,19 +38,17 @@ const styles = (theme: Theme) =>
       marginTop: theme.spacing.unit * 2,
       width: "100%"
     },
-    titleInput: {
-      margin: theme.spacing.unit
-    },
-    unitSelect: {
+    input: {
       margin: theme.spacing.unit
     }
   });
 
 export type State = {
-  title: string;
-  unit: string;
   error: string;
   primaryMuscleGroup: MuscleGroup[];
+  title: string;
+  type: ExerciseType;
+  unit: string;
 };
 
 type Props = {
@@ -62,6 +64,9 @@ class ExerciseForm extends React.Component<Props, State> {
     this.state = {
       error: "",
       title: exercise ? exercise.title : "",
+      type: exercise
+        ? exercise.type || ExerciseType.STANDARD
+        : ExerciseType.STANDARD,
       unit: exercise ? exercise.unit : "",
       primaryMuscleGroup: exercise ? exercise.primaryMuscleGroup : []
     };
@@ -70,7 +75,7 @@ class ExerciseForm extends React.Component<Props, State> {
     this.submitForm = this.submitForm.bind(this);
   }
 
-  onFieldUpdate(field: "title" | "unit", value: string) {
+  onFieldUpdate(field: "title" | "type" | "unit", value: string) {
     const state: any = { ...this.state };
     state[field] = value;
     this.setState(state);
@@ -129,20 +134,33 @@ class ExerciseForm extends React.Component<Props, State> {
 
   render() {
     const { classes } = this.props;
-    const { error, primaryMuscleGroup, title, unit } = this.state;
-    console.log("primaryMuscleGroup", primaryMuscleGroup);
+    const { error, primaryMuscleGroup, title, type, unit } = this.state;
     return (
       <form onSubmit={this.submitForm}>
         <TextField
           label="Title"
           placeholder="Exercise title"
-          className={classes.titleInput}
+          className={classes.input}
           onChange={event => this.onFieldUpdate("title", event.target.value)}
           value={title}
         />
         <Select
+          label="Type"
+          className={classes.input}
+          onChange={event => this.onFieldUpdate("type", event.target.value)}
+          options={Object.keys(ExerciseType).map((type: any) => {
+            const value = ExerciseType[type];
+            return {
+              id: value,
+              label: value,
+              value: value
+            };
+          })}
+          value={type}
+        />
+        <Select
           label="Unit"
-          className={classes.unitSelect}
+          className={classes.input}
           onChange={event => this.onFieldUpdate("unit", event.target.value)}
           options={[
             {

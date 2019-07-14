@@ -19,7 +19,7 @@ import { FullBody } from "../muscles/FullBody";
 import { compose, graphql } from "react-apollo";
 import { GetExercises } from "../../constants/queries";
 import { MultiSelect } from "./MultiSelect";
-import { showChildExercises } from "../../utils";
+import { isCompositeExercise } from "../../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -197,7 +197,7 @@ class ExerciseForm extends React.Component<Props, State> {
         />
         {/* Don't show unit and PMG fields for types where these are
             made up of other exercises  */}
-        {!showChildExercises(type) && (
+        {!isCompositeExercise(type) && (
           <Fragment>
             <Select
               label="Unit"
@@ -220,7 +220,7 @@ class ExerciseForm extends React.Component<Props, State> {
             {this.renderMuscleOptions()}
           </Fragment>
         )}
-        {showChildExercises(type) &&
+        {isCompositeExercise(type) &&
           exerciseDefinitions &&
           this.renderExerciseOptions()}
         {error && (

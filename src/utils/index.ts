@@ -57,5 +57,7 @@ export const getUnitLabel = (unit: Unit) => {
   }
 };
 
-export const showChildExercises = (type: ExerciseType) =>
+// Returns whether or not an exercise type
+// is made up of child exercises
+export const isCompositeExercise = (type: ExerciseType) =>
   type === ExerciseType.CIRCUIT || type === ExerciseType.SUPERSET;

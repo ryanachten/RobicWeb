@@ -27,7 +27,7 @@ import {
   formatTime,
   getUnitLabel,
   transparentize,
-  showChildExercises
+  isCompositeExercise
 } from "../utils";
 import { compareDesc, compareAsc } from "date-fns";
 import routes from "../constants/routes";
@@ -281,7 +281,7 @@ class ExercisePage extends React.Component<Props, State> {
     } = exerciseDefinition;
 
     // Get muscles based on child exercises if applicable
-    const muscles: MuscleGroup[] = showChildExercises(type)
+    const muscles: MuscleGroup[] = isCompositeExercise(type)
       ? childExercises
         ? childExercises.reduce(
             (total: MuscleGroup[], ex: ExerciseDefinition) => {
@@ -329,7 +329,7 @@ class ExercisePage extends React.Component<Props, State> {
               </div>
             )}
           </div>
-          {showChildExercises(type) && childExercises && (
+          {isCompositeExercise(type) && childExercises && (
             <section className={classes.childExListWrapper}>
               <Typography variant="subtitle1">Comprised of</Typography>
               <ul className={classes.childExList}>

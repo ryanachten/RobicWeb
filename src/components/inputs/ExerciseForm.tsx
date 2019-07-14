@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import {
   Button,
   TextField,
@@ -19,6 +19,7 @@ import { FullBody } from "../muscles/FullBody";
 import { compose, graphql } from "react-apollo";
 import { GetExercises } from "../../constants/queries";
 import { MultiSelect } from "./MultiSelect";
+import { showChildExercises } from "../../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -44,7 +45,7 @@ export type State = {
   primaryMuscleGroup: MuscleGroup[];
   title: string;
   type: ExerciseType;
-  unit: string;
+  unit?: string;
 };
 
 type Props = {
@@ -171,8 +172,6 @@ class ExerciseForm extends React.Component<Props, State> {
     const { classes, data } = this.props;
     const { error, primaryMuscleGroup, title, type, unit } = this.state;
     const { exerciseDefinitions } = data;
-    const showChildExcerises =
-      type === ExerciseType.CIRCUIT || type === ExerciseType.SUPERSET;
     return (
       <form onSubmit={this.submitForm}>
         <TextField
@@ -196,26 +195,32 @@ class ExerciseForm extends React.Component<Props, State> {
           })}
           value={type}
         />
-        <Select
-          label="Unit"
-          className={classes.input}
-          onChange={event => this.onFieldUpdate("unit", event.target.value)}
-          options={[
-            {
-              id: Unit.kg,
-              value: Unit.kg,
-              label: Unit.kg
-            },
-            {
-              id: Unit.min,
-              value: Unit.min,
-              label: Unit.min
-            }
-          ]}
-          value={unit}
-        />
-        {this.renderMuscleOptions()}
-        {showChildExcerises &&
+        {/* Don't show unit and PMG fields for types where these are
+            made up of other exercises  */}
+        {!showChildExercises(type) && (
+          <Fragment>
+            <Select
+              label="Unit"
+              className={classes.input}
+              onChange={event => this.onFieldUpdate("unit", event.target.value)}
+              options={[
+                {
+                  id: Unit.kg,
+                  value: Unit.kg,
+                  label: Unit.kg
+                },
+                {
+                  id: Unit.min,
+                  value: Unit.min,
+                  label: Unit.min
+                }
+              ]}
+              value={unit}
+            />
+            {this.renderMuscleOptions()}
+          </Fragment>
+        )}
+        {showChildExercises(type) &&
           exerciseDefinitions &&
           this.renderExerciseOptions()}
         {error && (

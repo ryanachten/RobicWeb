@@ -59,7 +59,7 @@ export type ExerciseDefinition = {
   primaryMuscleGroup: MuscleGroup[];
   title: string;
   type: ExerciseType;
-  unit: Unit;
+  unit?: Unit;
 };
 
 export type User = {

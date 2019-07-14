@@ -21,10 +21,11 @@ const styles = (theme: Theme) =>
 type Props = {
   classes: Classes;
   className?: string;
+  showLabel?: boolean;
   type: ExerciseType;
 };
 
-const ExerciseTypeIcon = ({ classes, type }: Props) => {
+const ExerciseTypeIcon = ({ classes, showLabel = true, type }: Props) => {
   if (!type || type === ExerciseType.STANDARD) {
     return null;
   }
@@ -36,9 +37,11 @@ const ExerciseTypeIcon = ({ classes, type }: Props) => {
       {type === ExerciseType.SUPERSET && (
         <SupersetIcon className={classes.typeIcon} color="primary" />
       )}
-      <Typography color="textSecondary" variant="h6">
-        {`${type} exercise`}
-      </Typography>
+      {showLabel && (
+        <Typography color="textSecondary" variant="h6">
+          {`${type} exercise`}
+        </Typography>
+      )}
     </div>
   );
 };

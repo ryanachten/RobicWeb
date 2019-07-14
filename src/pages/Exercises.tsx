@@ -11,7 +11,13 @@ import { Typography, TextField, withWidth } from "@material-ui/core";
 import routes from "../constants/routes";
 import { formatDate } from "../utils";
 import { compareDesc } from "date-fns";
-import { Link, PageRoot, PageTitle, LoadingSplash } from "../components";
+import {
+  Link,
+  PageRoot,
+  PageTitle,
+  LoadingSplash,
+  ExerciseTypeIcon
+} from "../components";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
 
@@ -28,6 +34,9 @@ const styles = (theme: Theme) =>
       listStyle: "none",
       marginBottom: theme.spacing.unit * 2,
       textTransform: "capitalize"
+    },
+    exerciseTitleWrapper: {
+      display: "flex"
     },
     exerciseDate: {
       marginLeft: theme.spacing.unit / 2
@@ -143,12 +152,15 @@ class Exercises extends React.Component<Props, State> {
         : null;
     return (
       <li className={classes.exerciseTitle} key={exercise.id}>
-        <Typography
-          onClick={() => this.navigateToExercise(exercise)}
-          variant={isMobile(width) ? "h3" : "h2"}
-        >
-          {exercise.title}
-        </Typography>
+        <div className={classes.exerciseTitleWrapper}>
+          <ExerciseTypeIcon type={exercise.type} showLabel={false} />
+          <Typography
+            onClick={() => this.navigateToExercise(exercise)}
+            variant={isMobile(width) ? "h3" : "h2"}
+          >
+            {exercise.title}
+          </Typography>
+        </div>
         {formattedDate && (
           <Typography
             className={classes.exerciseDate}

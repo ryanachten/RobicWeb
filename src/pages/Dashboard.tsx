@@ -122,6 +122,7 @@ class Index extends React.Component<Props, State> {
     };
     this.addSet = this.addSet.bind(this);
     this.removeSet = this.removeSet.bind(this);
+    this.renderSetInputs = this.renderSetInputs.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.toggleTimer = this.toggleTimer.bind(this);
     this.sortExericises = (a: ExerciseDefinition, b: ExerciseDefinition) => {
@@ -227,15 +228,55 @@ class Index extends React.Component<Props, State> {
     );
   }
 
+  renderSetInputs(
+    index: number,
+    reps: number,
+    value: number,
+    unit: Unit | undefined
+  ) {
+    if (!this.state.selectedExercise) return null;
+    const classes = this.props.classes;
+    // TODO: handle properly
+    if (!unit) {
+      return null;
+    }
+    return (
+      <Fragment>
+        <TextField
+          label="Reps"
+          type="number"
+          placeholder="5"
+          className={classes.input}
+          onChange={event =>
+            this.onFieldUpdate(index, "reps", event.target.value)
+          }
+          value={reps}
+        />
+        <TextField
+          label={`${getUnitLabel(unit)} (${unit})`}
+          type="number"
+          placeholder="5"
+          className={classes.input}
+          onChange={event =>
+            this.onFieldUpdate(index, "value", event.target.value)
+          }
+          value={value}
+        />
+      </Fragment>
+    );
+  }
+
   renderExerciseForm() {
     const { classes } = this.props;
     const { selectedExercise, sets, timerRunning } = this.state;
     if (!selectedExercise) {
       return null;
     }
-    const { history, title, type, unit } = selectedExercise;
+    const { childExercises, history, title, type, unit } = selectedExercise;
     // TODO: handle properly
-    if (!unit) return;
+    if (!unit) {
+      return null;
+    }
     return (
       <form onSubmit={this.submitForm}>
         <div className={classes.exerciseTitle}>
@@ -243,28 +284,27 @@ class Index extends React.Component<Props, State> {
           <ExerciseTypeIcon type={type} />
         </div>
         {history && history.length > 0 && this.renderHistory(history, unit)}
-        {sets.map(({ reps, value }: Set, index: number) => (
+        {sets.map((set: Set, index: number) => (
           <div className={classes.setWrapper} key={index}>
-            <TextField
-              label="Reps"
-              type="number"
-              placeholder="5"
-              className={classes.input}
-              onChange={event =>
-                this.onFieldUpdate(index, "reps", event.target.value)
-              }
-              value={reps}
-            />
-            <TextField
-              label={`${getUnitLabel(unit)} (${unit})`}
-              type="number"
-              placeholder="5"
-              className={classes.input}
-              onChange={event =>
-                this.onFieldUpdate(index, "value", event.target.value)
-              }
-              value={value}
-            />
+            {isCompositeExercise(type) && childExercises
+              ? childExercises.map(
+                  ({
+                    title: childTitle,
+                    unit: childUnit
+                  }: ExerciseDefinition) => (
+                    <div key={childTitle}>
+                      <Typography>{childTitle}</Typography>
+                      {this.renderSetInputs(
+                        index,
+                        set.reps,
+                        set.value,
+                        childUnit
+                      )}
+                    </div>
+                  )
+                )
+              : this.renderSetInputs(index, set.reps, set.value, unit)}
+
             {index !== 0 ? (
               <IconButton
                 className={classes.iconButton}

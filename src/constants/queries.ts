@@ -21,6 +21,7 @@ export const GetExercises = gql`
       childExercises {
         id
         title
+        unit
       }
       primaryMuscleGroup
       history {

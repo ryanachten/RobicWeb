@@ -19,9 +19,16 @@ import {
   Exercise,
   Set,
   ExerciseDefinition,
-  ExerciseType
+  ExerciseType,
+  MuscleGroup
 } from "../constants/types";
-import { formatDate, formatTime, getUnitLabel, transparentize } from "../utils";
+import {
+  formatDate,
+  formatTime,
+  getUnitLabel,
+  transparentize,
+  showChildExercises
+} from "../utils";
 import { compareDesc, compareAsc } from "date-fns";
 import routes from "../constants/routes";
 import { PageRoot, PageTitle, LoadingSplash, Link } from "../components";
@@ -269,9 +276,23 @@ class ExercisePage extends React.Component<Props, State> {
       history,
       primaryMuscleGroup,
       title,
-      type,
+      type = ExerciseType.STANDARD,
       unit
     } = exerciseDefinition;
+
+    // Get muscles based on child exercises if applicable
+    const muscles: MuscleGroup[] = showChildExercises(type)
+      ? childExercises
+        ? childExercises.reduce(
+            (total: MuscleGroup[], ex: ExerciseDefinition) => {
+              return ex.primaryMuscleGroup
+                ? [...total, ...ex.primaryMuscleGroup]
+                : total;
+            },
+            []
+          )
+        : []
+      : primaryMuscleGroup;
     return (
       <div>
         <PageTitle
@@ -289,44 +310,42 @@ class ExercisePage extends React.Component<Props, State> {
             <EditIcon />
           </IconButton>
         </div>
-        {type && (
-          <section>
-            <div>
-              {type === ExerciseType.CIRCUIT && (
-                <div className={classes.typeWrapper}>
-                  <CircuitIcon className={classes.typeIcon} color="primary" />
-                  <Typography color="textSecondary" variant="h6">
-                    {`${ExerciseType.CIRCUIT} exercise`}
-                  </Typography>
-                </div>
-              )}
-              {type === ExerciseType.SUPERSET && (
-                <div className={classes.typeWrapper}>
-                  <SupersetIcon className={classes.typeIcon} color="primary" />
-                  <Typography color="textSecondary" variant="h6">
-                    {`${ExerciseType.SUPERSET} exercise`}
-                  </Typography>
-                </div>
-              )}
-            </div>
-            {childExercises && (
-              <section className={classes.childExListWrapper}>
-                <Typography variant="subtitle1">Comprised of</Typography>
-                <ul className={classes.childExList}>
-                  {childExercises.map(exercise => (
-                    <li key={exercise.id}>
-                      <Link
-                        label={exercise.title}
-                        url={routes.EXERCISE(exercise.id).route}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </section>
+        <section>
+          <div>
+            {type === ExerciseType.CIRCUIT && (
+              <div className={classes.typeWrapper}>
+                <CircuitIcon className={classes.typeIcon} color="primary" />
+                <Typography color="textSecondary" variant="h6">
+                  {`${ExerciseType.CIRCUIT} exercise`}
+                </Typography>
+              </div>
             )}
-          </section>
-        )}
-        {primaryMuscleGroup && <FullBody selected={primaryMuscleGroup} />}
+            {type === ExerciseType.SUPERSET && (
+              <div className={classes.typeWrapper}>
+                <SupersetIcon className={classes.typeIcon} color="primary" />
+                <Typography color="textSecondary" variant="h6">
+                  {`${ExerciseType.SUPERSET} exercise`}
+                </Typography>
+              </div>
+            )}
+          </div>
+          {showChildExercises(type) && childExercises && (
+            <section className={classes.childExListWrapper}>
+              <Typography variant="subtitle1">Comprised of</Typography>
+              <ul className={classes.childExList}>
+                {childExercises.map(exercise => (
+                  <li key={exercise.id}>
+                    <Link
+                      label={exercise.title}
+                      url={routes.EXERCISE(exercise.id).route}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </section>
+        {primaryMuscleGroup && <FullBody selected={muscles} />}
         {history.length > 1 && this.renderCharts()}
         <div className={classes.header}>
           <Typography variant="h6">History</Typography>

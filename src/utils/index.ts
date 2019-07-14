@@ -8,7 +8,7 @@ import {
 } from "date-fns";
 // @ts-ignore
 import classnames from "classnames";
-import { Unit } from "../constants/types";
+import { Unit, ExerciseType } from "../constants/types";
 
 export default classnames;
 
@@ -56,3 +56,6 @@ export const getUnitLabel = (unit: Unit) => {
     }
   }
 };
+
+export const showChildExercises = (type: ExerciseType) =>
+  type === ExerciseType.CIRCUIT || type === ExerciseType.SUPERSET;

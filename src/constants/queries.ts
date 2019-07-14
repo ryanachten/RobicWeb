@@ -62,6 +62,7 @@ export const GetExerciseDefinitionById = gql`
       type
       childExercises {
         id
+        primaryMuscleGroup
         title
       }
       history {

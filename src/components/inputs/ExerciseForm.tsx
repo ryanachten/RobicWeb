@@ -5,7 +5,8 @@ import {
   Typography,
   withStyles,
   createStyles,
-  Theme
+  Theme,
+  CircularProgress
 } from "@material-ui/core";
 import { Classes } from "jss";
 import { Select } from "./Select";
@@ -19,7 +20,7 @@ import { FullBody } from "../muscles/FullBody";
 import { compose, graphql } from "react-apollo";
 import { GetExercises } from "../../constants/queries";
 import { MultiSelect } from "./MultiSelect";
-import { isCompositeExercise } from "../../utils";
+import { isCompositeExercise, getChildExerciseMuscles } from "../../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -170,8 +171,26 @@ class ExerciseForm extends React.Component<Props, State> {
 
   render() {
     const { classes, data } = this.props;
-    const { error, primaryMuscleGroup, title, type, unit } = this.state;
-    const { exerciseDefinitions } = data;
+    const {
+      childExerciseIds,
+      error,
+      primaryMuscleGroup,
+      title,
+      type,
+      unit
+    } = this.state;
+    const { exerciseDefinitions, loading } = data;
+    // Get muscles based on child exercises if applicable
+    const childExercises =
+      exerciseDefinitions &&
+      exerciseDefinitions.filter((e: ExerciseDefinition) =>
+        childExerciseIds.includes(e.id)
+      );
+    const muscles: MuscleGroup[] = isCompositeExercise(type)
+      ? childExercises
+        ? getChildExerciseMuscles(childExercises)
+        : []
+      : primaryMuscleGroup;
     return (
       <form onSubmit={this.submitForm}>
         <TextField
@@ -217,7 +236,7 @@ class ExerciseForm extends React.Component<Props, State> {
               ]}
               value={unit}
             />
-            {this.renderMuscleOptions()}
+            {loading ? <CircularProgress /> : this.renderMuscleOptions()}
           </Fragment>
         )}
         {isCompositeExercise(type) &&
@@ -231,7 +250,7 @@ class ExerciseForm extends React.Component<Props, State> {
         <div className={classes.submitWrapper}>
           <Button type="submit">Submit</Button>
         </div>
-        {primaryMuscleGroup && <FullBody selected={primaryMuscleGroup} />}
+        {muscles && <FullBody selected={muscles} />}
       </form>
     );
   }

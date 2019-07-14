@@ -8,7 +8,12 @@ import {
 } from "date-fns";
 // @ts-ignore
 import classnames from "classnames";
-import { Unit, ExerciseType } from "../constants/types";
+import {
+  Unit,
+  ExerciseType,
+  ExerciseDefinition,
+  MuscleGroup
+} from "../constants/types";
 
 export default classnames;
 
@@ -61,3 +66,14 @@ export const getUnitLabel = (unit: Unit) => {
 // is made up of child exercises
 export const isCompositeExercise = (type: ExerciseType) =>
   type === ExerciseType.CIRCUIT || type === ExerciseType.SUPERSET;
+
+// Get total muscles groups based on child exercises
+export const getChildExerciseMuscles = (childExercises: ExerciseDefinition[]) =>
+  childExercises.reduce(
+    (total: MuscleGroup[], exercise: ExerciseDefinition) => {
+      return exercise.primaryMuscleGroup
+        ? [...total, ...exercise.primaryMuscleGroup]
+        : total;
+    },
+    []
+  );

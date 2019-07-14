@@ -4,6 +4,8 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import EditIcon from "@material-ui/icons/Edit";
+import CircuitIcon from "@material-ui/icons/FilterTiltShift";
+import SupersetIcon from "@material-ui/icons/FlashOn";
 import { Classes } from "jss";
 import { GetExerciseDefinitionById } from "../constants/queries";
 import {
@@ -13,11 +15,16 @@ import {
   Tabs,
   Tab
 } from "@material-ui/core";
-import { Exercise, Set, ExerciseDefinition } from "../constants/types";
+import {
+  Exercise,
+  Set,
+  ExerciseDefinition,
+  ExerciseType
+} from "../constants/types";
 import { formatDate, formatTime, getUnitLabel, transparentize } from "../utils";
 import { compareDesc, compareAsc } from "date-fns";
 import routes from "../constants/routes";
-import { PageRoot, PageTitle, LoadingSplash } from "../components";
+import { PageRoot, PageTitle, LoadingSplash, Link } from "../components";
 import {
   VictoryChart,
   VictoryTheme,
@@ -41,6 +48,13 @@ const styles = (theme: Theme) =>
     chartWrapper: {
       display: "flex",
       flexFlow: "row wrap"
+    },
+    childExList: {
+      margin: 0,
+      paddingLeft: theme.spacing.unit * 2
+    },
+    childExListWrapper: {
+      margin: theme.spacing.unit
     },
     header: {
       marginBottom: theme.spacing.unit * 2
@@ -67,9 +81,15 @@ const styles = (theme: Theme) =>
     titleWrapper: {
       alignItems: "center",
       display: "flex",
-      flexFlow: "row",
       marginBottom: theme.spacing.unit * 3,
       textTransform: "capitalize"
+    },
+    typeIcon: {
+      marginRight: theme.spacing.unit
+    },
+    typeWrapper: {
+      alignItems: "center",
+      display: "flex"
     }
   });
 
@@ -244,8 +264,14 @@ class ExercisePage extends React.Component<Props, State> {
 
   renderExerciseDefinition(exerciseDefinition: ExerciseDefinition) {
     const classes = this.props.classes;
-    const { history, primaryMuscleGroup, title, unit } = exerciseDefinition;
-    console.log("primaryMuscleGroup", primaryMuscleGroup);
+    const {
+      childExercises,
+      history,
+      primaryMuscleGroup,
+      title,
+      type,
+      unit
+    } = exerciseDefinition;
     return (
       <div>
         <PageTitle
@@ -263,6 +289,43 @@ class ExercisePage extends React.Component<Props, State> {
             <EditIcon />
           </IconButton>
         </div>
+        {type && (
+          <section>
+            <div>
+              {type === ExerciseType.CIRCUIT && (
+                <div className={classes.typeWrapper}>
+                  <CircuitIcon className={classes.typeIcon} color="primary" />
+                  <Typography color="textSecondary" variant="h6">
+                    {`${ExerciseType.CIRCUIT} exercise`}
+                  </Typography>
+                </div>
+              )}
+              {type === ExerciseType.SUPERSET && (
+                <div className={classes.typeWrapper}>
+                  <SupersetIcon className={classes.typeIcon} color="primary" />
+                  <Typography color="textSecondary" variant="h6">
+                    {`${ExerciseType.SUPERSET} exercise`}
+                  </Typography>
+                </div>
+              )}
+            </div>
+            {childExercises && (
+              <section className={classes.childExListWrapper}>
+                <Typography variant="subtitle1">Comprised of</Typography>
+                <ul className={classes.childExList}>
+                  {childExercises.map(exercise => (
+                    <li key={exercise.id}>
+                      <Link
+                        label={exercise.title}
+                        url={routes.EXERCISE(exercise.id).route}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </section>
+        )}
         {primaryMuscleGroup && <FullBody selected={primaryMuscleGroup} />}
         {history.length > 1 && this.renderCharts()}
         <div className={classes.header}>

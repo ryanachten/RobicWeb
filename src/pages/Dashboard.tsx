@@ -14,13 +14,19 @@ import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import routes from "../constants/routes";
 import Stopwatch from "../components/Stopwatch";
-import { formatDate, formatTime, getUnitLabel } from "../utils";
+import {
+  formatDate,
+  formatTime,
+  getUnitLabel,
+  isCompositeExercise
+} from "../utils";
 import {
   LoadingSplash,
   PageRoot,
   PageTitle,
   Select,
-  Link
+  Link,
+  ExerciseTypeIcon
 } from "../components";
 
 const styles = (theme: Theme) =>
@@ -227,12 +233,15 @@ class Index extends React.Component<Props, State> {
     if (!selectedExercise) {
       return null;
     }
-    const { history, title, unit } = selectedExercise;
+    const { history, title, type, unit } = selectedExercise;
+    // TODO: handle properly
+    if (!unit) return;
     return (
       <form onSubmit={this.submitForm}>
-        <Typography className={classes.exerciseTitle} variant="h3">
-          {title}
-        </Typography>
+        <div className={classes.exerciseTitle}>
+          <Typography variant="h3">{title}</Typography>
+          <ExerciseTypeIcon type={type} />
+        </div>
         {history && history.length > 0 && this.renderHistory(history, unit)}
         {sets.map(({ reps, value }: Set, index: number) => (
           <div className={classes.setWrapper} key={index}>

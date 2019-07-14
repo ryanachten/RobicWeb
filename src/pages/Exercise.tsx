@@ -4,8 +4,6 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import EditIcon from "@material-ui/icons/Edit";
-import CircuitIcon from "@material-ui/icons/FilterTiltShift";
-import SupersetIcon from "@material-ui/icons/FlashOn";
 import { Classes } from "jss";
 import { GetExerciseDefinitionById } from "../constants/queries";
 import {
@@ -32,7 +30,13 @@ import {
 } from "../utils";
 import { compareDesc, compareAsc } from "date-fns";
 import routes from "../constants/routes";
-import { PageRoot, PageTitle, LoadingSplash, Link } from "../components";
+import {
+  ExerciseTypeIcon,
+  PageRoot,
+  PageTitle,
+  LoadingSplash,
+  Link
+} from "../components";
 import {
   VictoryChart,
   VictoryTheme,
@@ -91,13 +95,6 @@ const styles = (theme: Theme) =>
       display: "flex",
       marginBottom: theme.spacing.unit * 3,
       textTransform: "capitalize"
-    },
-    typeIcon: {
-      marginRight: theme.spacing.unit
-    },
-    typeWrapper: {
-      alignItems: "center",
-      display: "flex"
     }
   });
 
@@ -305,24 +302,7 @@ class ExercisePage extends React.Component<Props, State> {
           </IconButton>
         </div>
         <section>
-          <div>
-            {type === ExerciseType.CIRCUIT && (
-              <div className={classes.typeWrapper}>
-                <CircuitIcon className={classes.typeIcon} color="primary" />
-                <Typography color="textSecondary" variant="h6">
-                  {`${ExerciseType.CIRCUIT} exercise`}
-                </Typography>
-              </div>
-            )}
-            {type === ExerciseType.SUPERSET && (
-              <div className={classes.typeWrapper}>
-                <SupersetIcon className={classes.typeIcon} color="primary" />
-                <Typography color="textSecondary" variant="h6">
-                  {`${ExerciseType.SUPERSET} exercise`}
-                </Typography>
-              </div>
-            )}
-          </div>
+          <ExerciseTypeIcon type={type} />
           {isCompositeExercise(type) && childExercises && (
             <section className={classes.childExListWrapper}>
               <Typography variant="subtitle1">Comprised of</Typography>

@@ -24,6 +24,7 @@ export enum Unit {
 }
 
 export type Set = {
+  [exerciseId: string]: any;
   reps: number;
   value: number;
 };

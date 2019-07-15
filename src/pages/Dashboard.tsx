@@ -112,12 +112,7 @@ class Index extends React.Component<Props, State> {
     super(props);
     this.state = {
       selectedExercise: null,
-      sets: [
-        {
-          reps: 0,
-          value: 0
-        }
-      ],
+      sets: [], //this will be set on exercise select
       timerRunning: false
     };
     this.addSet = this.addSet.bind(this);
@@ -151,9 +146,16 @@ class Index extends React.Component<Props, State> {
     this.setState({ sets });
   }
 
-  onFieldUpdate(set: number, field: "reps" | "value", value: string) {
+  onFieldUpdate(
+    set: number,
+    field: "reps" | "value",
+    value: string,
+    exerciseId?: string
+  ) {
     const state: any = { ...this.state };
-    state.sets[set][field] = value;
+    exerciseId
+      ? (state.sets[set][exerciseId][field] = value)
+      : (state.sets[set][field] = value);
     this.setState(state);
   }
 
@@ -164,6 +166,7 @@ class Index extends React.Component<Props, State> {
     if (!selectedExercise || (sets.length === 1 && sets[0].reps === 0)) {
       return null;
     }
+    // TODO: handle composite type
     const timeTaken = this.stopwatch.getTime();
     await this.props.mutate({
       variables: {
@@ -188,11 +191,27 @@ class Index extends React.Component<Props, State> {
 
   onSelectExercise = (e: any) => {
     const exerciseId = e.target.value;
-    const exercise =
+    const exercise: ExerciseDefinition =
       this.props.data.exerciseDefinitions.find(
         (def: ExerciseDefinition) => def.id === exerciseId
       ) || null;
+
+    let set: any = {};
+    isCompositeExercise(exercise.type) && exercise.childExercises
+      ? // If composite type, we assign a set per child exercise (via exercise ID)
+        exercise.childExercises.map(e => {
+          return (set[e.id] = {
+            reps: 0,
+            value: 0
+          });
+        })
+      : // ...otherwise, we simply assign a rep/value per set
+        (set = {
+          reps: 0,
+          value: 0
+        });
     this.setState({
+      sets: [set],
       selectedExercise: exercise
     });
   };
@@ -232,7 +251,8 @@ class Index extends React.Component<Props, State> {
     index: number,
     reps: number,
     value: number,
-    unit: Unit | undefined
+    unit: Unit | undefined,
+    exerciseId?: string
   ) {
     if (!this.state.selectedExercise) return null;
     const classes = this.props.classes;
@@ -248,7 +268,7 @@ class Index extends React.Component<Props, State> {
           placeholder="5"
           className={classes.input}
           onChange={event =>
-            this.onFieldUpdate(index, "reps", event.target.value)
+            this.onFieldUpdate(index, "reps", event.target.value, exerciseId)
           }
           value={reps}
         />
@@ -258,7 +278,7 @@ class Index extends React.Component<Props, State> {
           placeholder="5"
           className={classes.input}
           onChange={event =>
-            this.onFieldUpdate(index, "value", event.target.value)
+            this.onFieldUpdate(index, "value", event.target.value, exerciseId)
           }
           value={value}
         />
@@ -289,19 +309,24 @@ class Index extends React.Component<Props, State> {
             {isCompositeExercise(type) && childExercises
               ? childExercises.map(
                   ({
+                    id: exerciseId,
                     title: childTitle,
                     unit: childUnit
-                  }: ExerciseDefinition) => (
-                    <div key={childTitle}>
-                      <Typography>{childTitle}</Typography>
-                      {this.renderSetInputs(
-                        index,
-                        set.reps,
-                        set.value,
-                        childUnit
-                      )}
-                    </div>
-                  )
+                  }: ExerciseDefinition) => {
+                    console.log("set", set[exerciseId]);
+                    return (
+                      <div key={childTitle}>
+                        <Typography>{childTitle}</Typography>
+                        {this.renderSetInputs(
+                          index,
+                          set[exerciseId].reps,
+                          set[exerciseId].value,
+                          childUnit,
+                          exerciseId
+                        )}
+                      </div>
+                    );
+                  }
                 )
               : this.renderSetInputs(index, set.reps, set.value, unit)}
 
@@ -345,9 +370,8 @@ class Index extends React.Component<Props, State> {
 
   render() {
     const { classes, data } = this.props;
-    const { loading } = data;
     const { selectedExercise } = this.state;
-    const { exerciseDefinitions: exercises } = data;
+    const { exerciseDefinitions: exercises, loading } = data;
     return (
       <PageRoot>
         {loading ? (

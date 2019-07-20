@@ -91,7 +91,8 @@ const styles = (theme: Theme) =>
     },
     setWrapper: {
       alignItems: "center",
-      display: "flex"
+      display: "flex",
+      flexFlow: "row wrap"
     },
     timerButton: {
       marginLeft: theme.spacing.unit * 2

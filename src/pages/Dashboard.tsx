@@ -142,7 +142,9 @@ class Index extends React.Component<Props, State> {
   addSet() {
     const sets = [...this.state.sets];
     const prevSet = sets[sets.length - 1];
-    sets.push({ ...prevSet });
+    // Lossful deep copy of exercises to prevent mutating state - adequate for now
+    const newSet = JSON.parse(JSON.stringify(prevSet));
+    sets.push(newSet);
     this.setState({ sets });
   }
 
@@ -175,20 +177,25 @@ class Index extends React.Component<Props, State> {
       return null;
     }
     const timeTaken = this.stopwatch.getTime();
-    await this.props.mutate({
-      variables: {
-        definitionId: selectedExercise.id,
-        sets,
-        timeTaken
-      },
-      refetchQueries: [{ query: GetExercises }]
+    console.log("submit", {
+      definitionId: selectedExercise.id,
+      sets,
+      timeTaken
     });
-    this.stopwatch.stop();
-    this.setState({
-      selectedExercise: null,
-      sets: [],
-      timerRunning: false
-    });
+    // await this.props.mutate({
+    //   variables: {
+    //     definitionId: selectedExercise.id,
+    //     sets,
+    //     timeTaken
+    //   },
+    //   refetchQueries: [{ query: GetExercises }]
+    // });
+    // this.stopwatch.stop();
+    // this.setState({
+    //   selectedExercise: null,
+    //   sets: [],
+    //   timerRunning: false
+    // });
   }
 
   onSelectExercise = (e: any) => {
@@ -314,32 +321,30 @@ class Index extends React.Component<Props, State> {
             {isCompositeExercise(type) && set.exercises
               ? // Use set exercises for form state if exercise is composite type
                 // for each child exercise, we provide an rep / value field
-                set.exercises.map(
-                  ({ id: exerciseId, reps, value }: SetExercise) => {
-                    const childDef =
-                      childExercises &&
-                      childExercises.find(e => e.id === exerciseId);
-                    if (!childDef) {
-                      // Probably not possible to hit this condition in reality
-                      // ... more to satisfy type checking
-                      return console.log(
-                        "Error: could not find child exercise definition"
-                      );
-                    }
-                    return (
-                      <div key={exerciseId}>
-                        <Typography>{childDef.title}</Typography>
-                        {this.renderSetInputs(
-                          index,
-                          reps,
-                          value,
-                          childDef.unit,
-                          exerciseId
-                        )}
-                      </div>
+                set.exercises.map((childExercise: SetExercise) => {
+                  const childDef =
+                    childExercises &&
+                    childExercises.find(e => e.id === childExercise.id);
+                  if (!childDef) {
+                    // Probably not possible to hit this condition in reality
+                    // ... more to satisfy type checking
+                    return console.log(
+                      "Error: could not find child exercise definition"
                     );
                   }
-                )
+                  return (
+                    <div key={childExercise.id}>
+                      <Typography>{childDef.title}</Typography>
+                      {this.renderSetInputs(
+                        index,
+                        childExercise.reps,
+                        childExercise.value,
+                        childDef.unit,
+                        childExercise.id
+                      )}
+                    </div>
+                  );
+                })
               : // ... if not composite type, just use set rep/value for form state
                 this.renderSetInputs(index, set.reps, set.value, unit)}
 

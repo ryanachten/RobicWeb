@@ -221,7 +221,26 @@ class Index extends React.Component<Props, State> {
     });
   };
 
-  renderHistory(history: Exercise[], unit: Unit) {
+  getChildExercisDef(
+    exercise: SetExercise,
+    childExercises?: ExerciseDefinition[]
+  ) {
+    const childDef: any =
+      childExercises && childExercises.find(d => d.id === exercise.id);
+    if (!childDef) {
+      // Probably not possible to hit this condition in reality
+      // ... more to satisfy type checking
+      return console.log("Error: could not find child exercise definition");
+    }
+    return childDef;
+  }
+
+  renderHistory(
+    history: Exercise[],
+    unit: Unit,
+    composite: boolean,
+    childExercises?: ExerciseDefinition[]
+  ) {
     const { date, sets, timeTaken } = history[history.length - 1];
     const classes = this.props.classes;
     return (
@@ -236,12 +255,27 @@ class Index extends React.Component<Props, State> {
           )}`}</Typography>
         </div>
         <div className={classes.setWrapper}>
-          {sets.map(({ reps, value }, index) => (
+          {sets.map(({ reps, value, exercises }, index) => (
             <div key={index}>
-              <Typography
-                className={classes.setItem}
-                color="textSecondary"
-              >{`${reps} reps x ${value} ${unit}`}</Typography>
+              {composite && childExercises && exercises ? (
+                exercises.map(e => {
+                  const childDef = this.getChildExercisDef(e, childExercises);
+                  return (
+                    <Typography
+                      key={e.id}
+                      className={classes.setItem}
+                      color="textSecondary"
+                    >{`${e.reps} reps x ${e.value} ${
+                      childDef.unit
+                    }`}</Typography>
+                  );
+                })
+              ) : (
+                <Typography
+                  className={classes.setItem}
+                  color="textSecondary"
+                >{`${reps} reps x ${value} ${unit}`}</Typography>
+              )}
             </div>
           ))}
           <Typography className={classes.setItem} color="textSecondary">
@@ -305,38 +339,32 @@ class Index extends React.Component<Props, State> {
       // a composite exericse (which doesn't have a unit)
       return console.log(`Error: unit not found on exercise ${title}`);
     }
+    const compositeType = isCompositeExercise(type);
     return (
       <form onSubmit={this.submitForm}>
         <div className={classes.exerciseTitle}>
           <Typography variant="h3">{title}</Typography>
           <ExerciseTypeIcon type={type} />
         </div>
-        {history && history.length > 0 && this.renderHistory(history, unit)}
+        {history &&
+          history.length > 0 &&
+          this.renderHistory(history, unit, compositeType, childExercises)}
         {sets.map((set: Set, index: number) => (
           <div className={classes.setWrapper} key={index}>
-            {isCompositeExercise(type) && set.exercises
+            {compositeType && set.exercises
               ? // Use set exercises for form state if exercise is composite type
                 // for each child exercise, we provide an rep / value field
-                set.exercises.map((childExercise: SetExercise) => {
-                  const childDef =
-                    childExercises &&
-                    childExercises.find(e => e.id === childExercise.id);
-                  if (!childDef) {
-                    // Probably not possible to hit this condition in reality
-                    // ... more to satisfy type checking
-                    return console.log(
-                      "Error: could not find child exercise definition"
-                    );
-                  }
+                set.exercises.map((e: SetExercise) => {
+                  const childDef = this.getChildExercisDef(e, childExercises);
                   return (
-                    <div key={childExercise.id}>
+                    <div key={e.id}>
                       <Typography>{childDef.title}</Typography>
                       {this.renderSetInputs(
                         index,
-                        childExercise.reps,
-                        childExercise.value,
+                        e.reps,
+                        e.value,
                         childDef.unit,
-                        childExercise.id
+                        e.id
                       )}
                     </div>
                   );

@@ -333,8 +333,12 @@ class ExercisePage extends React.Component<Props, State> {
               return (
                 <div className={classes.sessionItem} key={date}>
                   <div className={classes.sessionHeader}>
-                    <Typography>{formatDate(date, true)}</Typography>
-                    <Typography>{`Time: ${formatTime(timeTaken)}`}</Typography>
+                    <Typography color="textSecondary">
+                      {formatDate(date, true)}
+                    </Typography>
+                    <Typography color="textSecondary">{`Time: ${formatTime(
+                      timeTaken
+                    )}`}</Typography>
                   </div>
                   <ul className={classes.historyList}>
                     {sets.map(
@@ -366,7 +370,7 @@ class ExercisePage extends React.Component<Props, State> {
                               })}
                             </div>
                           ) : (
-                            <div>
+                            <div className={classes.setItem}>
                               <Typography
                                 className={classes.reps}
                               >{`Reps: ${reps}`}</Typography>

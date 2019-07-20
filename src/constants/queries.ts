@@ -29,6 +29,11 @@ export const GetExercises = gql`
         sets {
           reps
           value
+          exercises {
+            id
+            reps
+            value
+          }
         }
         timeTaken
       }

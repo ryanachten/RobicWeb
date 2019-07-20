@@ -142,7 +142,7 @@ class Index extends React.Component<Props, State> {
   addSet() {
     const sets = [...this.state.sets];
     const prevSet = sets[sets.length - 1];
-    // Lossful deep copy of exercises to prevent mutating state - adequate for now
+    // Lossful deep copy of sets to prevent mutating state
     const newSet = JSON.parse(JSON.stringify(prevSet));
     sets.push(newSet);
     this.setState({ sets });
@@ -177,25 +177,20 @@ class Index extends React.Component<Props, State> {
       return null;
     }
     const timeTaken = this.stopwatch.getTime();
-    console.log("submit", {
-      definitionId: selectedExercise.id,
-      sets,
-      timeTaken
+    this.stopwatch.stop();
+    await this.props.mutate({
+      variables: {
+        definitionId: selectedExercise.id,
+        sets,
+        timeTaken
+      },
+      refetchQueries: [{ query: GetExercises }]
     });
-    // await this.props.mutate({
-    //   variables: {
-    //     definitionId: selectedExercise.id,
-    //     sets,
-    //     timeTaken
-    //   },
-    //   refetchQueries: [{ query: GetExercises }]
-    // });
-    // this.stopwatch.stop();
-    // this.setState({
-    //   selectedExercise: null,
-    //   sets: [],
-    //   timerRunning: false
-    // });
+    this.setState({
+      selectedExercise: null,
+      sets: [],
+      timerRunning: false
+    });
   }
 
   onSelectExercise = (e: any) => {
@@ -304,6 +299,7 @@ class Index extends React.Component<Props, State> {
       return null;
     }
     const { childExercises, history, title, type, unit } = selectedExercise;
+    console.log("history", history);
     if (!unit) {
       // This would only occur if attempting to access unit on
       // a composite exericse (which doesn't have a unit)

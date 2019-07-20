@@ -174,7 +174,6 @@ class Index extends React.Component<Props, State> {
     if (!selectedExercise || (sets.length === 1 && sets[0].reps === 0)) {
       return null;
     }
-    // TODO: handle composite type
     const timeTaken = this.stopwatch.getTime();
     await this.props.mutate({
       variables: {
@@ -187,12 +186,7 @@ class Index extends React.Component<Props, State> {
     this.stopwatch.stop();
     this.setState({
       selectedExercise: null,
-      sets: [
-        {
-          reps: 0,
-          value: 0
-        }
-      ],
+      sets: [],
       timerRunning: false
     });
   }
@@ -206,7 +200,7 @@ class Index extends React.Component<Props, State> {
 
     let set: any = { exercises: [] };
     isCompositeExercise(exercise.type) && exercise.childExercises
-      ? // If composite type, we assign a set per child exercise (via exercise ID)
+      ? // If composite type, we assign assign child exercise to set exercises
         exercise.childExercises.map(e => {
           return set.exercises.push({
             id: e.id,
@@ -318,7 +312,9 @@ class Index extends React.Component<Props, State> {
         {sets.map((set: Set, index: number) => (
           <div className={classes.setWrapper} key={index}>
             {isCompositeExercise(type) && set.exercises
-              ? set.exercises.map(
+              ? // Use set exercises for form state if exercise is composite type
+                // for each child exercise, we provide an rep / value field
+                set.exercises.map(
                   ({ id: exerciseId, reps, value }: SetExercise) => {
                     const childDef =
                       childExercises &&
@@ -327,7 +323,7 @@ class Index extends React.Component<Props, State> {
                       // Probably not possible to hit this condition in reality
                       // ... more to satisfy type checking
                       return console.log(
-                        "Error: could not find child definition"
+                        "Error: could not find child exercise definition"
                       );
                     }
                     return (
@@ -344,7 +340,8 @@ class Index extends React.Component<Props, State> {
                     );
                   }
                 )
-              : this.renderSetInputs(index, set.reps, set.value, unit)}
+              : // ... if not composite type, just use set rep/value for form state
+                this.renderSetInputs(index, set.reps, set.value, unit)}
 
             {index !== 0 ? (
               <IconButton

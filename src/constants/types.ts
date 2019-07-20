@@ -23,10 +23,16 @@ export enum Unit {
   min = "min"
 }
 
-export type Set = {
-  [exerciseId: string]: any;
+export interface SetExercise {
+  id: string;
   reps: number;
   value: number;
+}
+
+export type Set = {
+  exercises?: SetExercise[];
+  reps: number; //TODO: should be optional
+  value: number; //TODO: should be optional
 };
 
 export enum ExerciseType {

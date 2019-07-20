@@ -8,7 +8,13 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { AddExercise } from "../constants/mutations";
 import { GetExercises } from "../constants/queries";
 import { Classes } from "jss";
-import { ExerciseDefinition, Set, Exercise, Unit } from "../constants/types";
+import {
+  ExerciseDefinition,
+  Set,
+  Exercise,
+  Unit,
+  SetExercise
+} from "../constants/types";
 import { Typography, IconButton } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
@@ -154,7 +160,9 @@ class Index extends React.Component<Props, State> {
   ) {
     const state: any = { ...this.state };
     exerciseId
-      ? (state.sets[set][exerciseId][field] = value)
+      ? state.sets[set].exercises.map((e: SetExercise) => {
+          if (e.id === exerciseId) e[field] = parseFloat(value);
+        })
       : (state.sets[set][field] = value);
     this.setState(state);
   }
@@ -196,11 +204,12 @@ class Index extends React.Component<Props, State> {
         (def: ExerciseDefinition) => def.id === exerciseId
       ) || null;
 
-    let set: any = {};
+    let set: any = { exercises: [] };
     isCompositeExercise(exercise.type) && exercise.childExercises
       ? // If composite type, we assign a set per child exercise (via exercise ID)
         exercise.childExercises.map(e => {
-          return (set[e.id] = {
+          return set.exercises.push({
+            id: e.id,
             reps: 0,
             value: 0
           });
@@ -251,14 +260,15 @@ class Index extends React.Component<Props, State> {
     index: number,
     reps: number,
     value: number,
-    unit: Unit | undefined,
+    unit?: Unit,
     exerciseId?: string
   ) {
     if (!this.state.selectedExercise) return null;
     const classes = this.props.classes;
-    // TODO: handle properly
     if (!unit) {
-      return null;
+      // This would only occur if attempting to access unit on
+      // a composite exericse (which doesn't have a unit)
+      return console.log(`Error: unit not found on exercise ${exerciseId}`);
     }
     return (
       <Fragment>
@@ -270,7 +280,7 @@ class Index extends React.Component<Props, State> {
           onChange={event =>
             this.onFieldUpdate(index, "reps", event.target.value, exerciseId)
           }
-          value={reps}
+          value={reps || ""}
         />
         <TextField
           label={`${getUnitLabel(unit)} (${unit})`}
@@ -280,7 +290,7 @@ class Index extends React.Component<Props, State> {
           onChange={event =>
             this.onFieldUpdate(index, "value", event.target.value, exerciseId)
           }
-          value={value}
+          value={value || ""}
         />
       </Fragment>
     );
@@ -293,9 +303,10 @@ class Index extends React.Component<Props, State> {
       return null;
     }
     const { childExercises, history, title, type, unit } = selectedExercise;
-    // TODO: handle properly
     if (!unit) {
-      return null;
+      // This would only occur if attempting to access unit on
+      // a composite exericse (which doesn't have a unit)
+      return console.log(`Error: unit not found on exercise ${title}`);
     }
     return (
       <form onSubmit={this.submitForm}>
@@ -306,22 +317,27 @@ class Index extends React.Component<Props, State> {
         {history && history.length > 0 && this.renderHistory(history, unit)}
         {sets.map((set: Set, index: number) => (
           <div className={classes.setWrapper} key={index}>
-            {isCompositeExercise(type) && childExercises
-              ? childExercises.map(
-                  ({
-                    id: exerciseId,
-                    title: childTitle,
-                    unit: childUnit
-                  }: ExerciseDefinition) => {
-                    console.log("set", set[exerciseId]);
+            {isCompositeExercise(type) && set.exercises
+              ? set.exercises.map(
+                  ({ id: exerciseId, reps, value }: SetExercise) => {
+                    const childDef =
+                      childExercises &&
+                      childExercises.find(e => e.id === exerciseId);
+                    if (!childDef) {
+                      // Probably not possible to hit this condition in reality
+                      // ... more to satisfy type checking
+                      return console.log(
+                        "Error: could not find child definition"
+                      );
+                    }
                     return (
-                      <div key={childTitle}>
-                        <Typography>{childTitle}</Typography>
+                      <div key={exerciseId}>
+                        <Typography>{childDef.title}</Typography>
                         {this.renderSetInputs(
                           index,
-                          set[exerciseId].reps,
-                          set[exerciseId].value,
-                          childUnit,
+                          reps,
+                          value,
+                          childDef.unit,
                           exerciseId
                         )}
                       </div>

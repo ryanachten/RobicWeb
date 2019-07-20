@@ -128,13 +128,22 @@ class ExerciseForm extends React.Component<Props, State> {
     const { classes, data } = this.props;
     const { exerciseDefinitions } = data;
     const childExerciseIds = this.state.childExerciseIds;
+
+    // Don't allow nesting of composite exercises
     const exercises = exerciseDefinitions
       .sort()
-      .map((exercise: ExerciseDefinition) => ({
-        checked: childExerciseIds.includes(exercise.id),
-        value: exercise.id,
-        label: exercise.title
-      }));
+      .reduce((total: any[], exercise: ExerciseDefinition) => {
+        return isCompositeExercise(exercise.type)
+          ? [...total]
+          : [
+              ...total,
+              {
+                checked: childExerciseIds.includes(exercise.id),
+                value: exercise.id,
+                label: exercise.title
+              }
+            ];
+      }, []);
     return (
       <MultiSelect
         className={classes.muscleSelectWrapper}

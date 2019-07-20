@@ -12,7 +12,8 @@ import {
   Unit,
   ExerciseType,
   ExerciseDefinition,
-  MuscleGroup
+  MuscleGroup,
+  SetExercise
 } from "../constants/types";
 
 export default classnames;
@@ -77,3 +78,17 @@ export const getChildExerciseMuscles = (childExercises: ExerciseDefinition[]) =>
     },
     []
   );
+
+export const getChildExercisDef = (
+  exercise: SetExercise,
+  childExercises?: ExerciseDefinition[]
+) => {
+  const childDef: any =
+    childExercises && childExercises.find(d => d.id === exercise.id);
+  if (!childDef) {
+    // Probably not possible to hit this condition in reality
+    // ... more to satisfy type checking
+    return console.log("Error: could not find child exercise definition");
+  }
+  return childDef;
+};

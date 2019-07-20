@@ -26,7 +26,8 @@ import {
   getUnitLabel,
   transparentize,
   isCompositeExercise,
-  getChildExerciseMuscles
+  getChildExerciseMuscles,
+  getChildExercisDef
 } from "../utils";
 import { compareDesc, compareAsc } from "date-fns";
 import routes from "../constants/routes";
@@ -73,8 +74,8 @@ const styles = (theme: Theme) =>
     },
     historyList: {
       margin: 0,
-      padding: 0,
-      paddingLeft: theme.spacing.unit * 2
+      padding: 0
+      // paddingLeft: theme.spacing.unit * 2
     },
     reps: {
       marginRight: theme.spacing.unit * 2
@@ -336,13 +337,45 @@ class ExercisePage extends React.Component<Props, State> {
                     <Typography>{`Time: ${formatTime(timeTaken)}`}</Typography>
                   </div>
                   <ul className={classes.historyList}>
-                    {sets.map(({ reps, value }: Set, index: number) => (
-                      <li className={classes.setItem} key={index}>
-                        <Typography className={classes.reps}>{`${index +
-                          1}. Reps: ${reps}`}</Typography>
-                        <Typography>{`Value: ${value}${unit}`}</Typography>
-                      </li>
-                    ))}
+                    {sets.map(
+                      ({ reps, value, exercises }: Set, index: number) => (
+                        <li className={classes.setItem} key={index}>
+                          <Typography className={classes.reps} color="primary">
+                            {`Set ${index + 1}.`}
+                          </Typography>
+                          {isCompositeExercise(type) && exercises ? (
+                            <div>
+                              {exercises.map(e => {
+                                const childDef = getChildExercisDef(
+                                  e,
+                                  childExercises
+                                );
+                                return (
+                                  <div className={classes.setItem} key={e.id}>
+                                    <Typography className={classes.reps}>
+                                      {childDef.title}
+                                    </Typography>
+                                    <Typography
+                                      className={classes.reps}
+                                    >{`Reps: ${e.reps}`}</Typography>
+                                    <Typography>{`Value: ${
+                                      e.value
+                                    }${unit}`}</Typography>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <div>
+                              <Typography
+                                className={classes.reps}
+                              >{`Reps: ${reps}`}</Typography>
+                              <Typography>{`Value: ${value}${unit}`}</Typography>
+                            </div>
+                          )}
+                        </li>
+                      )
+                    )}
                   </ul>
                 </div>
               );

@@ -24,7 +24,8 @@ import {
   formatDate,
   formatTime,
   getUnitLabel,
-  isCompositeExercise
+  isCompositeExercise,
+  getChildExercisDef
 } from "../utils";
 import {
   LoadingSplash,
@@ -221,20 +222,6 @@ class Index extends React.Component<Props, State> {
     });
   };
 
-  getChildExercisDef(
-    exercise: SetExercise,
-    childExercises?: ExerciseDefinition[]
-  ) {
-    const childDef: any =
-      childExercises && childExercises.find(d => d.id === exercise.id);
-    if (!childDef) {
-      // Probably not possible to hit this condition in reality
-      // ... more to satisfy type checking
-      return console.log("Error: could not find child exercise definition");
-    }
-    return childDef;
-  }
-
   renderHistory(
     history: Exercise[],
     unit: Unit,
@@ -259,7 +246,7 @@ class Index extends React.Component<Props, State> {
             <div key={index}>
               {composite && childExercises && exercises ? (
                 exercises.map(e => {
-                  const childDef = this.getChildExercisDef(e, childExercises);
+                  const childDef = getChildExercisDef(e, childExercises);
                   return (
                     <Typography
                       key={e.id}
@@ -333,7 +320,6 @@ class Index extends React.Component<Props, State> {
       return null;
     }
     const { childExercises, history, title, type, unit } = selectedExercise;
-    console.log("history", history);
     if (!unit) {
       // This would only occur if attempting to access unit on
       // a composite exericse (which doesn't have a unit)
@@ -355,7 +341,7 @@ class Index extends React.Component<Props, State> {
               ? // Use set exercises for form state if exercise is composite type
                 // for each child exercise, we provide an rep / value field
                 set.exercises.map((e: SetExercise) => {
-                  const childDef = this.getChildExercisDef(e, childExercises);
+                  const childDef = getChildExercisDef(e, childExercises);
                   return (
                     <div key={e.id}>
                       <Typography>{childDef.title}</Typography>

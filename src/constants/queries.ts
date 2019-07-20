@@ -76,6 +76,11 @@ export const GetExerciseDefinitionById = gql`
         sets {
           reps
           value
+          exercises {
+            id
+            reps
+            value
+          }
         }
         timeTaken
       }

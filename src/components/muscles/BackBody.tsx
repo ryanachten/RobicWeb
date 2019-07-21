@@ -2,7 +2,8 @@ import React from "react";
 import { withStyles, createStyles, Theme } from "@material-ui/core";
 import { MuscleGroup } from "../../constants/types";
 import { Classes } from "jss";
-import { transparentize } from "../../utils";
+import { transparentize, lerpColor } from "../../utils";
+import { MUSCLE_GROUP_LEVELS } from "./FullBody";
 
 const styles = (theme: Theme) => createStyles({});
 
@@ -15,8 +16,13 @@ type Props = {
 
 const BackBody = ({ className, selected, theme }: Props) => {
   const fill = (muscle?: MuscleGroup) => {
-    if (muscle && selected.includes(muscle)) {
-      return theme.palette.primary.light;
+    const results = muscle && selected.filter((m: MuscleGroup) => m === muscle);
+    if (results && results.length > 0) {
+      return lerpColor(
+        theme.palette.primary.light,
+        theme.palette.secondary.light,
+        results.length / MUSCLE_GROUP_LEVELS
+      );
     }
     return transparentize(theme.palette.text.disabled, 0.1);
   };

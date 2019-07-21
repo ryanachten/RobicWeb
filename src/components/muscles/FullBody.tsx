@@ -45,6 +45,9 @@ type State = {
   tab: TabMode;
 };
 
+//kind of arbitrary - 4 levels of muscle use
+export const MUSCLE_GROUP_LEVELS = 7;
+
 class FullBody extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);

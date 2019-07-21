@@ -37,6 +37,7 @@ enum TabMode {
 
 type Props = {
   classes: Classes;
+  muscleGroupLevels?: number;
   selected: MuscleGroup[];
   width: Breakpoint;
 };
@@ -44,9 +45,6 @@ type Props = {
 type State = {
   tab: TabMode;
 };
-
-//kind of arbitrary - 4 levels of muscle use
-export const MUSCLE_GROUP_LEVELS = 7;
 
 class FullBody extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -64,7 +62,7 @@ class FullBody extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes, selected, width } = this.props;
+    const { classes, muscleGroupLevels = 7, selected, width } = this.props;
     const tab = this.state.tab;
     return (
       <div className={classes.root}>
@@ -80,15 +78,31 @@ class FullBody extends React.Component<Props, State> {
               <Tab label="Back" value={TabMode.BACK} />
             </Tabs>
             {tab === TabMode.FRONT ? (
-              <FrontBody className={classes.side} selected={selected} />
+              <FrontBody
+                className={classes.side}
+                selected={selected}
+                muscleGroupLevels={muscleGroupLevels}
+              />
             ) : (
-              <BackBody className={classes.side} selected={selected} />
+              <BackBody
+                className={classes.side}
+                selected={selected}
+                muscleGroupLevels={muscleGroupLevels}
+              />
             )}
           </Fragment>
         ) : (
           <Fragment>
-            <FrontBody className={classes.side} selected={selected} />
-            <BackBody className={classes.side} selected={selected} />
+            <FrontBody
+              className={classes.side}
+              selected={selected}
+              muscleGroupLevels={muscleGroupLevels}
+            />
+            <BackBody
+              className={classes.side}
+              selected={selected}
+              muscleGroupLevels={muscleGroupLevels}
+            />
           </Fragment>
         )}
       </div>

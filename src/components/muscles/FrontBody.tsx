@@ -3,7 +3,6 @@ import { withStyles, createStyles, Theme } from "@material-ui/core";
 import { MuscleGroup } from "../../constants/types";
 import { Classes } from "jss";
 import { transparentize, lerpColor } from "../../utils";
-import { MUSCLE_GROUP_LEVELS } from "./FullBody";
 
 const styles = (theme: Theme) => createStyles({});
 
@@ -11,17 +10,23 @@ type Props = {
   className?: string;
   classes: Classes;
   selected: MuscleGroup[];
+  muscleGroupLevels: number;
   theme: Theme;
 };
 
-const FrontBody = ({ className, selected, theme }: Props) => {
+const FrontBody = ({
+  className,
+  muscleGroupLevels,
+  selected,
+  theme
+}: Props) => {
   const fill = (muscle?: MuscleGroup) => {
     const results = muscle && selected.filter((m: MuscleGroup) => m === muscle);
     if (results && results.length > 0) {
       return lerpColor(
         theme.palette.primary.light,
         theme.palette.secondary.light,
-        results.length / MUSCLE_GROUP_LEVELS
+        results.length / muscleGroupLevels
       );
     }
     return transparentize(theme.palette.text.disabled, 0.1);

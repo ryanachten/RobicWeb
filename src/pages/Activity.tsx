@@ -9,15 +9,8 @@ import { GetExercises } from "../constants/queries";
 import { PageRoot, PageTitle } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup } from "../constants/types";
-import {
-  isAfter,
-  subDays,
-  getDaysInMonth,
-  getDaysInYear,
-  getMonth,
-  format
-} from "date-fns";
-import { Slide, TextField, Typography, Tabs, Tab } from "@material-ui/core";
+import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
+import { Typography, Tabs, Tab } from "@material-ui/core";
 
 const styles = (theme: Theme) => createStyles({});
 
@@ -66,7 +59,6 @@ class Activity extends React.Component<Props, State> {
       tab,
       dateLimit: daysAmount
     });
-    console.log("daysAmount", daysAmount);
   }
 
   render() {
@@ -106,10 +98,10 @@ class Activity extends React.Component<Props, State> {
           value={tab}
         >
           <Tab label="Weekly" value={TabMode.WEEK} />
-          <Tab label={format(Date.now(), "MMMM")} value={TabMode.MONTH} />
-          <Tab label="This year" value={TabMode.YEAR} />
+          <Tab label="Monthly" value={TabMode.MONTH} />
+          <Tab label="Yearly" value={TabMode.YEAR} />
         </Tabs>
-        <FullBody selected={muscles} />
+        <FullBody muscleGroupLevels={dateLimit} selected={muscles} />
       </PageRoot>
     );
   }

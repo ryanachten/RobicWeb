@@ -2,6 +2,7 @@ import * as React from "react";
 import { ApolloProvider, graphql } from "react-apollo";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Navigation from "./components/Navigation";
+import Activity from "./pages/Activity";
 import Exercise from "./pages/Exercise";
 import Exercises from "./pages/Exercises";
 import NewExercise from "./pages/NewExercise";
@@ -24,6 +25,7 @@ const AuthedRoutes = () => (
       <Route path={routes.EXERCISES.route} exact component={Exercises} />
       <Route path={routes.NEW_EXERCISE.route} exact component={NewExercise} />
       <Route path={routes.EXERCISE().route} component={Exercise} />} />
+      <Route path={routes.ACTIVITY.route} exact component={Activity} />
       <Redirect to={routes.HOME.route} />
     </Switch>
   </Navigation>

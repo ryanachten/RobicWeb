@@ -134,6 +134,11 @@ class Navigation extends React.Component<Props, State> {
                 url={routes.EXERCISES.route}
                 label={routes.EXERCISES.label}
               />
+              <Link
+                className={classes.link}
+                url={routes.ACTIVITY.route}
+                label={routes.ACTIVITY.label}
+              />
               {this.renderProfileMenu()}
             </Toolbar>
           </AppBar>
@@ -154,6 +159,10 @@ class Navigation extends React.Component<Props, State> {
             <BottomNavigationAction
               label={routes.EXERCISES.label}
               value={routes.EXERCISES.route}
+            />
+            <BottomNavigationAction
+              label={routes.ACTIVITY.label}
+              value={routes.ACTIVITY.route}
             />
           </BottomNavigation>
         )}

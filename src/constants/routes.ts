@@ -19,6 +19,10 @@ export default {
     route: "/exercises/create/",
     label: "Create Exercise"
   },
+  ACTIVITY: {
+    route: "/activity/",
+    label: "Activity"
+  },
   LOGIN: {
     route: "/login/",
     label: "Login"

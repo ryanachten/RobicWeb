@@ -9,13 +9,27 @@ import { GetExercises } from "../constants/queries";
 import { PageRoot, PageTitle } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup } from "../constants/types";
-import { isAfter, subDays } from "date-fns";
-import { Slide, TextField, Typography } from "@material-ui/core";
+import {
+  isAfter,
+  subDays,
+  getDaysInMonth,
+  getDaysInYear,
+  getMonth,
+  format
+} from "date-fns";
+import { Slide, TextField, Typography, Tabs, Tab } from "@material-ui/core";
 
 const styles = (theme: Theme) => createStyles({});
 
+enum TabMode {
+  WEEK = "Week",
+  MONTH = "Month",
+  YEAR = "Year"
+}
+
 type State = {
   dateLimit: number;
+  tab: TabMode;
 };
 
 type Props = {
@@ -30,20 +44,34 @@ class Activity extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      dateLimit: 7
+      dateLimit: 7,
+      tab: TabMode.WEEK
     };
-    this.updateField = this.updateField.bind(this);
+    this.updateDate = this.updateDate.bind(this);
   }
 
-  updateField(value: number) {
+  updateDate(tab: TabMode) {
+    let daysAmount: number;
+    switch (tab) {
+      case TabMode.MONTH:
+        daysAmount = getDaysInMonth(Date.now());
+        break;
+      case TabMode.YEAR:
+        daysAmount = getDaysInYear(Date.now());
+        break;
+      default:
+        daysAmount = 7;
+    }
     this.setState({
-      dateLimit: value
+      tab,
+      dateLimit: daysAmount
     });
+    console.log("daysAmount", daysAmount);
   }
 
   render() {
     const { classes, data } = this.props;
-    const dateLimit = this.state.dateLimit;
+    const { dateLimit, tab } = this.state;
     const exercises =
       data.exerciseDefinitions &&
       data.exerciseDefinitions.filter(({ history }: ExerciseDefinition) => {
@@ -72,12 +100,15 @@ class Activity extends React.Component<Props, State> {
       <PageRoot>
         <PageTitle label={routes.ACTIVITY.label} />
         <Typography />
-        <TextField
-          label="Number of days ago"
-          onChange={e => this.updateField(parseFloat(e.target.value))}
-          type="number"
-          value={dateLimit || ""}
-        />
+        <Tabs
+          indicatorColor="primary"
+          onChange={(e, tab: TabMode) => this.updateDate(tab)}
+          value={tab}
+        >
+          <Tab label="Weekly" value={TabMode.WEEK} />
+          <Tab label={format(Date.now(), "MMMM")} value={TabMode.MONTH} />
+          <Tab label="This year" value={TabMode.YEAR} />
+        </Tabs>
         <FullBody selected={muscles} />
       </PageRoot>
     );

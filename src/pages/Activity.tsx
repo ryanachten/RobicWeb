@@ -11,6 +11,7 @@ import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
 import { Typography, Tabs, Tab } from "@material-ui/core";
+import { compareExerciseDates } from "../utils";
 
 const styles = (theme: Theme) => createStyles({});
 
@@ -66,15 +67,17 @@ class Activity extends React.Component<Props, State> {
     const { dateLimit, tab } = this.state;
     const exercises =
       data.exerciseDefinitions &&
-      data.exerciseDefinitions.filter(({ history }: ExerciseDefinition) => {
-        return (
-          history.length > 0 &&
-          isAfter(
-            history[history.length - 1].date,
-            subDays(Date.now(), dateLimit)
-          )
-        );
-      });
+      data.exerciseDefinitions
+        .sort(compareExerciseDates)
+        .filter(({ history }: ExerciseDefinition) => {
+          return (
+            history.length > 0 &&
+            isAfter(
+              history[history.length - 1].date,
+              subDays(Date.now(), dateLimit)
+            )
+          );
+        });
     const muscles = exercises
       ? exercises.reduce(
           (
@@ -102,6 +105,10 @@ class Activity extends React.Component<Props, State> {
           <Tab label="Yearly" value={TabMode.YEAR} />
         </Tabs>
         <FullBody muscleGroupLevels={dateLimit} selected={muscles} />
+        {exercises &&
+          exercises.map((e: ExerciseDefinition) => {
+            return <Typography>{e.title}</Typography>;
+          })}
       </PageRoot>
     );
   }

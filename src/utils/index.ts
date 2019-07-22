@@ -4,7 +4,8 @@ import {
   distanceInWordsToNow,
   isValid,
   parse,
-  isBefore
+  isBefore,
+  compareDesc
 } from "date-fns";
 // @ts-ignore
 import classnames from "classnames";
@@ -120,4 +121,20 @@ export const lerpColor = (a: string, b: string, amount: number) => {
   return (
     "#" + (((1 << 24) + (rr << 16) + (rg << 8) + rb) | 0).toString(16).slice(1)
   );
+};
+
+export const compareExerciseDates = (
+  a: ExerciseDefinition,
+  b: ExerciseDefinition
+) => {
+  const a_latestSession =
+    a.history.length > 0 ? a.history[a.history.length - 1].date : new Date(0);
+  const b_latestSession =
+    b.history.length > 0 ? b.history[b.history.length - 1].date : new Date(0);
+  const res = compareDesc(a_latestSession, b_latestSession);
+  if (res !== 0) {
+    return res;
+  }
+  // In the case where dates are the same, sort alphabetically
+  return a.title >= b.title ? 1 : -1;
 };

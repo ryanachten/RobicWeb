@@ -9,8 +9,7 @@ import { GetExercises } from "../constants/queries";
 import { ExerciseDefinition } from "../constants/types";
 import { Typography, TextField, withWidth } from "@material-ui/core";
 import routes from "../constants/routes";
-import { formatDate } from "../utils";
-import { compareDesc } from "date-fns";
+import { formatDate, compareExerciseDates } from "../utils";
 import {
   Link,
   PageRoot,
@@ -67,7 +66,6 @@ type Props = {
 };
 
 class Exercises extends React.Component<Props, State> {
-  compareDates: (a: ExerciseDefinition, b: ExerciseDefinition) => number;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -76,23 +74,6 @@ class Exercises extends React.Component<Props, State> {
     };
     this.navigateToExercise = this.navigateToExercise.bind(this);
     this.onUpdateSearch = this.onUpdateSearch.bind(this);
-
-    this.compareDates = (a: ExerciseDefinition, b: ExerciseDefinition) => {
-      const a_latestSession =
-        a.history.length > 0
-          ? a.history[a.history.length - 1].date
-          : new Date(0);
-      const b_latestSession =
-        b.history.length > 0
-          ? b.history[b.history.length - 1].date
-          : new Date(0);
-      const res = compareDesc(a_latestSession, b_latestSession);
-      if (res !== 0) {
-        return res;
-      }
-      // In the case where dates are the same, sort alphabetically
-      return a.title >= b.title ? 1 : -1;
-    };
   }
 
   componentDidMount() {
@@ -199,7 +180,7 @@ class Exercises extends React.Component<Props, State> {
             <ul className={classes.exerciseList}>
               {exercises.length > 0 ? (
                 exercises
-                  .sort(this.compareDates)
+                  .sort(compareExerciseDates)
                   .map((exercise: ExerciseDefinition) =>
                     this.renderExercise(exercise)
                   )

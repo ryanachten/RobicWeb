@@ -24,7 +24,6 @@ import {
   formatDate,
   formatTime,
   getUnitLabel,
-  transparentize,
   isCompositeExercise,
   getChildExerciseMuscles,
   getChildExercisDef
@@ -32,32 +31,19 @@ import {
 import { compareDesc, compareAsc } from "date-fns";
 import routes from "../constants/routes";
 import {
+  Chart,
   ExerciseTypeIcon,
   PageRoot,
   PageTitle,
   LoadingSplash,
   Link
 } from "../components";
-import {
-  VictoryChart,
-  VictoryTheme,
-  VictoryLine,
-  VictoryVoronoiContainer,
-  VictoryTooltip
-} from "victory";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
 import { FullBody } from "../components/muscles/FullBody";
 
 const styles = (theme: Theme) =>
   createStyles({
-    chart: {
-      maxHeight: "500px",
-      maxWidth: "500px"
-    },
-    chartLabel: {
-      textAlign: "center"
-    },
     chartWrapper: {
       display: "flex",
       flexFlow: "row wrap"
@@ -129,7 +115,6 @@ class ExercisePage extends React.Component<Props, State> {
     };
     this.editExercise = this.editExercise.bind(this);
     this.renderExerciseDefinition = this.renderExerciseDefinition.bind(this);
-    this.renderChart = this.renderChart.bind(this);
     this.renderCharts = this.renderCharts.bind(this);
     this.onTabChange = this.onTabChange.bind(this);
   }
@@ -143,43 +128,6 @@ class ExercisePage extends React.Component<Props, State> {
     this.setState({
       tabMode
     });
-  }
-
-  renderChart(label: string, data: any) {
-    const { classes, theme, width } = this.props;
-    return (
-      <div className={classes.chart}>
-        {!isMobile(width) && (
-          <Typography className={classes.chartLabel} variant="subtitle1">
-            {label}
-          </Typography>
-        )}
-        <VictoryChart
-          theme={VictoryTheme.material}
-          containerComponent={
-            <VictoryVoronoiContainer
-              labels={d => formatDate(d.date)}
-              labelComponent={
-                <VictoryTooltip
-                  flyoutStyle={{
-                    fill: theme.palette.common.white,
-                    stroke: transparentize(theme.palette.common.black, 0.1)
-                  }}
-                  style={{ fill: theme.palette.text.primary }}
-                />
-              }
-            />
-          }
-        >
-          <VictoryLine
-            data={data}
-            style={{
-              data: { stroke: theme.palette.primary.main }
-            }}
-          />
-        </VictoryChart>
-      </div>
-    );
   }
 
   renderCharts() {
@@ -249,21 +197,28 @@ class ExercisePage extends React.Component<Props, State> {
           <Tab label="Sets" value={TabMode.SETS} />
           <Tab label="Min / Rep" value={TabMode.TIME} />
         </Tabs>
-        {tabMode === TabMode.REPS && this.renderChart("Reps", graphData.reps)}
-        {tabMode === TabMode.NET && this.renderChart("Net", graphData.total)}
-        {tabMode === TabMode.VALUE &&
-          this.renderChart("Values", graphData.values)}
-        {tabMode === TabMode.SETS && this.renderChart("Sets", graphData.sets)}
-        {tabMode === TabMode.TIME &&
-          this.renderChart("Min / Rep", graphData.timeTaken)}
+        {tabMode === TabMode.REPS && (
+          <Chart label="Reps" mobile data={graphData.reps} />
+        )}
+        {tabMode === TabMode.NET && (
+          <Chart label="Net" mobile data={graphData.total} />
+        )}
+        {tabMode === TabMode.VALUE && (
+          <Chart label="Values" mobile data={graphData.values} />
+        )}
+        {tabMode === TabMode.SETS && (
+          <Chart label="Sets" mobile data={graphData.sets} />
+        )}
+        {tabMode === TabMode.TIME && (
+          <Chart label="Min / Rep" mobile data={graphData.timeTaken} />
+        )}
       </div>
     ) : (
       <div className={classes.chartWrapper}>
-        {this.renderChart(`${getUnitLabel(unit)} (Avg)`, graphData.values)}
-        {this.renderChart(`${getUnitLabel(unit)} (Net)`, graphData.total)}
-        {this.renderChart("Reps", graphData.reps)}
-        {this.renderChart("Sets", graphData.sets)}
-        {this.renderChart("Min / Set", graphData.timeTaken)}
+        <Chart label={`${getUnitLabel(unit)} (Avg)`} data={graphData.values} />
+        <Chart label={`${getUnitLabel(unit)} (Net)`} data={graphData.total} />
+        <Chart label="Sets" data={graphData.sets} />
+        <Chart label="Min / Rep" data={graphData.timeTaken} />
       </div>
     );
   }

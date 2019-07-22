@@ -13,3 +13,4 @@ export * from "./inputs/Select";
 
 // Misc components
 export * from "./Link";
+export * from "./Chart";

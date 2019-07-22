@@ -29,7 +29,11 @@ const styles = (theme: Theme) =>
 
 type Props = {
   classes: Classes;
-  data: any;
+  data: {
+    x: number;
+    y: number;
+    [props: string]: any;
+  }[];
   label: string;
   mobile?: boolean;
   theme: Theme;

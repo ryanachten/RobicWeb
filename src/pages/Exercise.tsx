@@ -204,7 +204,7 @@ class ExercisePage extends React.Component<Props, State> {
           );
           // Convert time into millis, then mins, then divide by set count
 
-          const minPerSet = () => {
+          const minPerRep = () => {
             // Avoid plotting times which weren't taken
             if (!timeTaken || timeTaken === "1970-01-01T00:00:00.000Z") {
               return null;
@@ -215,7 +215,7 @@ class ExercisePage extends React.Component<Props, State> {
               date.getSeconds() * 1000 +
               date.getMilliseconds();
             const minutes = millis / 60000;
-            return (minutes / sets.length).toFixed(2);
+            return (minutes / reps).toFixed(2);
           };
 
           return {
@@ -226,7 +226,7 @@ class ExercisePage extends React.Component<Props, State> {
             ],
             timeTaken: [
               ...data.timeTaken,
-              { ...exercise, unit, x: index, y: minPerSet() }
+              { ...exercise, unit, x: index, y: minPerRep() }
             ],
             total: [...data.total, { ...exercise, unit, x: index, y: total }],
             values: [...data.values, { ...exercise, unit, x: index, y: value }]
@@ -247,7 +247,7 @@ class ExercisePage extends React.Component<Props, State> {
           <Tab label={`${unit} (Net)`} value={TabMode.NET} />
           <Tab label="Reps" value={TabMode.REPS} />
           <Tab label="Sets" value={TabMode.SETS} />
-          <Tab label="Min / Set" value={TabMode.TIME} />
+          <Tab label="Min / Rep" value={TabMode.TIME} />
         </Tabs>
         {tabMode === TabMode.REPS && this.renderChart("Reps", graphData.reps)}
         {tabMode === TabMode.NET && this.renderChart("Net", graphData.total)}
@@ -255,7 +255,7 @@ class ExercisePage extends React.Component<Props, State> {
           this.renderChart("Values", graphData.values)}
         {tabMode === TabMode.SETS && this.renderChart("Sets", graphData.sets)}
         {tabMode === TabMode.TIME &&
-          this.renderChart("Min / Set", graphData.timeTaken)}
+          this.renderChart("Min / Rep", graphData.timeTaken)}
       </div>
     ) : (
       <div className={classes.chartWrapper}>

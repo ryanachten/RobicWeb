@@ -12,6 +12,7 @@ export enum MuscleGroup {
   TRAPS = "Traps",
   SHOULDERS = "Shoulders",
   ABS = "Abdominals",
+  OBLIQUES = "Obliques",
   GLUTES = "Glutes",
   BICEPS = "Biceps"
   // ADDUCTORS = "Adductors",

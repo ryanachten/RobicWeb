@@ -41,6 +41,7 @@ class Activity extends React.Component<Props, State> {
       dateLimit: 7,
       tab: TabMode.WEEK
     };
+    this.getCurrentExercises = this.getCurrentExercises.bind(this);
     this.updateDate = this.updateDate.bind(this);
   }
 
@@ -62,35 +63,43 @@ class Activity extends React.Component<Props, State> {
     });
   }
 
-  render() {
-    const { classes, data } = this.props;
-    const { dateLimit, tab } = this.state;
-    const exercises =
-      data.exerciseDefinitions &&
-      data.exerciseDefinitions
+  getCurrentExercises() {
+    // Selected exercises filtered to those that are within the date range
+    const exercises = this.props.data.exerciseDefinitions;
+    return (
+      exercises &&
+      exercises
         .filter(({ history }: ExerciseDefinition) => {
           return (
             history.length > 0 &&
             isAfter(
               history[history.length - 1].date,
-              subDays(Date.now(), dateLimit)
+              subDays(Date.now(), this.state.dateLimit)
             )
           );
         })
-        .sort(compareExerciseDates);
-    const muscles = exercises
-      ? exercises.reduce(
-          (
-            total: MuscleGroup[],
-            { primaryMuscleGroup }: ExerciseDefinition
-          ) => {
-            return primaryMuscleGroup
-              ? [...total, ...primaryMuscleGroup]
-              : [...total];
-          },
-          []
-        )
-      : [];
+        .sort(compareExerciseDates)
+    );
+  }
+
+  getTotalMuscles(exercises: ExerciseDefinition[]) {
+    // Total muscle groups reduced from selected exercises
+    return exercises.reduce(
+      (total: MuscleGroup[], { primaryMuscleGroup }: ExerciseDefinition) => {
+        return primaryMuscleGroup
+          ? [...total, ...primaryMuscleGroup]
+          : [...total];
+      },
+      []
+    );
+  }
+
+  render() {
+    const { dateLimit, tab } = this.state;
+
+    const exercises = this.getCurrentExercises();
+    const muscles = exercises ? this.getTotalMuscles(exercises) : [];
+
     return (
       <PageRoot>
         <PageTitle label={routes.ACTIVITY.label} />

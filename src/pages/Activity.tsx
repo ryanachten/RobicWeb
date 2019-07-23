@@ -68,7 +68,6 @@ class Activity extends React.Component<Props, State> {
     const exercises =
       data.exerciseDefinitions &&
       data.exerciseDefinitions
-        .sort(compareExerciseDates)
         .filter(({ history }: ExerciseDefinition) => {
           return (
             history.length > 0 &&
@@ -77,7 +76,8 @@ class Activity extends React.Component<Props, State> {
               subDays(Date.now(), dateLimit)
             )
           );
-        });
+        })
+        .sort(compareExerciseDates);
     const muscles = exercises
       ? exercises.reduce(
           (
@@ -107,7 +107,7 @@ class Activity extends React.Component<Props, State> {
         <FullBody muscleGroupLevels={dateLimit} selected={muscles} />
         {exercises &&
           exercises.map((e: ExerciseDefinition) => {
-            return <Typography>{e.title}</Typography>;
+            return <Typography key={e.id}>{e.title}</Typography>;
           })}
       </PageRoot>
     );

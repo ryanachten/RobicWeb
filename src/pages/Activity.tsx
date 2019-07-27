@@ -12,9 +12,18 @@ import { ExerciseDefinition, MuscleGroup } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
 import { Typography, Tabs, Tab } from "@material-ui/core";
 import { compareExerciseDates } from "../utils";
-import { number } from "prop-types";
 
-const styles = (theme: Theme) => createStyles({});
+const styles = (theme: Theme) =>
+  createStyles({
+    exerciseGrid: {
+      display: "flex",
+      flexFlow: "row wrap"
+    },
+    exerciseList: {
+      margin: theme.spacing.unit * 2,
+      width: "200px"
+    }
+  });
 
 enum TabMode {
   WEEK = "Week",
@@ -125,7 +134,7 @@ class Activity extends React.Component<Props, State> {
 
   render() {
     const { dateLimit, tab } = this.state;
-
+    const { classes } = this.props;
     const exercises = this.getCurrentExercises();
     const muscles = exercises ? this.getTotalMuscles(exercises) : [];
 
@@ -147,10 +156,33 @@ class Activity extends React.Component<Props, State> {
           menuComponent={muscle => this.renderMuscleList(exercises, muscle)}
           selected={muscles}
         />
-        {exercises &&
-          exercises.map((e: ExerciseDefinition) => {
-            return <Typography key={e.id}>{e.title}</Typography>;
-          })}
+        <section className={classes.exerciseGrid}>
+          {exercises &&
+            Object.keys(MuscleGroup)
+              .sort()
+              .map((key: any) => {
+                const muscle = MuscleGroup[key] as MuscleGroup;
+                const filtered = exercises.filter((e: ExerciseDefinition) =>
+                  e.primaryMuscleGroup.includes(muscle)
+                );
+                return (
+                  <div className={classes.exerciseList} key={muscle}>
+                    <Typography color="primary" variant="subtitle1">
+                      {muscle}
+                    </Typography>
+                    {filtered.length > 0 ? (
+                      filtered.map((e: ExerciseDefinition) => (
+                        <Typography key={e.id}>{e.title}</Typography>
+                      ))
+                    ) : (
+                      <Typography color="textSecondary">
+                        <em>No exercises</em>
+                      </Typography>
+                    )}
+                  </div>
+                );
+              })}
+        </section>
       </PageRoot>
     );
   }

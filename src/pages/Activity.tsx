@@ -12,6 +12,7 @@ import { ExerciseDefinition, MuscleGroup } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
 import { Typography, Tabs, Tab } from "@material-ui/core";
 import { compareExerciseDates } from "../utils";
+import { number } from "prop-types";
 
 const styles = (theme: Theme) => createStyles({});
 
@@ -35,6 +36,10 @@ type Props = {
 };
 
 class Activity extends React.Component<Props, State> {
+  sortExercisesAlphabetically: (
+    a: ExerciseDefinition,
+    b: ExerciseDefinition
+  ) => number;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -43,6 +48,10 @@ class Activity extends React.Component<Props, State> {
     };
     this.getCurrentExercises = this.getCurrentExercises.bind(this);
     this.updateDate = this.updateDate.bind(this);
+    this.sortExercisesAlphabetically = (
+      a: ExerciseDefinition,
+      b: ExerciseDefinition
+    ) => (a.title > b.title ? 1 : -1);
   }
 
   updateDate(tab: TabMode) {
@@ -68,17 +77,16 @@ class Activity extends React.Component<Props, State> {
     const exercises = this.props.data.exerciseDefinitions;
     return (
       exercises &&
-      exercises
-        .filter(({ history }: ExerciseDefinition) => {
-          return (
-            history.length > 0 &&
-            isAfter(
-              history[history.length - 1].date,
-              subDays(Date.now(), this.state.dateLimit)
-            )
-          );
-        })
-        .sort(compareExerciseDates)
+      exercises.filter(({ history }: ExerciseDefinition) => {
+        return (
+          history.length > 0 &&
+          isAfter(
+            history[history.length - 1].date,
+            subDays(Date.now(), this.state.dateLimit)
+          )
+        );
+      })
+      // .sort(compareExerciseDates)
     );
   }
 
@@ -108,7 +116,7 @@ class Activity extends React.Component<Props, State> {
     );
     return filtered.length > 0 ? (
       <div>
-        {filtered.map(e => (
+        {filtered.sort(this.sortExercisesAlphabetically).map(e => (
           <Typography key={e.id}>{e.title}</Typography>
         ))}
       </div>

@@ -1,5 +1,11 @@
 import React from "react";
-import { withStyles, createStyles, Theme } from "@material-ui/core";
+import {
+  withStyles,
+  createStyles,
+  Theme,
+  Popover,
+  Typography
+} from "@material-ui/core";
 import { MuscleGroup } from "../../constants/types";
 import { Classes } from "jss";
 import { transparentize, lerpColor } from "../../utils";
@@ -14,13 +20,20 @@ type Props = {
   theme: Theme;
 };
 
-type State = {};
+type State = {
+  menuAnchor: HTMLElement | null;
+};
 
 class FrontBody extends React.Component<Props, State> {
   fill: (muscle?: MuscleGroup) => string;
 
   constructor(props: Props) {
     super(props);
+    this.state = {
+      menuAnchor: null
+    };
+    this.closeMenu = this.closeMenu.bind(this);
+    this.showMenu = this.showMenu.bind(this);
 
     this.fill = (muscle?: MuscleGroup) => {
       const results =
@@ -35,10 +48,40 @@ class FrontBody extends React.Component<Props, State> {
       return transparentize(props.theme.palette.text.disabled, 0.1);
     };
   }
+
+  showMenu(e: any, muscle: MuscleGroup) {
+    this.setState({ menuAnchor: e.target });
+    console.log("e", e.target, "muscle", muscle);
+  }
+
+  closeMenu() {
+    this.setState({ menuAnchor: null });
+  }
+
   render() {
     const { className } = this.props;
+    const menuAnchor = this.state.menuAnchor;
+    const open = Boolean(menuAnchor);
+    const id = open ? "front-body-popover" : undefined;
+
     return (
       <div className={className}>
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={menuAnchor}
+          onClose={this.closeMenu}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "center"
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "center"
+          }}
+        >
+          <Typography>The content of the Popover.</Typography>
+        </Popover>
         <svg
           id="full-body"
           xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +106,7 @@ class FrontBody extends React.Component<Props, State> {
           <g
             id="left-bicep"
             fill={this.fill(MuscleGroup.BICEPS)}
-            onClick={e => console.log("meow")}
+            onClick={e => this.showMenu(e, MuscleGroup.BICEPS)}
           >
             <path
               fill={this.fill(MuscleGroup.BICEPS)}

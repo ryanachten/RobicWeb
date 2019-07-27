@@ -100,6 +100,7 @@ class FullBody extends React.Component<Props, State> {
             ) : (
               <BackBody
                 className={classes.side}
+                menuComponent={menuComponent}
                 selected={selected}
                 muscleGroupLevels={muscleGroupLevels}
               />
@@ -115,6 +116,7 @@ class FullBody extends React.Component<Props, State> {
             />
             <BackBody
               className={classes.side}
+              menuComponent={menuComponent}
               selected={selected}
               muscleGroupLevels={muscleGroupLevels}
             />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { compose, graphql } from "react-apollo";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
@@ -94,6 +94,27 @@ class Activity extends React.Component<Props, State> {
     );
   }
 
+  renderMuscleList(
+    exercises: ExerciseDefinition[],
+    muscle: MuscleGroup
+  ): ReactElement | null {
+    if (!exercises || !muscle) {
+      return null;
+    }
+    // Find exercises associated with selected muscle
+    // return null instead of component if no results
+    const filtered = exercises.filter(e =>
+      e.primaryMuscleGroup.includes(muscle)
+    );
+    return filtered.length > 0 ? (
+      <div>
+        {filtered.map(e => (
+          <Typography key={e.id}>{e.title}</Typography>
+        ))}
+      </div>
+    ) : null;
+  }
+
   render() {
     const { dateLimit, tab } = this.state;
 
@@ -113,7 +134,11 @@ class Activity extends React.Component<Props, State> {
           <Tab label="Monthly" value={TabMode.MONTH} />
           <Tab label="Yearly" value={TabMode.YEAR} />
         </Tabs>
-        <FullBody muscleGroupLevels={dateLimit} selected={muscles} />
+        <FullBody
+          muscleGroupLevels={dateLimit}
+          menuComponent={muscle => this.renderMuscleList(exercises, muscle)}
+          selected={muscles}
+        />
         {exercises &&
           exercises.map((e: ExerciseDefinition) => {
             return <Typography key={e.id}>{e.title}</Typography>;

@@ -91,6 +91,10 @@ const styles = (theme: Theme) =>
     },
     setWrapper: {
       alignItems: "center",
+      display: "flex"
+    },
+    setExercisesWrapper: {
+      alignItems: "center",
       display: "flex",
       flexFlow: "row wrap"
     },
@@ -289,7 +293,7 @@ class Index extends React.Component<Props, State> {
       return console.log(`Error: unit not found on exercise ${exerciseId}`);
     }
     return (
-      <Fragment>
+      <div className={classes.setWrapper}>
         <TextField
           label="Reps"
           type="number"
@@ -310,6 +314,31 @@ class Index extends React.Component<Props, State> {
           }
           value={value || ""}
         />
+      </div>
+    );
+  }
+
+  renderSetButtons(index: number, sets: Set[]) {
+    const classes = this.props.classes;
+    return (
+      <Fragment>
+        {index !== 0 ? (
+          <IconButton
+            className={classes.iconButton}
+            onClick={() => this.removeSet(index)}
+          >
+            <RemoveIcon />
+          </IconButton>
+        ) : (
+          <div className={classes.iconButton} />
+        )}
+        {index === sets.length - 1 ? (
+          <IconButton className={classes.iconButton} onClick={this.addSet}>
+            <AddIcon />
+          </IconButton>
+        ) : (
+          <div className={classes.iconButton} />
+        )}
       </Fragment>
     );
   }
@@ -336,48 +365,36 @@ class Index extends React.Component<Props, State> {
         {history &&
           history.length > 0 &&
           this.renderHistory(history, unit, compositeType, childExercises)}
-        {sets.map((set: Set, index: number) => (
-          <div className={classes.setWrapper} key={index}>
-            {compositeType && set.exercises
-              ? // Use set exercises for form state if exercise is composite type
-                // for each child exercise, we provide an rep / value field
-                set.exercises.map((e: SetExercise) => {
-                  const childDef = getChildExercisDef(e, childExercises);
-                  return (
-                    <div key={e.id}>
-                      <Typography>{childDef.title}</Typography>
-                      {this.renderSetInputs(
-                        index,
-                        e.reps,
-                        e.value,
-                        childDef.unit,
-                        e.id
-                      )}
-                    </div>
-                  );
-                })
-              : // ... if not composite type, just use set rep/value for form state
-                this.renderSetInputs(index, set.reps, set.value, unit)}
-
-            {index !== 0 ? (
-              <IconButton
-                className={classes.iconButton}
-                onClick={() => this.removeSet(index)}
-              >
-                <RemoveIcon />
-              </IconButton>
-            ) : (
-              <div className={classes.iconButton} />
-            )}
-            {index === sets.length - 1 ? (
-              <IconButton className={classes.iconButton} onClick={this.addSet}>
-                <AddIcon />
-              </IconButton>
-            ) : (
-              <div className={classes.iconButton} />
-            )}
-          </div>
-        ))}
+        {sets.map((set: Set, index: number) =>
+          compositeType && set.exercises ? (
+            // Use set exercises for form state if exercise is composite type
+            // for each child exercise, we provide an rep / value field
+            <div className={classes.setExercisesWrapper} key={index}>
+              {set.exercises.map((e: SetExercise, eIndex: number) => {
+                const childDef = getChildExercisDef(e, childExercises);
+                return (
+                  <div key={e.id}>
+                    <Typography>{childDef.title}</Typography>
+                    {this.renderSetInputs(
+                      index,
+                      e.reps,
+                      e.value,
+                      childDef.unit,
+                      e.id
+                    )}
+                  </div>
+                );
+              })}
+              {this.renderSetButtons(index, sets)}
+            </div>
+          ) : (
+            // ... if not composite type, just use set rep/value for form state
+            <div className={classes.setWrapper} key={index}>
+              {this.renderSetInputs(index, set.reps, set.value, unit)}
+              {this.renderSetButtons(index, sets)}
+            </div>
+          )
+        )}
         <div className={classes.buttonWrapper}>
           <Stopwatch ref={(stopwatch: any) => (this.stopwatch = stopwatch)} />
           <Button className={classes.timerButton} onClick={this.toggleTimer}>

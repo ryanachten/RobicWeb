@@ -1,14 +1,10 @@
-import React from "react";
-import {
-  withStyles,
-  createStyles,
-  Theme,
-  Popover,
-  Typography
-} from "@material-ui/core";
+import React, { ReactElement } from "react";
+import { withStyles, createStyles, Theme, Popover } from "@material-ui/core";
 import { MuscleGroup } from "../../constants/types";
 import { Classes } from "jss";
 import { transparentize, lerpColor } from "../../utils";
+import classes from "*.module.css";
+import { BodyMenu } from "./FullBody";
 
 const styles = (theme: Theme) => createStyles({});
 
@@ -17,10 +13,12 @@ type Props = {
   classes: Classes;
   selected: MuscleGroup[];
   muscleGroupLevels: number;
+  menuComponent?: (muscle: MuscleGroup) => ReactElement | null;
   theme: Theme;
 };
 
 type State = {
+  selectedMuscle: MuscleGroup | null;
   menuAnchor: HTMLElement | null;
 };
 
@@ -30,7 +28,8 @@ class FrontBody extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      menuAnchor: null
+      menuAnchor: null,
+      selectedMuscle: null
     };
     this.closeMenu = this.closeMenu.bind(this);
     this.showMenu = this.showMenu.bind(this);
@@ -50,38 +49,29 @@ class FrontBody extends React.Component<Props, State> {
   }
 
   showMenu(e: any, muscle: MuscleGroup) {
-    this.setState({ menuAnchor: e.target });
-    console.log("e", e.target, "muscle", muscle);
+    this.setState({ menuAnchor: e.target, selectedMuscle: muscle });
   }
 
   closeMenu() {
-    this.setState({ menuAnchor: null });
+    this.setState({ menuAnchor: null, selectedMuscle: null });
   }
 
   render() {
-    const { className } = this.props;
-    const menuAnchor = this.state.menuAnchor;
+    const { className, menuComponent } = this.props;
+    const { menuAnchor, selectedMuscle } = this.state;
     const open = Boolean(menuAnchor);
     const id = open ? "front-body-popover" : undefined;
 
     return (
       <div className={className}>
-        <Popover
+        <BodyMenu
           id={id}
-          open={open}
           anchorEl={menuAnchor}
           onClose={this.closeMenu}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center"
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "center"
-          }}
+          open={open}
         >
-          <Typography>The content of the Popover.</Typography>
-        </Popover>
+          {menuComponent && selectedMuscle && menuComponent(selectedMuscle)}
+        </BodyMenu>
         <svg
           id="full-body"
           xmlns="http://www.w3.org/2000/svg"
@@ -116,6 +106,7 @@ class FrontBody extends React.Component<Props, State> {
           <path
             id="left-shoulder"
             fill={this.fill(MuscleGroup.SHOULDERS)}
+            onClick={e => this.showMenu(e, MuscleGroup.SHOULDERS)}
             d="M333.17 359.84c-10.93 3.7-21.82 7.48-32.24 11.07v-24.55c0-1.1 1.05-5.74 1.05-5.74l1.35-3.14.1-.24c8.24-19.23 23.02-29.66 43.75-31.48 9.4-.82 15.69 7.3 12.34 16.04-2.54 6.66-6.03 12.96-9.07 19.43-.58 1.26-1.09 2.56-1.6 3.85l-3.56 5.3c-.23.23-.42.49-.54.77-2.25 5.14-6.75 7.05-11.58 8.69z"
           />
           <path
@@ -123,7 +114,11 @@ class FrontBody extends React.Component<Props, State> {
             fill={this.fill(MuscleGroup.OBLIQUES)}
             d="M379.76 483.8l.05.1 3.93 4.26 2.19 5.47-9.68-3.1c-.39-.13-1.26-.63-2.07-1.11-.86-.52-3.28-2.69-3.28-2.69l-1.33-1.34c-3.46-5.4-6.48-9.96-9.15-14.7-3.2-5.68-2.5-11.18 2.01-16.08 1.77-1.91 3.41-3.94 5.67-6.56l3.18-4.01 6.41-4.16.53 1.3-.87 6.13c-2.95 12.4-3.33 24.64 2.4 36.49zM349.71 451.16l.13-5.17c0-.05.01-.1 0-.14-.07-3.99-1-7.96-1.04-11.94-.15-16.79-.3-33.58 0-50.37.11-6.14 1.18-6.41 7.2-4.15 7.96 3 15.78 6.43 23.9 8.84 4.87 1.44 6.16 3.85 5.15 8.34-.37 1.62-.59 3.28-.96 4.9-3.48 15.42-3.75 32.16-17.66 43.34l-5.42 6.06c-3.54 3.43-4.28 9.3-7.75 13.47l-3.55-13.18zM350.83 495.3c.03-.97 1.07-5.38 1.07-5.38l.86-2.25c2.46-4.31.78-10.65 4.49-14.64 3.6 3.95 5.51 9.48 10.22 13.13l3.04 2.96s3.28 2.56 3.98 2.97c.8.47 1.55.98 2.1 1.65 1.82 2.15 4.32 4.73 4.39 7.19.6 22.6 8.15 43.04 18.44 62.74.71 1.37 1.23 2.86 2.27 5.31-7.9-.91-12.53-5.39-17-9.57-18.63-17.46-34.54-36.39-33.86-64.11zM375.53 979.59c-1.33 7.84-2.3 15.75-3.44 23.63-.77 5.38-4.18 8.2-9.02 10.25-4.54 1.91-9.3 4-12.95 7.17-11.03 9.58-22.89 11-36.24 5.86-12.58-4.85-13.33-7.07-3.88-17.05 3.51-3.7 7.9-6.58 11.6-10.13a832.14 832.14 0 0 0 23.7-23.38c1.3-1.35 1.46-3.99 1.78-6.09 1.3-8.37 2.45-16.77 3.7-25.16.19-1.21.65-2.39 1.14-4.14 1.05.96 1.7 1.41 2.16 2 5.14 6.5 9.92 13.33 15.48 19.44 4.7 5.19 7.18 10.54 5.97 17.6z"
           />
-          <g id="left-calf" fill={this.fill(MuscleGroup.CALVES)}>
+          <g
+            id="left-calf"
+            fill={this.fill(MuscleGroup.CALVES)}
+            onClick={e => this.showMenu(e, MuscleGroup.CALVES)}
+          >
             <path d="M378.37 798.65c-4.05 17.99-8.31 35.92-12.35 53.91 0 0-.82 2.6-2.07 2.36s-1.91-2.87-1.91-2.87c-.28-5.99-.8-11.96-1.22-17.94-1.9-27.13-1.27-53.99 8.97-79.75 1.23-3.08 2.74-6.06 4.6-10.15 1.12 2.09 1.66 2.74 1.84 3.48 3.94 16.85 6 33.81 2.14 50.96z" />
             <path d="M387.29 863.85l-2.77 11.68c-2.6 7.65-4.88 15.4-7.61 23-5.87 16.27-7.85 32.58-2.6 49.48 1.61 5.19 1.85 10.8 2.72 16.23l-1.35.45c-3.64-4.49-7.22-9.03-10.93-13.46a98.45 98.45 0 0 1-20.34-40.25c-6.1-25-10.3-50.2-8.24-76.16 1.86-23.6 8.25-45.48 21.9-65 .57-.8 1.36-1.46 2.04-2.18-6.28 29.65-3.24 59.08-.33 88.66l-.25 11 .06 2c.72 27.06-.56 53.96 9 78.02-1.58-12-4.4-25.55-4.9-39.18-.48-12.9 1.04-25.88 1.88-38.84l3.06-13.61 11.95-52.58c1.45 5.19 1.66 10.17 2.42 15.07 2.32 15.15 6.85 30.09 4.29 45.67z" />
           </g>

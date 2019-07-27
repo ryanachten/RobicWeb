@@ -1,11 +1,12 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactElement } from "react";
 import {
   withStyles,
   createStyles,
   Theme,
   withWidth,
   Tabs,
-  Tab
+  Tab,
+  Popover
 } from "@material-ui/core";
 import { MuscleGroup } from "../../constants/types";
 import { Classes } from "jss";
@@ -13,9 +14,13 @@ import FrontBody from "./FrontBody";
 import BackBody from "./BackBody";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../../constants/sizes";
+import { PopoverProps } from "@material-ui/core/Popover";
 
 const styles = (theme: Theme) =>
   createStyles({
+    popover: {
+      padding: theme.spacing.unit * 2
+    },
     root: {
       display: "flex",
       flexFlow: "row wrap"
@@ -37,6 +42,7 @@ enum TabMode {
 
 type Props = {
   classes: Classes;
+  menuComponent?: (muscle: MuscleGroup) => ReactElement | null;
   muscleGroupLevels?: number;
   selected: MuscleGroup[];
   width: Breakpoint;
@@ -62,7 +68,13 @@ class FullBody extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes, muscleGroupLevels = 7, selected, width } = this.props;
+    const {
+      classes,
+      menuComponent,
+      muscleGroupLevels = 7,
+      selected,
+      width
+    } = this.props;
     const tab = this.state.tab;
     return (
       <div className={classes.root}>
@@ -80,8 +92,9 @@ class FullBody extends React.Component<Props, State> {
             {tab === TabMode.FRONT ? (
               <FrontBody
                 className={classes.side}
-                selected={selected}
+                menuComponent={menuComponent}
                 muscleGroupLevels={muscleGroupLevels}
+                selected={selected}
               />
             ) : (
               <BackBody
@@ -95,8 +108,9 @@ class FullBody extends React.Component<Props, State> {
           <Fragment>
             <FrontBody
               className={classes.side}
-              selected={selected}
+              menuComponent={menuComponent}
               muscleGroupLevels={muscleGroupLevels}
+              selected={selected}
             />
             <BackBody
               className={classes.side}
@@ -112,3 +126,27 @@ class FullBody extends React.Component<Props, State> {
 
 const styled = withStyles(styles)(withWidth()(FullBody));
 export { styled as FullBody };
+
+type BodyProps = PopoverProps & {
+  classes: Classes;
+};
+
+export const BodyMenu = withStyles(styles)((props: BodyProps) =>
+  // Don't render if there are no children to render
+  props.children ? (
+    <Popover
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "center"
+      }}
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "center"
+      }}
+      {...props}
+      classes={{
+        paper: props.classes.popover
+      }}
+    />
+  ) : null
+);

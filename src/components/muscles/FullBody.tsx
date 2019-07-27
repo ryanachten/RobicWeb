@@ -6,7 +6,8 @@ import {
   withWidth,
   Tabs,
   Tab,
-  Popover
+  Popover,
+  Typography
 } from "@material-ui/core";
 import { MuscleGroup } from "../../constants/types";
 import { Classes } from "jss";
@@ -128,12 +129,20 @@ const styled = withStyles(styles)(withWidth()(FullBody));
 export { styled as FullBody };
 
 type BodyProps = PopoverProps & {
+  muscleGroup: MuscleGroup | null;
   classes: Classes;
 };
 
-export const BodyMenu = withStyles(styles)((props: BodyProps) =>
-  // Don't render if there are no children to render
-  props.children ? (
+export const BodyMenu = withStyles(styles)(
+  ({
+    children,
+    classes,
+    id,
+    muscleGroup,
+    anchorEl,
+    onClose,
+    open
+  }: BodyProps) => (
     <Popover
       anchorOrigin={{
         vertical: "bottom",
@@ -143,10 +152,22 @@ export const BodyMenu = withStyles(styles)((props: BodyProps) =>
         vertical: "top",
         horizontal: "center"
       }}
-      {...props}
+      id={id}
+      anchorEl={anchorEl}
+      onClose={onClose}
+      open={open}
       classes={{
-        paper: props.classes.popover
+        paper: classes.popover
       }}
-    />
-  ) : null
+    >
+      <Fragment>
+        {muscleGroup && (
+          <Typography color="primary" variant="subtitle1">
+            {muscleGroup}
+          </Typography>
+        )}
+        {children}
+      </Fragment>
+    </Popover>
+  )
 );

@@ -148,7 +148,12 @@ export const getNetTotalFromSets = (sets: Set[], composite: boolean) => {
         if (!set.exercises) return setTotal;
         return (
           setTotal +
-          set.exercises.reduce((total, e) => total + e.value * e.reps, 0)
+          set.exercises.reduce(
+            (total, e) =>
+              // Exclude non-kg units from composite net-sums
+              e.unit === Unit.kg ? total + e.value * e.reps : total,
+            0
+          )
         );
       }, 0)
     : // If exercise is not a composite, net = (sets * (reps * value))

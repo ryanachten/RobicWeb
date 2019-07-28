@@ -140,7 +140,17 @@ export const compareExerciseDates = (
   return a.title >= b.title ? 1 : -1;
 };
 
-// Get net value (sets * (reps * value))
-export const getNetTotalFromSets = (sets: Set[]) => {
-  return sets.reduce((total, set) => total + set.value * set.reps, 0);
+// Get net value from sets
+export const getNetTotalFromSets = (sets: Set[], composite: boolean) => {
+  return composite
+    ? // If composite, net = exercises ~ (sets * (reps * value))
+      sets.reduce((setTotal, set) => {
+        if (!set.exercises) return setTotal;
+        return (
+          setTotal +
+          set.exercises.reduce((total, e) => total + e.value * e.reps, 0)
+        );
+      }, 0)
+    : // If exercise is not a composite, net = (sets * (reps * value))
+      sets.reduce((total, set) => total + set.value * set.reps, 0);
 };

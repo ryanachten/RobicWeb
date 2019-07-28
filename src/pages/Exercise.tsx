@@ -134,7 +134,7 @@ class ExercisePage extends React.Component<Props, State> {
   renderCharts() {
     const { classes, width } = this.props;
     const tabMode = this.state.tabMode;
-    const { history, unit } = this.props.data.exerciseDefinition;
+    const { history, type, unit } = this.props.data.exerciseDefinition;
     const graphData = history
       .sort((a: any, b: any) => compareAsc(a.date, b.date))
       .reduce(
@@ -147,7 +147,7 @@ class ExercisePage extends React.Component<Props, State> {
           const value =
             sets.reduce((total, set) => total + set.value, 0) / sets.length;
           // Get net value (sets * (reps * value))
-          const total = getNetTotalFromSets(sets);
+          const total = getNetTotalFromSets(sets, isCompositeExercise(type));
 
           // Convert time into millis, then mins, then divide by set count
           const minPerRep = () => {

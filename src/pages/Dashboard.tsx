@@ -235,8 +235,8 @@ class Index extends React.Component<Props, State> {
     childExercises?: ExerciseDefinition[]
   ) {
     const personalBest = history.sort((a: Exercise, b: Exercise) => {
-      const a_total = getNetTotalFromSets(a.sets);
-      const b_total = getNetTotalFromSets(b.sets);
+      const a_total = getNetTotalFromSets(a.sets, composite);
+      const b_total = getNetTotalFromSets(b.sets, composite);
       return a_total > b_total ? -1 : 1;
     })[0];
     const classes = this.props.classes;

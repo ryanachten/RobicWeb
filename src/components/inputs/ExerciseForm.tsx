@@ -231,18 +231,13 @@ class ExerciseForm extends React.Component<Props, State> {
               label="Unit"
               className={classes.input}
               onChange={event => this.onFieldUpdate("unit", event.target.value)}
-              options={[
-                {
-                  id: Unit.kg,
-                  value: Unit.kg,
-                  label: Unit.kg
-                },
-                {
-                  id: Unit.min,
-                  value: Unit.min,
-                  label: Unit.min
-                }
-              ]}
+              options={Object.keys(Unit)
+                .sort()
+                .map((key: any) => ({
+                  id: Unit[key],
+                  label: Unit[key],
+                  value: Unit[key]
+                }))}
               value={unit}
             />
             {loading ? <CircularProgress /> : this.renderMuscleOptions()}

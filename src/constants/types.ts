@@ -21,7 +21,8 @@ export enum MuscleGroup {
 
 export enum Unit {
   kg = "kg",
-  min = "min"
+  min = "min",
+  bodyweight = "body weight"
 }
 
 export interface SetExercise {

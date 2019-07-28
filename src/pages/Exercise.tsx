@@ -135,6 +135,8 @@ class ExercisePage extends React.Component<Props, State> {
     const { classes, width } = this.props;
     const tabMode = this.state.tabMode;
     const { history, type, unit } = this.props.data.exerciseDefinition;
+    console.log("history", history);
+
     const graphData = history
       .sort((a: any, b: any) => compareAsc(a.date, b.date))
       .reduce(
@@ -161,7 +163,7 @@ class ExercisePage extends React.Component<Props, State> {
               date.getSeconds() * 1000 +
               date.getMilliseconds();
             const minutes = millis / 60000;
-            return (minutes / reps).toFixed(2);
+            return (minutes / sets.length).toFixed(2);
           };
 
           return {
@@ -193,7 +195,7 @@ class ExercisePage extends React.Component<Props, State> {
           <Tab label={`${unit} (Net)`} value={TabMode.NET} />
           <Tab label="Reps" value={TabMode.REPS} />
           <Tab label="Sets" value={TabMode.SETS} />
-          <Tab label="Min / Rep" value={TabMode.TIME} />
+          <Tab label="Min / Set" value={TabMode.TIME} />
         </Tabs>
         {tabMode === TabMode.REPS && (
           <Chart label="Reps" mobile data={graphData.reps} />
@@ -208,7 +210,7 @@ class ExercisePage extends React.Component<Props, State> {
           <Chart label="Sets" mobile data={graphData.sets} />
         )}
         {tabMode === TabMode.TIME && (
-          <Chart label="Min / Rep" mobile data={graphData.timeTaken} />
+          <Chart label="Min / Set" mobile data={graphData.timeTaken} />
         )}
       </div>
     ) : (
@@ -216,7 +218,7 @@ class ExercisePage extends React.Component<Props, State> {
         <Chart label={`${getUnitLabel(unit)} (Avg)`} data={graphData.values} />
         <Chart label={`${getUnitLabel(unit)} (Net)`} data={graphData.total} />
         <Chart label="Sets" data={graphData.sets} />
-        <Chart label="Min / Rep" data={graphData.timeTaken} />
+        <Chart label="Min / Set" data={graphData.timeTaken} />
       </div>
     );
   }
@@ -315,9 +317,9 @@ class ExercisePage extends React.Component<Props, State> {
                                     <Typography
                                       className={classes.reps}
                                     >{`Reps: ${e.reps}`}</Typography>
-                                    <Typography>{`Value: ${
-                                      e.value
-                                    }${unit}`}</Typography>
+                                    <Typography>{`Value: ${e.value}${
+                                      e.unit
+                                    }`}</Typography>
                                   </div>
                                 );
                               })}

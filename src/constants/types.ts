@@ -28,6 +28,7 @@ export interface SetExercise {
   id: string;
   reps: number;
   value: number;
+  unit: Unit;
 }
 
 export type Set = {

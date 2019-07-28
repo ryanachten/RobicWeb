@@ -80,6 +80,7 @@ export const GetExerciseDefinitionById = gql`
             id
             reps
             value
+            unit
           }
         }
         timeTaken

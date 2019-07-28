@@ -26,7 +26,8 @@ import {
   getUnitLabel,
   isCompositeExercise,
   getChildExerciseMuscles,
-  getChildExercisDef
+  getChildExercisDef,
+  getNetTotalFromSets
 } from "../utils";
 import { compareDesc, compareAsc } from "date-fns";
 import routes from "../constants/routes";
@@ -146,12 +147,9 @@ class ExercisePage extends React.Component<Props, State> {
           const value =
             sets.reduce((total, set) => total + set.value, 0) / sets.length;
           // Get net value (sets * (reps * value))
-          const total = sets.reduce(
-            (total, set) => total + set.value * set.reps,
-            0
-          );
-          // Convert time into millis, then mins, then divide by set count
+          const total = getNetTotalFromSets(sets);
 
+          // Convert time into millis, then mins, then divide by set count
           const minPerRep = () => {
             // Avoid plotting times which weren't taken
             if (!timeTaken || timeTaken === "1970-01-01T00:00:00.000Z") {

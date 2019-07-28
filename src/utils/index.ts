@@ -14,7 +14,8 @@ import {
   ExerciseType,
   ExerciseDefinition,
   MuscleGroup,
-  SetExercise
+  SetExercise,
+  Set
 } from "../constants/types";
 
 export default classnames;
@@ -137,4 +138,9 @@ export const compareExerciseDates = (
   }
   // In the case where dates are the same, sort alphabetically
   return a.title >= b.title ? 1 : -1;
+};
+
+// Get net value (sets * (reps * value))
+export const getNetTotalFromSets = (sets: Set[]) => {
+  return sets.reduce((total, set) => total + set.value * set.reps, 0);
 };

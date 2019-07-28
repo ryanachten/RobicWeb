@@ -25,7 +25,8 @@ import {
   formatTime,
   getUnitLabel,
   isCompositeExercise,
-  getChildExercisDef
+  getChildExercisDef,
+  getNetTotalFromSets
 } from "../utils";
 import {
   LoadingSplash,
@@ -227,6 +228,61 @@ class Index extends React.Component<Props, State> {
     });
   };
 
+  renderPersonalBest(
+    history: Exercise[],
+    unit: Unit,
+    composite: boolean,
+    childExercises?: ExerciseDefinition[]
+  ) {
+    const personalBest = history.sort((a: Exercise, b: Exercise) => {
+      const a_total = getNetTotalFromSets(a.sets);
+      const b_total = getNetTotalFromSets(b.sets);
+      return a_total > b_total ? -1 : 1;
+    })[0];
+    const classes = this.props.classes;
+    return (
+      <div className={classes.historyWrapper}>
+        <div className={classes.historyHeader}>
+          <Typography className={classes.historyTitle} variant="subtitle1">
+            Personal Best
+          </Typography>
+          <Typography color="textSecondary">{`${formatDate(
+            personalBest.date,
+            true
+          )}`}</Typography>
+        </div>
+        <div className={classes.setWrapper}>
+          {personalBest.sets.map(({ reps, value, exercises }, index) => (
+            <div key={index}>
+              {composite && childExercises && exercises ? (
+                exercises.map(e => {
+                  const childDef = getChildExercisDef(e, childExercises);
+                  return (
+                    <Typography
+                      key={e.id}
+                      className={classes.setItem}
+                      color="textSecondary"
+                    >{`${e.reps} reps x ${e.value} ${
+                      childDef.unit
+                    }`}</Typography>
+                  );
+                })
+              ) : (
+                <Typography
+                  className={classes.setItem}
+                  color="textSecondary"
+                >{`${reps} reps x ${value} ${unit}`}</Typography>
+              )}
+            </div>
+          ))}
+          <Typography className={classes.setItem} color="textSecondary">
+            {formatTime(personalBest.timeTaken)}
+          </Typography>
+        </div>
+      </div>
+    );
+  }
+
   renderHistory(
     history: Exercise[],
     unit: Unit,
@@ -362,6 +418,9 @@ class Index extends React.Component<Props, State> {
           <Typography variant="h3">{title}</Typography>
           <ExerciseTypeIcon type={type} />
         </div>
+        {history &&
+          history.length > 0 &&
+          this.renderPersonalBest(history, unit, compositeType, childExercises)}
         {history &&
           history.length > 0 &&
           this.renderHistory(history, unit, compositeType, childExercises)}

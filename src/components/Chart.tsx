@@ -42,7 +42,7 @@ type Props = {
 const Chart = ({ classes, data, label, mobile, theme }: Props) => {
   return (
     <div className={classes.chart}>
-      {mobile && (
+      {!mobile && (
         <Typography className={classes.chartLabel} variant="subtitle1">
           {label}
         </Typography>

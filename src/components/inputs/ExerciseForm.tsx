@@ -107,15 +107,17 @@ class ExerciseForm extends React.Component<Props, State> {
       type,
       childExerciseIds
     } = this.state;
-    if (!title || !unit || !primaryMuscleGroup) {
+    if (
+      !title ||
+      // Prevent creating standard exercise w/o unit or PMG
+      (!isCompositeExercise(type) && (!unit || !primaryMuscleGroup))
+    ) {
       return this.setState({
         error: "Please complete title, unit and primary muscle group fields"
       });
     }
-    if (
-      (type === ExerciseType.CIRCUIT || type === ExerciseType.SUPERSET) &&
-      childExerciseIds.length < 2
-    ) {
+    // Prevent creating composite exercise w/o child exercises
+    if (isCompositeExercise(type) && childExerciseIds.length < 2) {
       return this.setState({
         error: "Please add at least 2 exercises"
       });
@@ -130,9 +132,8 @@ class ExerciseForm extends React.Component<Props, State> {
     const childExerciseIds = this.state.childExerciseIds;
 
     // Don't allow nesting of composite exercises
-    const exercises = exerciseDefinitions
-      .sort()
-      .reduce((total: any[], exercise: ExerciseDefinition) => {
+    const exercises = exerciseDefinitions.reduce(
+      (total: any[], exercise: ExerciseDefinition) => {
         return isCompositeExercise(exercise.type)
           ? [...total]
           : [
@@ -143,7 +144,9 @@ class ExerciseForm extends React.Component<Props, State> {
                 label: exercise.title
               }
             ];
-      }, []);
+      },
+      []
+    );
     return (
       <MultiSelect
         className={classes.muscleSelectWrapper}

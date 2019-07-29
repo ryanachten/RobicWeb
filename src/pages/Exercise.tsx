@@ -135,7 +135,6 @@ class ExercisePage extends React.Component<Props, State> {
     const { classes, width } = this.props;
     const tabMode = this.state.tabMode;
     const { history, type, unit } = this.props.data.exerciseDefinition;
-    console.log("history", history);
 
     const graphData = history
       .sort((a: any, b: any) => compareAsc(a.date, b.date))

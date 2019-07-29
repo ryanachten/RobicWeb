@@ -230,8 +230,8 @@ class Index extends React.Component<Props, State> {
 
   renderPersonalBest(
     history: Exercise[],
-    unit: Unit,
     composite: boolean,
+    unit?: Unit,
     childExercises?: ExerciseDefinition[]
   ) {
     const personalBest = history.sort((a: Exercise, b: Exercise) => {
@@ -285,8 +285,8 @@ class Index extends React.Component<Props, State> {
 
   renderHistory(
     history: Exercise[],
-    unit: Unit,
     composite: boolean,
+    unit?: Unit,
     childExercises?: ExerciseDefinition[]
   ) {
     const { date, sets, timeTaken } = history[history.length - 1];
@@ -406,12 +406,8 @@ class Index extends React.Component<Props, State> {
       return null;
     }
     const { childExercises, history, title, type, unit } = selectedExercise;
-    if (!unit) {
-      // This would only occur if attempting to access unit on
-      // a composite exericse (which doesn't have a unit)
-      return console.log(`Error: unit not found on exercise ${title}`);
-    }
     const compositeType = isCompositeExercise(type);
+
     return (
       <form onSubmit={this.submitForm}>
         <div className={classes.exerciseTitle}>
@@ -420,10 +416,10 @@ class Index extends React.Component<Props, State> {
         </div>
         {history &&
           history.length > 0 &&
-          this.renderPersonalBest(history, unit, compositeType, childExercises)}
+          this.renderPersonalBest(history, compositeType, unit, childExercises)}
         {history &&
           history.length > 0 &&
-          this.renderHistory(history, unit, compositeType, childExercises)}
+          this.renderHistory(history, compositeType, unit, childExercises)}
         {sets.map((set: Set, index: number) =>
           compositeType && set.exercises ? (
             // Use set exercises for form state if exercise is composite type

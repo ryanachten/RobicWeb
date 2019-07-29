@@ -53,6 +53,9 @@ export const formatTime = (timeTaken: string) => {
 
 export const getUnitLabel = (unit: Unit) => {
   switch (unit) {
+    case Unit.bodyweight: {
+      return "Weight";
+    }
     case Unit.kg: {
       return "Weight";
     }
@@ -159,3 +162,5 @@ export const getNetTotalFromSets = (sets: Set[], composite: boolean) => {
     : // If exercise is not a composite, net = (sets * (reps * value))
       sets.reduce((total, set) => total + set.value * set.reps, 0);
 };
+
+export const isBodyWeight = (unit?: Unit) => unit === Unit.bodyweight;

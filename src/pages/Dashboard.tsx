@@ -26,7 +26,8 @@ import {
   getUnitLabel,
   isCompositeExercise,
   getChildExercisDef,
-  getNetTotalFromSets
+  getNetTotalFromSets,
+  isBodyWeight
 } from "../utils";
 import {
   LoadingSplash,
@@ -214,13 +215,15 @@ class Index extends React.Component<Props, State> {
           return set.exercises.push({
             id: e.id,
             reps: 0,
-            value: 0
+            // Lockdown body weight value to 1
+            value: isBodyWeight(e.unit) ? 1 : 0
           });
         })
       : // ...otherwise, we simply assign a rep/value per set
         (set = {
           reps: 0,
-          value: 0
+          // Lockdown body weight value to 1
+          value: isBodyWeight(exercise.unit) ? 1 : 0
         });
     this.setState({
       sets: [set],
@@ -361,6 +364,8 @@ class Index extends React.Component<Props, State> {
           value={reps || ""}
         />
         <TextField
+          // Prevent user changing body weight value
+          disabled={isBodyWeight(unit)}
           label={`${getUnitLabel(unit)} (${unit})`}
           type="number"
           placeholder="5"

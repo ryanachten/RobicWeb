@@ -10,8 +10,15 @@ import { PageRoot, PageTitle } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
-import { Typography, Tabs, Tab } from "@material-ui/core";
+import { Typography, Tabs, Tab, withTheme } from "@material-ui/core";
 import { compareExerciseDates } from "../utils";
+import {
+  VictoryChart,
+  VictoryBar,
+  VictoryTheme,
+  VictoryLabel,
+  VictoryAxis
+} from "victory";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -42,6 +49,7 @@ type Props = {
   loading: boolean;
   history: any;
   mutate: any;
+  theme: Theme;
 };
 
 class Activity extends React.Component<Props, State> {
@@ -134,9 +142,23 @@ class Activity extends React.Component<Props, State> {
 
   render() {
     const { dateLimit, tab } = this.state;
-    const { classes } = this.props;
+    const { classes, theme } = this.props;
     const exercises = this.getCurrentExercises();
     const muscles = exercises ? this.getTotalMuscles(exercises) : [];
+
+    // Get number of sessions per exercise within the active date range
+    const exerciseCountData =
+      exercises &&
+      exercises.map((def: ExerciseDefinition) => {
+        const validSessions = def.history.filter(e =>
+          isAfter(e.date, subDays(Date.now(), dateLimit))
+        );
+        return {
+          x: def.title,
+          y: validSessions.length
+        };
+      });
+    console.log("exerciseCountData", exerciseCountData);
 
     return (
       <PageRoot>
@@ -156,6 +178,26 @@ class Activity extends React.Component<Props, State> {
           menuComponent={muscle => this.renderMuscleList(exercises, muscle)}
           selected={muscles}
         />
+        <VictoryChart theme={VictoryTheme.material} domainPadding={10}>
+          <VictoryAxis
+            tickLabelComponent={
+              <VictoryLabel
+                angle={-90}
+                dy={-4}
+                textAnchor="end"
+                style={{ fontSize: 6 }}
+              />
+            }
+          />
+          <VictoryAxis
+            dependentAxis
+            tickLabelComponent={<VictoryLabel style={{ fontSize: 6 }} />}
+          />
+          <VictoryBar
+            style={{ data: { fill: theme.palette.primary.main } }}
+            data={exerciseCountData}
+          />
+        </VictoryChart>
         <section className={classes.exerciseGrid}>
           {exercises &&
             Object.keys(MuscleGroup)
@@ -188,4 +230,6 @@ class Activity extends React.Component<Props, State> {
   }
 }
 
-export default compose(graphql(GetExercises))(withStyles(styles)(Activity));
+export default compose(graphql(GetExercises))(
+  withStyles(styles, { withTheme: true })(Activity)
+);

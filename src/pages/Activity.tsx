@@ -17,7 +17,8 @@ import {
   VictoryBar,
   VictoryTheme,
   VictoryLabel,
-  VictoryAxis
+  VictoryAxis,
+  VictoryContainer
 } from "victory";
 
 const styles = (theme: Theme) =>
@@ -149,15 +150,19 @@ class Activity extends React.Component<Props, State> {
     // Get number of sessions per exercise within the active date range
     const exerciseCountData =
       exercises &&
-      exercises.map((def: ExerciseDefinition) => {
-        const validSessions = def.history.filter(e =>
-          isAfter(e.date, subDays(Date.now(), dateLimit))
-        );
-        return {
-          x: def.title,
-          y: validSessions.length
-        };
-      });
+      exercises
+        .sort(this.sortExercisesAlphabetically)
+        .map((def: ExerciseDefinition) => {
+          const validSessions = def.history.filter(e =>
+            isAfter(e.date, subDays(Date.now(), dateLimit))
+          );
+          return {
+            x:
+              // Clip exercise graph labels to 10 characters
+              def.title.length > 10 ? `${def.title.slice(0, 7)}...` : def.title,
+            y: validSessions.length
+          };
+        });
     console.log("exerciseCountData", exerciseCountData);
 
     return (
@@ -178,22 +183,19 @@ class Activity extends React.Component<Props, State> {
           menuComponent={muscle => this.renderMuscleList(exercises, muscle)}
           selected={muscles}
         />
-        <VictoryChart theme={VictoryTheme.material} domainPadding={10}>
-          <VictoryAxis
-            tickLabelComponent={
-              <VictoryLabel
-                angle={-90}
-                dy={-4}
-                textAnchor="end"
-                style={{ fontSize: 6 }}
-              />
-            }
-          />
-          <VictoryAxis
-            dependentAxis
-            tickLabelComponent={<VictoryLabel style={{ fontSize: 6 }} />}
-          />
+        <VictoryChart
+          padding={{ left: 70, right: 50, bottom: 50, top: 50 }}
+          height={500}
+          // TODO: make width a responsive value
+          width={800}
+          theme={VictoryTheme.material}
+          domainPadding={10}
+          containerComponent={<VictoryContainer responsive={false} />}
+        >
+          <VictoryAxis tickLabelComponent={<VictoryLabel />} />
+          <VictoryAxis dependentAxis tickLabelComponent={<VictoryLabel />} />
           <VictoryBar
+            horizontal={true}
             style={{ data: { fill: theme.palette.primary.main } }}
             data={exerciseCountData}
           />

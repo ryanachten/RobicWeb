@@ -11,7 +11,7 @@ import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
 import { Typography, Tabs, Tab, withTheme } from "@material-ui/core";
-import { compareExerciseDates } from "../utils";
+import { compareExerciseDates, lerpColor } from "../utils";
 import {
   VictoryChart,
   VictoryBar,
@@ -148,7 +148,7 @@ class Activity extends React.Component<Props, State> {
     const muscles = exercises ? this.getTotalMuscles(exercises) : [];
 
     // Get number of sessions per exercise within the active date range
-    const exerciseCountData =
+    const exerciseCountData: [{ x: string; y: number }] =
       exercises &&
       exercises
         .sort(this.sortExercisesAlphabetically)
@@ -158,12 +158,13 @@ class Activity extends React.Component<Props, State> {
           );
           return {
             x:
-              // Clip exercise graph labels to 10 characters
-              def.title.length > 10 ? `${def.title.slice(0, 7)}...` : def.title,
+              // Clip exercise graph labels to 9 characters
+              def.title.length > 9 ? `${def.title.slice(0, 6)}...` : def.title,
             y: validSessions.length
           };
         });
-    console.log("exerciseCountData", exerciseCountData);
+    const exerciseCountMax =
+      (exerciseCountData && Math.max(...exerciseCountData.map(e => e.y))) || 1;
 
     return (
       <PageRoot>
@@ -186,17 +187,25 @@ class Activity extends React.Component<Props, State> {
         <VictoryChart
           padding={{ left: 70, right: 50, bottom: 50, top: 50 }}
           height={500}
-          // TODO: make width a responsive value
-          width={800}
+          width={window.screen.width}
           theme={VictoryTheme.material}
           domainPadding={10}
-          containerComponent={<VictoryContainer responsive={false} />}
+          containerComponent={<VictoryContainer responsive={true} />}
         >
           <VictoryAxis tickLabelComponent={<VictoryLabel />} />
           <VictoryAxis dependentAxis tickLabelComponent={<VictoryLabel />} />
           <VictoryBar
             horizontal={true}
-            style={{ data: { fill: theme.palette.primary.main } }}
+            style={{
+              data: {
+                fill: d =>
+                  lerpColor(
+                    theme.palette.primary.light,
+                    theme.palette.secondary.light,
+                    d.y / exerciseCountMax
+                  )
+              }
+            }}
             data={exerciseCountData}
           />
         </VictoryChart>

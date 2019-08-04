@@ -60,6 +60,7 @@ type Props = {
 
 const MAX_GRAPH_WIDTH = 1000;
 const MAX_GRAPH_HEIGHT = 500;
+const ANIMATION_DURATION = 1000;
 
 class Activity extends React.Component<Props, State> {
   sortExercisesAlphabetically: (
@@ -206,7 +207,7 @@ class Activity extends React.Component<Props, State> {
           theme={VictoryTheme.material}
           domainPadding={10}
           containerComponent={<VictoryContainer responsive={false} />}
-          animate={{ duration: 1000 }}
+          animate={{ duration: ANIMATION_DURATION }}
         >
           <VictoryAxis tickLabelComponent={<VictoryLabel />} />
           <VictoryAxis dependentAxis tickLabelComponent={<VictoryLabel />} />
@@ -261,7 +262,6 @@ class Activity extends React.Component<Props, State> {
         };
       }
     );
-
     return (
       <VictoryChart
         padding={{ left: 70, right: 50, bottom: 50, top: 50 }}
@@ -276,6 +276,7 @@ class Activity extends React.Component<Props, State> {
       >
         {exerciseBests.map((best: any) => (
           <VictoryLine
+            animate={{ duration: ANIMATION_DURATION }}
             domain={{
               x: [
                 new Date(subDays(Date.now(), dateLimit)),

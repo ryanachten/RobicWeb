@@ -49,6 +49,7 @@ const Chart = ({ classes, data, label, mobile, theme }: Props) => {
       )}
       <VictoryChart
         theme={VictoryTheme.material}
+        animate={{ duration: 1000 }}
         containerComponent={
           <VictoryVoronoiContainer
             labels={d => formatDate(d.date)}

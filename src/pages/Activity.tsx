@@ -10,15 +10,16 @@ import { PageRoot, PageTitle } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
-import { Typography, Tabs, Tab, withTheme } from "@material-ui/core";
-import { compareExerciseDates, lerpColor } from "../utils";
+import { Typography, Tabs, Tab } from "@material-ui/core";
+import { lerpColor, getNetTotalFromSets, isCompositeExercise } from "../utils";
 import {
   VictoryChart,
   VictoryBar,
   VictoryTheme,
   VictoryLabel,
   VictoryAxis,
-  VictoryContainer
+  VictoryContainer,
+  VictoryLine
 } from "victory";
 
 const styles = (theme: Theme) =>
@@ -26,6 +27,9 @@ const styles = (theme: Theme) =>
     exerciseGrid: {
       display: "flex",
       flexFlow: "row wrap"
+    },
+    exerciseChart: {
+      margin: "0 auto"
     },
     exerciseList: {
       margin: theme.spacing.unit * 2,
@@ -152,6 +156,7 @@ class Activity extends React.Component<Props, State> {
       exercises &&
       exercises
         .sort(this.sortExercisesAlphabetically)
+        .reverse()
         .map((def: ExerciseDefinition) => {
           const validSessions = def.history.filter(e =>
             isAfter(e.date, subDays(Date.now(), dateLimit))
@@ -165,6 +170,38 @@ class Activity extends React.Component<Props, State> {
         });
     const exerciseCountMax =
       (exerciseCountData && Math.max(...exerciseCountData.map(e => e.y))) || 1;
+
+    const exerciseBests =
+      exercises &&
+      exercises.map(
+        (
+          def: ExerciseDefinition
+        ): { label: string; fill: string; data: { x: Date; y: number }[] } => {
+          const composite = isCompositeExercise(def.type);
+          const data = def.history.map(h => ({
+            x: new Date(h.date),
+            y: getNetTotalFromSets(h.sets, composite)
+          }));
+          const max = Math.max(...data.map(d => d.y));
+          const normalisedData = data.map(d => {
+            return {
+              x: d.x,
+              y: (d.y / max) * 100 || 0 //Fallback to 0 to handle NaN
+            };
+          });
+          // Line color is dictated by the last exercise session
+          const fillValue = normalisedData[normalisedData.length - 1].y / 100;
+          return {
+            label: def.title,
+            data: normalisedData,
+            fill: lerpColor(
+              theme.palette.primary.light,
+              theme.palette.secondary.light,
+              fillValue
+            )
+          };
+        }
+      );
 
     return (
       <PageRoot>
@@ -184,58 +221,64 @@ class Activity extends React.Component<Props, State> {
           menuComponent={muscle => this.renderMuscleList(exercises, muscle)}
           selected={muscles}
         />
-        <VictoryChart
-          padding={{ left: 70, right: 50, bottom: 50, top: 50 }}
-          height={500}
-          width={window.screen.width}
-          theme={VictoryTheme.material}
-          domainPadding={10}
-          containerComponent={<VictoryContainer responsive={true} />}
-        >
-          <VictoryAxis tickLabelComponent={<VictoryLabel />} />
-          <VictoryAxis dependentAxis tickLabelComponent={<VictoryLabel />} />
-          <VictoryBar
-            horizontal={true}
-            style={{
-              data: {
-                fill: d =>
-                  lerpColor(
-                    theme.palette.primary.light,
-                    theme.palette.secondary.light,
-                    d.y / exerciseCountMax
-                  )
-              }
-            }}
-            data={exerciseCountData}
-          />
-        </VictoryChart>
-        <section className={classes.exerciseGrid}>
-          {exercises &&
-            Object.keys(MuscleGroup)
-              .sort()
-              .map((key: any) => {
-                const muscle = MuscleGroup[key] as MuscleGroup;
-                const filtered = exercises.filter((e: ExerciseDefinition) =>
-                  e.primaryMuscleGroup.includes(muscle)
-                );
-                return (
-                  <div className={classes.exerciseList} key={muscle}>
-                    <Typography color="primary" variant="subtitle1">
-                      {muscle}
-                    </Typography>
-                    {filtered.length > 0 ? (
-                      filtered.map((e: ExerciseDefinition) => (
-                        <Typography key={e.id}>{e.title}</Typography>
-                      ))
-                    ) : (
-                      <Typography color="textSecondary">
-                        <em>No exercises</em>
-                      </Typography>
-                    )}
-                  </div>
-                );
-              })}
-        </section>
+        {exerciseCountData && (
+          <section className={classes.exerciseChart}>
+            <VictoryChart
+              padding={{ left: 70, right: 50, bottom: 50, top: 50 }}
+              height={500}
+              width={window.screen.width > 1000 ? 1000 : window.screen.width}
+              theme={VictoryTheme.material}
+              domainPadding={10}
+              containerComponent={<VictoryContainer responsive={false} />}
+              animate={{ duration: 1000 }}
+            >
+              <VictoryAxis tickLabelComponent={<VictoryLabel />} />
+              <VictoryAxis
+                dependentAxis
+                tickLabelComponent={<VictoryLabel />}
+              />
+              <VictoryBar
+                horizontal={true}
+                style={{
+                  data: {
+                    fill: d =>
+                      lerpColor(
+                        theme.palette.primary.light,
+                        theme.palette.secondary.light,
+                        d.y / exerciseCountMax
+                      )
+                  }
+                }}
+                data={exerciseCountData}
+              />
+            </VictoryChart>
+          </section>
+        )}
+        {exerciseBests && (
+          <VictoryChart
+            padding={{ left: 70, right: 50, bottom: 50, top: 50 }}
+            height={500}
+            width={window.screen.width > 1000 ? 1000 : window.screen.width}
+            containerComponent={<VictoryContainer responsive={false} />}
+            theme={VictoryTheme.material}
+          >
+            {exerciseBests.map((best: any) => (
+              <VictoryLine
+                domain={{
+                  x: [
+                    new Date(subDays(Date.now(), dateLimit)),
+                    new Date(Date.now())
+                  ]
+                }}
+                key={best.label}
+                data={best.data}
+                style={{
+                  data: { stroke: best.fill }
+                }}
+              />
+            ))}
+          </VictoryChart>
+        )}
       </PageRoot>
     );
   }

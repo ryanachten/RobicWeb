@@ -45,6 +45,7 @@ enum TabMode {
 
 type State = {
   dateLimit: number;
+  selectedExercises: ExerciseDefinition[];
   tab: TabMode;
 };
 
@@ -57,6 +58,9 @@ type Props = {
   theme: Theme;
 };
 
+const MAX_GRAPH_WIDTH = 1000;
+const MAX_GRAPH_HEIGHT = 500;
+
 class Activity extends React.Component<Props, State> {
   sortExercisesAlphabetically: (
     a: ExerciseDefinition,
@@ -66,16 +70,27 @@ class Activity extends React.Component<Props, State> {
     super(props);
     this.state = {
       dateLimit: 7,
+      selectedExercises: [],
       tab: TabMode.WEEK
     };
     this.getCurrentExercises = this.getCurrentExercises.bind(this);
     this.getExerciseCounts = this.getExerciseCounts.bind(this);
+    this.renderCharts = this.renderCharts.bind(this);
     this.renderExerciseCountChart = this.renderExerciseCountChart.bind(this);
     this.updateDate = this.updateDate.bind(this);
     this.sortExercisesAlphabetically = (
       a: ExerciseDefinition,
       b: ExerciseDefinition
     ) => (a.title > b.title ? 1 : -1);
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.data.loading && !this.props.data.loading) {
+      const selectedExercises = this.getCurrentExercises();
+      this.setState({
+        selectedExercises
+      });
+    }
   }
 
   updateDate(tab: TabMode) {
@@ -90,7 +105,9 @@ class Activity extends React.Component<Props, State> {
       default:
         daysAmount = 7;
     }
+    const selectedExercises = this.getCurrentExercises();
     this.setState({
+      selectedExercises,
       tab,
       dateLimit: daysAmount
     });
@@ -149,11 +166,9 @@ class Activity extends React.Component<Props, State> {
     );
   }
 
-  renderMuscleList(
-    exercises: ExerciseDefinition[],
-    muscle: MuscleGroup
-  ): ReactElement | null {
-    if (!exercises || !muscle) {
+  renderMuscleList(muscle: MuscleGroup): ReactElement | null {
+    const { selectedExercises: exercises } = this.state;
+    if (!muscle) {
       return null;
     }
     // Find exercises associated with selected muscle
@@ -170,8 +185,9 @@ class Activity extends React.Component<Props, State> {
     ) : null;
   }
 
-  renderExerciseCountChart(exercises: ExerciseDefinition[]) {
+  renderExerciseCountChart() {
     const { classes, theme } = this.props;
+    const { selectedExercises: exercises } = this.state;
     // Get number of sessions per exercise within the active date range
     const { exerciseCountData, exerciseCountMax } = this.getExerciseCounts(
       exercises
@@ -181,8 +197,12 @@ class Activity extends React.Component<Props, State> {
       <section className={classes.exerciseChart}>
         <VictoryChart
           padding={{ left: 70, right: 50, bottom: 50, top: 50 }}
-          height={500}
-          width={window.screen.width > 1000 ? 1000 : window.screen.width}
+          height={MAX_GRAPH_HEIGHT}
+          width={
+            window.screen.width > MAX_GRAPH_WIDTH
+              ? MAX_GRAPH_WIDTH
+              : window.screen.width
+          }
           theme={VictoryTheme.material}
           domainPadding={10}
           containerComponent={<VictoryContainer responsive={false} />}
@@ -209,9 +229,9 @@ class Activity extends React.Component<Props, State> {
     );
   }
 
-  renderPersonalBestChart(exercises: ExerciseDefinition[]) {
+  renderPersonalBestChart() {
     const { theme } = this.props;
-    const { dateLimit } = this.state;
+    const { dateLimit, selectedExercises: exercises } = this.state;
     const exerciseBests = exercises.map(
       (
         def: ExerciseDefinition
@@ -245,8 +265,12 @@ class Activity extends React.Component<Props, State> {
     return (
       <VictoryChart
         padding={{ left: 70, right: 50, bottom: 50, top: 50 }}
-        height={500}
-        width={window.screen.width > 1000 ? 1000 : window.screen.width}
+        height={MAX_GRAPH_HEIGHT}
+        width={
+          window.screen.width > MAX_GRAPH_WIDTH
+            ? MAX_GRAPH_WIDTH
+            : window.screen.width
+        }
         containerComponent={<VictoryContainer responsive={false} />}
         theme={VictoryTheme.material}
       >
@@ -269,41 +293,40 @@ class Activity extends React.Component<Props, State> {
     );
   }
 
-  render() {
-    const { dateLimit, tab } = this.state;
-    const { data, theme } = this.props;
-    // TODO: move to state
-    const exercises = this.getCurrentExercises();
-    const muscles = exercises ? this.getTotalMuscles(exercises) : [];
-    const loading = data.loading;
-
+  renderCharts() {
+    const { dateLimit, selectedExercises, tab } = this.state;
+    const muscles = selectedExercises
+      ? this.getTotalMuscles(selectedExercises)
+      : [];
     return (
-      <PageRoot>
-        {loading ? (
-          <LoadingSplash />
-        ) : (
-          <Fragment>
-            <PageTitle label={routes.ACTIVITY.label} />
-            <Typography />
-            <Tabs
-              indicatorColor="primary"
-              onChange={(e, tab: TabMode) => this.updateDate(tab)}
-              value={tab}
-            >
-              <Tab label="Weekly" value={TabMode.WEEK} />
-              <Tab label="Monthly" value={TabMode.MONTH} />
-              <Tab label="Yearly" value={TabMode.YEAR} />
-            </Tabs>
-            <FullBody
-              muscleGroupLevels={dateLimit}
-              menuComponent={muscle => this.renderMuscleList(exercises, muscle)}
-              selected={muscles}
-            />
-            {exercises && this.renderExerciseCountChart(exercises)}
-            {exercises && this.renderPersonalBestChart(exercises)}
-          </Fragment>
-        )}
-      </PageRoot>
+      <Fragment>
+        <PageTitle label={routes.ACTIVITY.label} />
+        <Typography />
+        <Tabs
+          indicatorColor="primary"
+          onChange={(e, tab: TabMode) => this.updateDate(tab)}
+          value={tab}
+        >
+          <Tab label="Weekly" value={TabMode.WEEK} />
+          <Tab label="Monthly" value={TabMode.MONTH} />
+          <Tab label="Yearly" value={TabMode.YEAR} />
+        </Tabs>
+        <FullBody
+          muscleGroupLevels={dateLimit}
+          menuComponent={muscle => this.renderMuscleList(muscle)}
+          selected={muscles}
+        />
+        {this.renderExerciseCountChart()}
+        {this.renderPersonalBestChart()}
+      </Fragment>
+    );
+  }
+
+  render() {
+    const { data } = this.props;
+    const loading = data.loading;
+    return (
+      <PageRoot>{loading ? <LoadingSplash /> : this.renderCharts()}</PageRoot>
     );
   }
 }

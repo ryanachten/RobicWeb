@@ -86,12 +86,17 @@ class Activity extends React.Component<Props, State> {
     ) => (a.title > b.title ? 1 : -1);
   }
 
+  componentDidMount() {
+    // If exercises have already been loaded, filter them
+    if (this.props.data.exerciseDefinitions) {
+      this.getCurrentExercises();
+    }
+  }
+
   componentDidUpdate(prevProps: Props) {
+    // Done loading, update filtered exercises
     if (prevProps.data.loading && !this.props.data.loading) {
-      const selectedExercises = this.getCurrentExercises();
-      this.setState({
-        selectedExercises
-      });
+      this.getCurrentExercises();
     }
   }
 
@@ -107,9 +112,8 @@ class Activity extends React.Component<Props, State> {
       default:
         daysAmount = 7;
     }
-    const selectedExercises = this.getCurrentExercises();
+    this.getCurrentExercises();
     this.setState({
-      selectedExercises,
       tab,
       dateLimit: daysAmount
     });
@@ -118,18 +122,20 @@ class Activity extends React.Component<Props, State> {
   getCurrentExercises() {
     // Selected exercises filtered to those that are within the date range
     const exercises = this.props.data.exerciseDefinitions;
-    return (
-      exercises &&
-      exercises.filter(({ history }: ExerciseDefinition) => {
-        return (
-          history.length > 0 &&
-          isAfter(
-            history[history.length - 1].date,
-            subDays(Date.now(), this.state.dateLimit)
-          )
-        );
-      })
-    );
+    const selectedExercises = exercises
+      ? exercises.filter(({ history }: ExerciseDefinition) => {
+          return (
+            history.length > 0 &&
+            isAfter(
+              history[history.length - 1].date,
+              subDays(Date.now(), this.state.dateLimit)
+            )
+          );
+        })
+      : [];
+    this.setState({
+      selectedExercises
+    });
   }
 
   getExerciseCounts(exercises: ExerciseDefinition[]) {

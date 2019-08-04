@@ -19,7 +19,8 @@ import {
   VictoryLabel,
   VictoryAxis,
   VictoryContainer,
-  VictoryLine
+  VictoryLine,
+  VictoryVoronoiContainer
 } from "victory";
 
 const styles = (theme: Theme) =>
@@ -245,6 +246,7 @@ class Activity extends React.Component<Props, State> {
         const max = Math.max(...data.map(d => d.y));
         const normalisedData = data.map(d => {
           return {
+            title: def.title,
             x: d.x,
             y: (d.y / max) * 100 || 0 //Fallback to 0 to handle NaN
           };
@@ -264,14 +266,15 @@ class Activity extends React.Component<Props, State> {
     );
     return (
       <VictoryChart
-        padding={{ left: 70, right: 50, bottom: 50, top: 50 }}
         height={MAX_GRAPH_HEIGHT}
         width={
           window.screen.width > MAX_GRAPH_WIDTH
             ? MAX_GRAPH_WIDTH
             : window.screen.width
         }
-        containerComponent={<VictoryContainer responsive={false} />}
+        containerComponent={
+          <VictoryVoronoiContainer responsive={false} labels={d => d.title} />
+        }
         theme={VictoryTheme.material}
       >
         {exerciseBests.map((best: any) => (

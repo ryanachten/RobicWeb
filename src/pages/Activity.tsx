@@ -237,69 +237,60 @@ class Activity extends React.Component<Props, State> {
     );
   }
 
-  renderPersonalBestChart() {
-    const { theme } = this.props;
-    const { dateLimit, selectedExercises: exercises } = this.state;
-    const exerciseBests = exercises.map(
-      (
-        def: ExerciseDefinition
-      ): { label: string; fill: string; data: { x: Date; y: number }[] } => {
-        const composite = isCompositeExercise(def.type);
-        const data = def.history.map(h => ({
-          x: new Date(h.date),
-          y: getNetTotalFromSets(h.sets, composite)
-        }));
-        const max = Math.max(...data.map(d => d.y));
-        const normalisedData = data.map(d => {
-          return {
-            title: def.title,
-            x: d.x,
-            y: (d.y / max) * 100 || 0 //Fallback to 0 to handle NaN
-          };
-        });
-        // Line color is dictated by the last exercise session
-        const fillValue = normalisedData[normalisedData.length - 1].y / 100;
-        return {
-          label: def.title,
-          data: normalisedData,
-          fill: lerpColor(
-            theme.palette.primary.light,
-            theme.palette.secondary.light,
-            fillValue
-          )
-        };
-      }
+  renderMuscleCountChart(muscles: MuscleGroup[]) {
+    const { classes, theme } = this.props;
+
+    const muscleCounts = muscles
+      .sort()
+      .reverse()
+      .reduce((total: any, muscle) => {
+        total[muscle] ? total[muscle]++ : (total[muscle] = 1);
+        return { ...total };
+      }, {});
+    const muscleData: { x: string; y: number }[] = Object.keys(
+      muscleCounts
+    ).map(muscle => ({
+      x:
+        // Clip exercise graph labels to 9 characters
+        muscle.length > 9 ? `${muscle.slice(0, 6)}...` : muscle,
+      y: muscleCounts[muscle]
+    }));
+    const maxMuscleCount = Math.max(
+      ...Object.keys(muscleCounts).map((muscle: any) => muscleCounts[muscle])
     );
     return (
-      <VictoryChart
-        height={MAX_GRAPH_HEIGHT}
-        width={
-          window.screen.width > MAX_GRAPH_WIDTH
-            ? MAX_GRAPH_WIDTH
-            : window.screen.width
-        }
-        containerComponent={
-          <VictoryVoronoiContainer responsive={false} labels={d => d.title} />
-        }
-        theme={VictoryTheme.material}
-      >
-        {exerciseBests.map((best: any) => (
-          <VictoryLine
-            animate={{ duration: ANIMATION_DURATION }}
-            domain={{
-              x: [
-                new Date(subDays(Date.now(), dateLimit)),
-                new Date(Date.now())
-              ]
-            }}
-            key={best.label}
-            data={best.data}
+      <section className={classes.exerciseChart}>
+        <VictoryChart
+          padding={{ left: 70, right: 50, bottom: 50, top: 50 }}
+          height={MAX_GRAPH_HEIGHT}
+          width={
+            window.screen.width > MAX_GRAPH_WIDTH
+              ? MAX_GRAPH_WIDTH
+              : window.screen.width
+          }
+          theme={VictoryTheme.material}
+          domainPadding={10}
+          containerComponent={<VictoryContainer responsive={false} />}
+          animate={{ duration: ANIMATION_DURATION }}
+        >
+          <VictoryAxis tickLabelComponent={<VictoryLabel />} />
+          <VictoryAxis dependentAxis tickLabelComponent={<VictoryLabel />} />
+          <VictoryBar
+            horizontal={true}
             style={{
-              data: { stroke: best.fill }
+              data: {
+                fill: d =>
+                  lerpColor(
+                    theme.palette.primary.light,
+                    theme.palette.secondary.light,
+                    d.y / maxMuscleCount
+                  )
+              }
             }}
+            data={muscleData}
           />
-        ))}
-      </VictoryChart>
+        </VictoryChart>
+      </section>
     );
   }
 
@@ -326,8 +317,8 @@ class Activity extends React.Component<Props, State> {
           menuComponent={muscle => this.renderMuscleList(muscle)}
           selected={muscles}
         />
+        {this.renderMuscleCountChart(muscles)}
         {this.renderExerciseCountChart()}
-        {this.renderPersonalBestChart()}
       </Fragment>
     );
   }

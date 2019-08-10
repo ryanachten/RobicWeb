@@ -29,10 +29,10 @@ const styles = (theme: Theme) =>
       width: "100%"
     },
     link: {
-      margin: theme.spacing.unit * 2
+      margin: theme.spacing(2)
     },
     mobileProfileWrapper: {
-      padding: theme.spacing.unit * 2,
+      padding: theme.spacing(2),
       position: "fixed",
       right: 0,
       top: 0
@@ -77,7 +77,7 @@ class Navigation extends React.Component<Props, State> {
 
   onLogout() {
     window.localStorage.removeItem("token");
-    location.reload();
+    window.location.reload();
     this.setState({
       anchorEl: null
     });

@@ -10,9 +10,6 @@ const theme = createMuiTheme({
   palette: {
     primary: orange,
     secondary: red
-  },
-  typography: {
-    useNextVariants: true
   }
 });
 

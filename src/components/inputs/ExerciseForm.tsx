@@ -25,18 +25,18 @@ import { isCompositeExercise, getChildExerciseMuscles } from "../../utils";
 const styles = (theme: Theme) =>
   createStyles({
     error: {
-      marginBottom: theme.spacing.unit * 2,
-      marginTop: theme.spacing.unit * 2
+      marginBottom: theme.spacing(2),
+      marginTop: theme.spacing(2)
     },
     muscleSelectWrapper: {
-      margin: theme.spacing.unit
+      margin: theme.spacing(1)
     },
     submitWrapper: {
-      marginTop: theme.spacing.unit * 2,
+      marginTop: theme.spacing(2),
       width: "100%"
     },
     input: {
-      margin: theme.spacing.unit
+      margin: theme.spacing(1)
     }
   });
 

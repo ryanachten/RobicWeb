@@ -6,9 +6,9 @@ import classnames from "../../utils";
 const styles = (theme: Theme) =>
   createStyles({
     root: {
-      padding: theme.spacing.unit * 4,
+      padding: theme.spacing(4),
       [theme.breakpoints.only("xs")]: {
-        paddingBottom: theme.spacing.unit * 4 + 40
+        paddingBottom: theme.spacing(4) + 40
       }
     }
   });

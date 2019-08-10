@@ -43,20 +43,20 @@ const styles = (theme: Theme) =>
     buttonWrapper: {
       alignItems: "center",
       display: "flex",
-      marginLeft: theme.spacing.unit,
-      marginTop: theme.spacing.unit * 2
+      marginLeft: theme.spacing(1),
+      marginTop: theme.spacing(2)
     },
     createExerciseLink: {
       display: "block",
-      marginBottom: theme.spacing.unit * 2
+      marginBottom: theme.spacing(2)
     },
     iconButton: {
       height: "48px",
       minWidth: "48px"
     },
     exerciseTitle: {
-      marginBottom: theme.spacing.unit * 3,
-      marginTop: theme.spacing.unit * 4
+      marginBottom: theme.spacing(3),
+      marginTop: theme.spacing(4)
     },
     form: {
       display: "flex",
@@ -70,26 +70,26 @@ const styles = (theme: Theme) =>
       display: "flex"
     },
     historyTitle: {
-      marginRight: theme.spacing.unit * 2
+      marginRight: theme.spacing(2)
     },
     historyWrapper: {
-      marginBottom: theme.spacing.unit * 4
+      marginBottom: theme.spacing(4)
     },
     input: {
-      padding: theme.spacing.unit * 2
+      padding: theme.spacing(2)
     },
     selectTitle: {
-      marginRight: theme.spacing.unit
+      marginRight: theme.spacing(1)
     },
     selectMessage: {
-      marginTop: theme.spacing.unit * 4
+      marginTop: theme.spacing(4)
     },
     selectWrapper: {
       alignItems: "baseline",
       display: "flex"
     },
     setItem: {
-      marginRight: theme.spacing.unit * 2
+      marginRight: theme.spacing(2)
     },
     setWrapper: {
       alignItems: "center",
@@ -101,7 +101,7 @@ const styles = (theme: Theme) =>
       flexFlow: "row wrap"
     },
     timerButton: {
-      marginLeft: theme.spacing.unit * 2
+      marginLeft: theme.spacing(2)
     }
   });
 

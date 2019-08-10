@@ -16,20 +16,20 @@ import { Link } from "../components";
 const styles = (theme: Theme) =>
   createStyles({
     error: {
-      marginTop: theme.spacing.unit
+      marginTop: theme.spacing(1)
     },
     form: {
       display: "flex",
       flexFlow: "row wrap"
     },
     header: {
-      marginBottom: theme.spacing.unit * 2,
+      marginBottom: theme.spacing(2),
       [theme.breakpoints.only("xs")]: {
         wordBreak: "break-all"
       }
     },
     input: {
-      margin: theme.spacing.unit
+      margin: theme.spacing(1)
     },
     root: {
       alignItems: "center",
@@ -37,7 +37,7 @@ const styles = (theme: Theme) =>
       flexDirection: "column",
       minHeight: "100vh",
       justifyContent: "center",
-      padding: theme.spacing.unit * 4
+      padding: theme.spacing(4)
     },
     submitWrapper: {
       width: "100%"
@@ -109,7 +109,7 @@ class Register extends React.Component<Props, State> {
         window.localStorage.setItem("token", token);
         /* Workaround: Not sure how to set the auth token on the Apollo client
           after it has been instantiated */
-        location.reload();
+        window.location.reload();
       }
     } catch (error) {
       this.setState({

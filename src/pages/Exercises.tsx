@@ -23,7 +23,7 @@ import { isMobile } from "../constants/sizes";
 const styles = (theme: Theme) =>
   createStyles({
     createLink: {
-      marginRight: theme.spacing.unit * 4
+      marginRight: theme.spacing(4)
     },
     exerciseList: {
       padding: 0
@@ -31,20 +31,20 @@ const styles = (theme: Theme) =>
     exerciseTitle: {
       cursor: "pointer",
       listStyle: "none",
-      marginBottom: theme.spacing.unit * 2,
+      marginBottom: theme.spacing(2),
       textTransform: "capitalize"
     },
     exerciseTitleWrapper: {
       display: "flex"
     },
     exerciseDate: {
-      marginLeft: theme.spacing.unit / 2
+      marginLeft: theme.spacing(1) / 2
     },
     header: {
       alignItems: "baseline",
       display: "flex",
       flexFlow: "row wrap",
-      marginBottom: theme.spacing.unit * 4
+      marginBottom: theme.spacing(4)
     },
     search: {
       alignItems: "baseline",

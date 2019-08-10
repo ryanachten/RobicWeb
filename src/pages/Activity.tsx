@@ -31,7 +31,7 @@ const styles = (theme: Theme) =>
       margin: "0 auto"
     },
     exerciseList: {
-      margin: theme.spacing.unit * 2,
+      margin: theme.spacing(2),
       width: "200px"
     }
   });

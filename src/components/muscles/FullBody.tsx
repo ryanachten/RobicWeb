@@ -20,7 +20,7 @@ import { PopoverProps } from "@material-ui/core/Popover";
 const styles = (theme: Theme) =>
   createStyles({
     popover: {
-      padding: theme.spacing.unit * 2
+      padding: theme.spacing(2)
     },
     root: {
       display: "flex",

@@ -10,7 +10,7 @@ import { ExerciseType } from "../constants/types";
 const styles = (theme: Theme) =>
   createStyles({
     typeIcon: {
-      marginRight: theme.spacing.unit
+      marginRight: theme.spacing(1)
     },
     typeWrapper: {
       alignItems: "center",

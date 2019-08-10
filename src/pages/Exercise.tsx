@@ -51,21 +51,21 @@ const styles = (theme: Theme) =>
     },
     childExList: {
       margin: 0,
-      paddingLeft: theme.spacing.unit * 2
+      paddingLeft: theme.spacing(2)
     },
     childExListWrapper: {
-      margin: theme.spacing.unit
+      margin: theme.spacing(1)
     },
     header: {
-      marginBottom: theme.spacing.unit * 2
+      marginBottom: theme.spacing(2)
     },
     historyList: {
       margin: 0,
       padding: 0
-      // paddingLeft: theme.spacing.unit * 2
+      // paddingLeft: theme.spacing(2)
     },
     reps: {
-      marginRight: theme.spacing.unit * 2
+      marginRight: theme.spacing(2)
     },
     sessionHeader: {
       display: "flex",
@@ -73,7 +73,7 @@ const styles = (theme: Theme) =>
       maxWidth: 400
     },
     sessionItem: {
-      marginBottom: theme.spacing.unit * 2
+      marginBottom: theme.spacing(2)
     },
     setItem: {
       display: "flex"
@@ -81,7 +81,7 @@ const styles = (theme: Theme) =>
     titleWrapper: {
       alignItems: "center",
       display: "flex",
-      marginBottom: theme.spacing.unit * 3,
+      marginBottom: theme.spacing(3),
       textTransform: "capitalize"
     }
   });

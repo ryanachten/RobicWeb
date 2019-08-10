@@ -18,7 +18,7 @@ type Props = {
 const styles = (theme: Theme) =>
   createStyles({
     wrapper: {
-      margin: theme.spacing.unit * 4,
+      margin: theme.spacing(4),
       marginLeft: 0
     },
     text: {

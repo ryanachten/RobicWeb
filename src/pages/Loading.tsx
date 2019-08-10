@@ -13,11 +13,11 @@ const styles = (theme: Theme) =>
       flexDirection: "column",
       justifyContent: "center",
       height: "100vh",
-      padding: theme.spacing.unit * 4,
+      padding: theme.spacing(4),
       width: "100vw"
     },
     title: {
-      marginBottom: theme.spacing.unit * 4
+      marginBottom: theme.spacing(4)
     }
   });
 

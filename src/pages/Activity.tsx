@@ -187,6 +187,13 @@ class Activity extends React.Component<Props, State> {
   renderExerciseCountChart(exerciseCountData: any, exerciseCountMax: number) {
     const { classes, theme } = this.props;
 
+    // Don't show the exercise count chart if y values are the same
+    const yAllTheSame = !exerciseCountData
+      .map((d: any) => d.y === exerciseCountData[0].y || d.y === 0)
+      .includes(false);
+    if (yAllTheSame) {
+      return null;
+    }
     return (
       <section className={classes.exerciseChart}>
         <VictoryChart

@@ -53,12 +53,18 @@ const styles = (theme: Theme) =>
       display: "block",
       marginBottom: theme.spacing(2)
     },
+    filterButtonWrapper: {
+      marginTop: theme.spacing(2)
+    },
     filterMenu: {
       padding: theme.spacing(2)
     },
     iconButton: {
       height: "48px",
       minWidth: "48px"
+    },
+    doneButton: {
+      marginTop: theme.spacing(2)
     },
     exerciseTitle: {
       marginBottom: theme.spacing(3),
@@ -113,9 +119,12 @@ const styles = (theme: Theme) =>
 
 type State = {
   filteredExercises: ExerciseDefinition[];
-  filterExerciseType: string;
   filterMenuAnchor: Element | null;
+  filterExerciseType: string;
   filterMuscleGroup: string;
+  // Temp* values used for menu state
+  filterTempExerciseType: string;
+  filterTempMuscleGroup: string;
   selectedExercise: ExerciseDefinition | null;
   sets: Set[];
   timerRunning: boolean;
@@ -138,9 +147,11 @@ class Index extends React.Component<Props, State> {
     super(props);
     this.state = {
       filteredExercises: [],
-      filterExerciseType: FILTER_ALL,
       filterMenuAnchor: null,
+      filterExerciseType: FILTER_ALL,
       filterMuscleGroup: FILTER_ALL,
+      filterTempExerciseType: FILTER_ALL,
+      filterTempMuscleGroup: FILTER_ALL,
       selectedExercise: null,
       sets: [], //this will be set on exercise select
       timerRunning: false
@@ -150,6 +161,8 @@ class Index extends React.Component<Props, State> {
     this.renderExerciseFilter = this.renderExerciseFilter.bind(this);
     this.removeSet = this.removeSet.bind(this);
     this.renderSetInputs = this.renderSetInputs.bind(this);
+    this.resetFilter = this.resetFilter.bind(this);
+    this.submitFilter = this.submitFilter.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.openFilterMenu = this.openFilterMenu.bind(this);
     this.toggleTimer = this.toggleTimer.bind(this);
@@ -189,6 +202,24 @@ class Index extends React.Component<Props, State> {
         })
       : (state.sets[set][field] = value);
     this.setState(state);
+  }
+
+  resetFilter() {
+    const { filterExerciseType, filterMuscleGroup } = this.state;
+    // Reset temp values to confirmed values
+    this.setState({
+      filterTempExerciseType: filterExerciseType,
+      filterTempMuscleGroup: filterMuscleGroup
+    });
+  }
+
+  submitFilter() {
+    const { filterTempExerciseType, filterTempMuscleGroup } = this.state;
+    // Do filtering stuff...
+    this.setState({
+      filterExerciseType: filterTempExerciseType,
+      filterMuscleGroup: filterTempMuscleGroup
+    });
   }
 
   async submitForm(e: React.FormEvent) {
@@ -246,6 +277,7 @@ class Index extends React.Component<Props, State> {
   };
 
   closeFilterMenu() {
+    this.resetFilter();
     this.setState({
       filterMenuAnchor: null
     });
@@ -258,7 +290,7 @@ class Index extends React.Component<Props, State> {
   }
 
   setFilterValue(
-    field: "filterMuscleGroup" | "filterExerciseType",
+    field: "filterTempMuscleGroup" | "filterTempExerciseType",
     value: any
   ) {
     const state: any = { ...this.state };
@@ -510,7 +542,12 @@ class Index extends React.Component<Props, State> {
             Reset
           </Button>
         </div>
-        <Button color="primary" type="submit">
+        <Button
+          className={classes.doneButton}
+          color="primary"
+          variant="contained"
+          type="submit"
+        >
           Done
         </Button>
       </form>
@@ -519,12 +556,11 @@ class Index extends React.Component<Props, State> {
 
   renderExerciseFilter() {
     const {
-      filterExerciseType,
       filterMenuAnchor,
-      filterMuscleGroup
+      filterTempExerciseType,
+      filterTempMuscleGroup
     } = this.state;
     const { classes } = this.props;
-    console.log("classes", classes);
     const noValue = {
       id: FILTER_ALL,
       label: "All",
@@ -566,9 +602,9 @@ class Index extends React.Component<Props, State> {
           <Select
             label="Muscle group"
             options={primaryMuscleOptions}
-            value={filterMuscleGroup}
+            value={filterTempMuscleGroup}
             onChange={e =>
-              this.setFilterValue("filterMuscleGroup", e.target.value)
+              this.setFilterValue("filterTempMuscleGroup", e.target.value)
             }
           />
         </MenuItem>
@@ -576,12 +612,22 @@ class Index extends React.Component<Props, State> {
           <Select
             label="Exercise type"
             options={exerciseTypeOptions}
-            value={filterExerciseType}
+            value={filterTempExerciseType}
             onChange={e =>
-              this.setFilterValue("filterExerciseType", e.target.value)
+              this.setFilterValue("filterTempExerciseType", e.target.value)
             }
           />
         </MenuItem>
+        <div className={classes.filterButtonWrapper}>
+          <Button
+            color="primary"
+            onClick={this.submitFilter}
+            variant="contained"
+          >
+            Filter
+          </Button>
+          <Button onClick={this.resetFilter}>Reset</Button>
+        </div>
       </Menu>
     );
   }

@@ -161,6 +161,7 @@ class Index extends React.Component<Props, State> {
     this.renderExerciseFilter = this.renderExerciseFilter.bind(this);
     this.removeSet = this.removeSet.bind(this);
     this.renderSetInputs = this.renderSetInputs.bind(this);
+    this.cancelFilter = this.cancelFilter.bind(this);
     this.resetFilter = this.resetFilter.bind(this);
     this.submitFilter = this.submitFilter.bind(this);
     this.submitForm = this.submitForm.bind(this);
@@ -204,12 +205,22 @@ class Index extends React.Component<Props, State> {
     this.setState(state);
   }
 
-  resetFilter() {
+  cancelFilter() {
     const { filterExerciseType, filterMuscleGroup } = this.state;
     // Reset temp values to confirmed values
     this.setState({
       filterTempExerciseType: filterExerciseType,
       filterTempMuscleGroup: filterMuscleGroup
+    });
+  }
+
+  resetFilter() {
+    // Reset temp values to initial values
+    this.setState({
+      filterExerciseType: FILTER_ALL,
+      filterMuscleGroup: FILTER_ALL,
+      filterTempExerciseType: FILTER_ALL,
+      filterTempMuscleGroup: FILTER_ALL
     });
   }
 
@@ -241,10 +252,15 @@ class Index extends React.Component<Props, State> {
             ) && e.type === filterTempExerciseType
           );
         });
+    // If the query returns no results, reset menu
+    const reset = filteredExercises.length === 0;
     this.setState({
       filteredExercises,
-      filterExerciseType: filterTempExerciseType,
-      filterMuscleGroup: filterTempMuscleGroup
+      filterMenuAnchor: null, // close menu
+      filterExerciseType: reset ? FILTER_ALL : filterTempExerciseType,
+      filterMuscleGroup: reset ? FILTER_ALL : filterTempMuscleGroup,
+      filterTempExerciseType: reset ? FILTER_ALL : filterTempExerciseType,
+      filterTempMuscleGroup: reset ? FILTER_ALL : filterTempMuscleGroup
     });
   }
 
@@ -303,7 +319,7 @@ class Index extends React.Component<Props, State> {
   };
 
   closeFilterMenu() {
-    this.resetFilter();
+    this.cancelFilter();
     this.setState({
       filterMenuAnchor: null
     });

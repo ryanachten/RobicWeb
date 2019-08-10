@@ -34,6 +34,9 @@ type Props = {
 };
 
 const Chart = ({ classes, data, label, mobile, theme }: Props) => {
+  // Check if all chart y values are the same
+  const yAllTheSame = !data.map(d => d.y === data[0].y).includes(false);
+
   return (
     <div className={classes.chart}>
       {!mobile && (
@@ -42,6 +45,17 @@ const Chart = ({ classes, data, label, mobile, theme }: Props) => {
         </Typography>
       )}
       <VictoryChart
+        domain={
+          // If all y values are the same, we calculate the domain
+          // manually to avoid weird Victory calculations
+          yAllTheSame
+            ? {
+                x: [data[0].x, data[data.length - 1].x],
+                y: [data[0].y - 1, data[0].y + 1]
+              }
+            : // ... otherwise, let Victory calculate domain
+              undefined
+        }
         theme={VictoryTheme.material}
         animate={{ duration: 1000 }}
         containerComponent={

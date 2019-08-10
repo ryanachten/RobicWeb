@@ -215,8 +215,34 @@ class Index extends React.Component<Props, State> {
 
   submitFilter() {
     const { filterTempExerciseType, filterTempMuscleGroup } = this.state;
+    const exercises: ExerciseDefinition[] = this.props.data.exerciseDefinitions;
     // Do filtering stuff...
+    const filterIsInactive =
+      filterTempExerciseType === FILTER_ALL &&
+      filterTempMuscleGroup === FILTER_ALL;
+    // If both filters are set to ALL, just return empty
+    const filteredExercises = filterIsInactive
+      ? []
+      : exercises.filter(e => {
+          // ...if only primaryMuscleGroup is filtered, return those which include match
+          if (filterTempExerciseType === FILTER_ALL) {
+            return e.primaryMuscleGroup.includes(
+              filterTempMuscleGroup as MuscleGroup
+            );
+          }
+          // ...if only exercise type is selected, return those with type
+          if (filterTempMuscleGroup === FILTER_ALL) {
+            return e.type === filterTempExerciseType;
+          }
+          // ...finally, only return those which match both scenarios
+          return (
+            e.primaryMuscleGroup.includes(
+              filterTempMuscleGroup as MuscleGroup
+            ) && e.type === filterTempExerciseType
+          );
+        });
     this.setState({
+      filteredExercises,
       filterExerciseType: filterTempExerciseType,
       filterMuscleGroup: filterTempMuscleGroup
     });
@@ -634,8 +660,14 @@ class Index extends React.Component<Props, State> {
 
   render() {
     const { classes, data } = this.props;
-    const { filterMenuAnchor, selectedExercise } = this.state;
-    const { exerciseDefinitions: exercises, loading } = data;
+    const {
+      filteredExercises,
+      filterMenuAnchor,
+      selectedExercise
+    } = this.state;
+    const { exerciseDefinitions, loading } = data;
+    const exercises =
+      filteredExercises.length > 0 ? filteredExercises : exerciseDefinitions;
     return (
       <PageRoot>
         {loading ? (
@@ -667,7 +699,7 @@ class Index extends React.Component<Props, State> {
                   onClick={this.openFilterMenu}
                 >
                   <FilterIcon
-                    color={Boolean(filterMenuAnchor) ? "primary" : "inherit"}
+                    color={filteredExercises.length > 0 ? "primary" : "inherit"}
                   />
                 </IconButton>
                 {Boolean(filterMenuAnchor) && this.renderExerciseFilter()}

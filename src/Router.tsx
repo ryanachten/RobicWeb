@@ -10,7 +10,6 @@ import Dashboard from "./pages/Dashboard";
 import Loading from "./pages/Loading";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Stub from "./pages/Stub";
 import withRoot from "./withRoot";
 import ApolloClient from "./ApolloClient";
 import routes from "./constants/routes";

@@ -50,7 +50,6 @@ class NewExercise extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes } = this.props;
     return (
       <PageRoot>
         <PageTitle

@@ -1,12 +1,6 @@
 import React from "react";
 import { Classes } from "jss";
-import {
-  Typography,
-  Theme,
-  withStyles,
-  createStyles,
-  withWidth
-} from "@material-ui/core";
+import { Typography, Theme, withStyles, createStyles } from "@material-ui/core";
 import {
   VictoryChart,
   VictoryVoronoiContainer,

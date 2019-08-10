@@ -28,10 +28,6 @@ type Props = {
 };
 
 class Loading extends React.Component<WithStyles<typeof styles>, State> {
-  constructor(props: Props) {
-    super(props);
-  }
-
   render() {
     const classes = this.props.classes;
     return (

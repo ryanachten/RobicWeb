@@ -1,9 +1,8 @@
 import React, { ReactElement } from "react";
-import { withStyles, createStyles, Theme, Popover } from "@material-ui/core";
+import { withStyles, createStyles, Theme } from "@material-ui/core";
 import { MuscleGroup } from "../../constants/types";
 import { Classes } from "jss";
 import { transparentize, lerpColor } from "../../utils";
-import classes from "*.module.css";
 import { BodyMenu } from "./FullBody";
 
 const styles = (theme: Theme) => createStyles({});

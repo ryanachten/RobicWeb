@@ -171,7 +171,10 @@ class Index extends React.Component<Props, State> {
     const state: any = { ...this.state };
     exerciseId
       ? state.sets[set].exercises.map((e: SetExercise) => {
-          if (e.id === exerciseId) e[field] = parseFloat(value);
+          if (e.id === exerciseId) {
+            return (e[field] = parseFloat(value));
+          }
+          return undefined;
         })
       : (state.sets[set][field] = value);
     this.setState(state);

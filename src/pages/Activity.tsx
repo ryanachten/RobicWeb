@@ -11,16 +11,14 @@ import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
 import { Typography, Tabs, Tab } from "@material-ui/core";
-import { lerpColor, getNetTotalFromSets, isCompositeExercise } from "../utils";
+import { lerpColor } from "../utils";
 import {
   VictoryChart,
   VictoryBar,
   VictoryTheme,
   VictoryLabel,
   VictoryAxis,
-  VictoryContainer,
-  VictoryLine,
-  VictoryVoronoiContainer
+  VictoryContainer
 } from "victory";
 
 const styles = (theme: Theme) =>
@@ -140,7 +138,11 @@ class Activity extends React.Component<Props, State> {
 
   getExerciseCounts(exercises: ExerciseDefinition[]) {
     const dateLimit = this.state.dateLimit;
-    const exerciseCountData: { x: string; y: number }[] = exercises
+    const exerciseCountData: {
+      x: string;
+      y: number;
+      muscleGroups: MuscleGroup[];
+    }[] = exercises
       .sort(this.sortExercisesAlphabetically)
       .reverse()
       .map((def: ExerciseDefinition) => {
@@ -151,7 +153,8 @@ class Activity extends React.Component<Props, State> {
           x:
             // Clip exercise graph labels to 9 characters
             def.title.length > 9 ? `${def.title.slice(0, 6)}...` : def.title,
-          y: validSessions.length
+          y: validSessions.length,
+          muscleGroups: def.primaryMuscleGroup
         };
       });
     const exerciseCountMax =
@@ -160,18 +163,6 @@ class Activity extends React.Component<Props, State> {
       exerciseCountData,
       exerciseCountMax
     };
-  }
-
-  getTotalMuscles(exercises: ExerciseDefinition[]) {
-    // Total muscle groups reduced from selected exercises
-    return exercises.reduce(
-      (total: MuscleGroup[], { primaryMuscleGroup }: ExerciseDefinition) => {
-        return primaryMuscleGroup
-          ? [...total, ...primaryMuscleGroup]
-          : [...total];
-      },
-      []
-    );
   }
 
   renderMuscleList(muscle: MuscleGroup): ReactElement | null {
@@ -193,13 +184,8 @@ class Activity extends React.Component<Props, State> {
     ) : null;
   }
 
-  renderExerciseCountChart() {
+  renderExerciseCountChart(exerciseCountData: any, exerciseCountMax: number) {
     const { classes, theme } = this.props;
-    const { selectedExercises: exercises } = this.state;
-    // Get number of sessions per exercise within the active date range
-    const { exerciseCountData, exerciseCountMax } = this.getExerciseCounts(
-      exercises
-    );
 
     return (
       <section className={classes.exerciseChart}>
@@ -296,9 +282,29 @@ class Activity extends React.Component<Props, State> {
 
   renderCharts() {
     const { dateLimit, selectedExercises, tab } = this.state;
-    const muscles = selectedExercises
-      ? this.getTotalMuscles(selectedExercises)
+
+    // Get number of sessions per exercise within the active date range
+    const { exerciseCountData, exerciseCountMax } = this.getExerciseCounts(
+      selectedExercises
+    );
+
+    // Get total muscle groups based on exercise count
+    const muscles: MuscleGroup[] = exerciseCountData
+      ? Object.keys(exerciseCountData).reduce(
+          (total: MuscleGroup[], key: any) => {
+            const exercise = exerciseCountData[key];
+            const newMuscles: MuscleGroup[] = [];
+            // For the number of counts per exercise
+            for (let index = 0; index < exercise.y; index++) {
+              // ...each of the exercise's muscle groups are added to the total
+              exercise.muscleGroups.map(muscle => newMuscles.push(muscle));
+            }
+            return [...total, ...newMuscles];
+          },
+          []
+        )
       : [];
+
     return (
       <Fragment>
         <PageTitle label={routes.ACTIVITY.label} />
@@ -318,7 +324,7 @@ class Activity extends React.Component<Props, State> {
           selected={muscles}
         />
         {this.renderMuscleCountChart(muscles)}
-        {this.renderExerciseCountChart()}
+        {this.renderExerciseCountChart(exerciseCountData, exerciseCountMax)}
       </Fragment>
     );
   }

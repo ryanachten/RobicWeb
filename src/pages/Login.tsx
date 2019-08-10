@@ -40,6 +40,8 @@ const styles = (theme: Theme) =>
       padding: theme.spacing(4)
     },
     submitWrapper: {
+      marginBottom: theme.spacing(2),
+      padding: theme.spacing(1),
       width: "100%"
     }
   });
@@ -126,8 +128,10 @@ class Login extends React.Component<Props, State> {
             }
             value={password}
           />
-          <div className="submitWrapper">
-            <Button type="submit">Submit</Button>
+          <div className={classes.submitWrapper}>
+            <Button color="primary" type="submit" variant="contained">
+              Sign In
+            </Button>
           </div>
           {error && (
             <Typography className={classes.error} color="error">

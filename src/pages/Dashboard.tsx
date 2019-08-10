@@ -639,7 +639,9 @@ class Index extends React.Component<Props, State> {
         open={Boolean(filterMenuAnchor)}
         onClose={this.closeFilterMenu}
       >
-        <Typography variant="subtitle1">Filter exercises</Typography>
+        <Typography align="center" variant="subtitle1">
+          Filter exercises
+        </Typography>
         <MenuItem>
           <Select
             label="Muscle group"

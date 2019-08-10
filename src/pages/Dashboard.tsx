@@ -15,8 +15,9 @@ import {
   Unit,
   SetExercise
 } from "../constants/types";
-import { Typography, IconButton } from "@material-ui/core";
+import { Typography, IconButton, Menu } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import FilterIcon from "@material-ui/icons/FilterList";
 import RemoveIcon from "@material-ui/icons/Remove";
 import routes from "../constants/routes";
 import Stopwatch from "../components/Stopwatch";
@@ -106,6 +107,8 @@ const styles = (theme: Theme) =>
   });
 
 type State = {
+  filteredExercises: ExerciseDefinition[];
+  filterMenuAnchor: Element | null;
   selectedExercise: ExerciseDefinition | null;
   sets: Set[];
   timerRunning: boolean;
@@ -125,26 +128,22 @@ class Index extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      filteredExercises: [],
+      filterMenuAnchor: null,
       selectedExercise: null,
       sets: [], //this will be set on exercise select
       timerRunning: false
     };
     this.addSet = this.addSet.bind(this);
+    this.closeFilterMenu = this.closeFilterMenu.bind(this);
     this.removeSet = this.removeSet.bind(this);
     this.renderSetInputs = this.renderSetInputs.bind(this);
     this.submitForm = this.submitForm.bind(this);
+    this.openFilterMenu = this.openFilterMenu.bind(this);
     this.toggleTimer = this.toggleTimer.bind(this);
     this.sortExericises = (a: ExerciseDefinition, b: ExerciseDefinition) => {
       return a.title >= b.title ? 1 : -1;
     };
-  }
-
-  toggleTimer() {
-    const timerRunning = this.state.timerRunning;
-    timerRunning ? this.stopwatch.stop() : this.stopwatch.start();
-    this.setState(prevState => ({
-      timerRunning: !prevState.timerRunning
-    }));
   }
 
   addSet() {
@@ -233,6 +232,26 @@ class Index extends React.Component<Props, State> {
       selectedExercise: exercise
     });
   };
+
+  closeFilterMenu() {
+    this.setState({
+      filterMenuAnchor: null
+    });
+  }
+
+  openFilterMenu(event: any) {
+    this.setState({
+      filterMenuAnchor: event.currentTarget
+    });
+  }
+
+  toggleTimer() {
+    const timerRunning = this.state.timerRunning;
+    timerRunning ? this.stopwatch.stop() : this.stopwatch.start();
+    this.setState(prevState => ({
+      timerRunning: !prevState.timerRunning
+    }));
+  }
 
   renderPersonalBest(
     history: Exercise[],
@@ -477,9 +496,29 @@ class Index extends React.Component<Props, State> {
     );
   }
 
+  renderExerciseFilter() {
+    const { filterMenuAnchor } = this.state;
+    if (!filterMenuAnchor) {
+      return null;
+    }
+    return (
+      <Menu
+        id="exercise-filter"
+        anchorEl={filterMenuAnchor}
+        keepMounted
+        open={Boolean(filterMenuAnchor)}
+        onClose={this.closeFilterMenu}
+      >
+        {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleClose}>Logout</MenuItem> */}
+      </Menu>
+    );
+  }
+
   render() {
     const { classes, data } = this.props;
-    const { selectedExercise } = this.state;
+    const { filterMenuAnchor, selectedExercise } = this.state;
     const { exerciseDefinitions: exercises, loading } = data;
     return (
       <PageRoot>
@@ -506,6 +545,16 @@ class Index extends React.Component<Props, State> {
                     }))}
                   value={selectedExercise ? selectedExercise.id : ""}
                 />
+                <IconButton
+                  aria-controls="exercise-filter"
+                  aria-haspopup="true"
+                  onClick={this.openFilterMenu}
+                >
+                  <FilterIcon
+                    color={Boolean(filterMenuAnchor) ? "primary" : "inherit"}
+                  />
+                </IconButton>
+                {Boolean(filterMenuAnchor) && this.renderExerciseFilter()}
               </div>
             ) : (
               <div>

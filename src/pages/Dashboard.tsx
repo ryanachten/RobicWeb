@@ -217,6 +217,7 @@ class Index extends React.Component<Props, State> {
   resetFilter() {
     // Reset temp values to initial values
     this.setState({
+      filteredExercises: [],
       filterExerciseType: FILTER_ALL,
       filterMuscleGroup: FILTER_ALL,
       filterTempExerciseType: FILTER_ALL,

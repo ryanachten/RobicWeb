@@ -41,6 +41,9 @@ const styles = (theme: Theme) =>
       right: 0,
       top: 0
     },
+    robicLogo: {
+      fontFamily: "'Hammersmith One', sans-serif"
+    },
     spacer: {
       flexGrow: 1
     }
@@ -126,7 +129,9 @@ class Navigation extends React.Component<Props, State> {
         ) : (
           <AppBar className={classes.appBar} color="inherit" position="static">
             <Toolbar>
-              <Typography variant="h5">robic</Typography>
+              <Typography className={classes.robicLogo} variant="h5">
+                robic
+              </Typography>
               <div className={classes.spacer} />
               <Link
                 className={classes.link}

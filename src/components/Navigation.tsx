@@ -23,6 +23,10 @@ import { isMobile } from "../constants/sizes";
 
 const styles = (theme: Theme) =>
   createStyles({
+    appBar: {
+      backgroundColor: "transparent",
+      boxShadow: "none"
+    },
     bottomNav: {
       bottom: 0,
       position: "fixed",
@@ -120,7 +124,7 @@ class Navigation extends React.Component<Props, State> {
             {this.renderProfileMenu()}
           </div>
         ) : (
-          <AppBar color="inherit" position="static">
+          <AppBar className={classes.appBar} color="inherit" position="static">
             <Toolbar>
               <Typography variant="h5">robic</Typography>
               <div className={classes.spacer} />

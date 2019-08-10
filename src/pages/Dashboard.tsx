@@ -13,9 +13,11 @@ import {
   Set,
   Exercise,
   Unit,
-  SetExercise
+  SetExercise,
+  MuscleGroup,
+  ExerciseType
 } from "../constants/types";
-import { Typography, IconButton, Menu } from "@material-ui/core";
+import { Typography, IconButton, Menu, MenuItem } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import FilterIcon from "@material-ui/icons/FilterList";
 import RemoveIcon from "@material-ui/icons/Remove";
@@ -50,6 +52,9 @@ const styles = (theme: Theme) =>
     createExerciseLink: {
       display: "block",
       marginBottom: theme.spacing(2)
+    },
+    filterMenu: {
+      padding: theme.spacing(2)
     },
     iconButton: {
       height: "48px",
@@ -108,7 +113,9 @@ const styles = (theme: Theme) =>
 
 type State = {
   filteredExercises: ExerciseDefinition[];
+  filterExerciseType: string;
   filterMenuAnchor: Element | null;
+  filterMuscleGroup: string;
   selectedExercise: ExerciseDefinition | null;
   sets: Set[];
   timerRunning: boolean;
@@ -121,6 +128,8 @@ type Props = {
   mutate: any;
 };
 
+const FILTER_ALL = "all";
+
 class Index extends React.Component<Props, State> {
   stopwatch: any;
   sortExericises: (a: ExerciseDefinition, b: ExerciseDefinition) => number;
@@ -129,13 +138,16 @@ class Index extends React.Component<Props, State> {
     super(props);
     this.state = {
       filteredExercises: [],
+      filterExerciseType: FILTER_ALL,
       filterMenuAnchor: null,
+      filterMuscleGroup: FILTER_ALL,
       selectedExercise: null,
       sets: [], //this will be set on exercise select
       timerRunning: false
     };
     this.addSet = this.addSet.bind(this);
     this.closeFilterMenu = this.closeFilterMenu.bind(this);
+    this.renderExerciseFilter = this.renderExerciseFilter.bind(this);
     this.removeSet = this.removeSet.bind(this);
     this.renderSetInputs = this.renderSetInputs.bind(this);
     this.submitForm = this.submitForm.bind(this);
@@ -243,6 +255,15 @@ class Index extends React.Component<Props, State> {
     this.setState({
       filterMenuAnchor: event.currentTarget
     });
+  }
+
+  setFilterValue(
+    field: "filterMuscleGroup" | "filterExerciseType",
+    value: any
+  ) {
+    const state: any = { ...this.state };
+    state[field] = value;
+    this.setState(state);
   }
 
   toggleTimer() {
@@ -497,21 +518,70 @@ class Index extends React.Component<Props, State> {
   }
 
   renderExerciseFilter() {
-    const { filterMenuAnchor } = this.state;
-    if (!filterMenuAnchor) {
-      return null;
-    }
+    const {
+      filterExerciseType,
+      filterMenuAnchor,
+      filterMuscleGroup
+    } = this.state;
+    const { classes } = this.props;
+    console.log("classes", classes);
+    const noValue = {
+      id: FILTER_ALL,
+      label: "All",
+      value: FILTER_ALL
+    };
+    const primaryMuscleOptions = [
+      noValue,
+      ...Object.keys(MuscleGroup).map((key: any) => {
+        return {
+          id: MuscleGroup[key],
+          label: MuscleGroup[key],
+          value: MuscleGroup[key]
+        };
+      })
+    ];
+    const exerciseTypeOptions = [
+      noValue,
+      ...Object.keys(ExerciseType).map((key: any) => {
+        return {
+          id: ExerciseType[key],
+          label: ExerciseType[key],
+          value: ExerciseType[key]
+        };
+      })
+    ];
     return (
       <Menu
         id="exercise-filter"
         anchorEl={filterMenuAnchor}
+        classes={{
+          paper: classes.filterMenu
+        }}
         keepMounted
         open={Boolean(filterMenuAnchor)}
         onClose={this.closeFilterMenu}
       >
-        {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem> */}
+        <Typography variant="subtitle1">Filter exercises</Typography>
+        <MenuItem>
+          <Select
+            label="Muscle group"
+            options={primaryMuscleOptions}
+            value={filterMuscleGroup}
+            onChange={e =>
+              this.setFilterValue("filterMuscleGroup", e.target.value)
+            }
+          />
+        </MenuItem>
+        <MenuItem>
+          <Select
+            label="Exercise type"
+            options={exerciseTypeOptions}
+            value={filterExerciseType}
+            onChange={e =>
+              this.setFilterValue("filterExerciseType", e.target.value)
+            }
+          />
+        </MenuItem>
       </Menu>
     );
   }

@@ -53,6 +53,35 @@ type State = {
   tab: TabMode;
 };
 
+const hasFrontMuscles = (muscles: MuscleGroup[]): boolean => {
+  const frontMuscles = [
+    MuscleGroup.NECK,
+    MuscleGroup.FOREARMS,
+    MuscleGroup.BICEPS,
+    MuscleGroup.SHOULDERS,
+    MuscleGroup.OBLIQUES,
+    MuscleGroup.CALVES,
+    MuscleGroup.QUADS,
+    MuscleGroup.ABS
+  ];
+  return muscles.some(m => frontMuscles.includes(m));
+};
+
+const hasBackMuscles = (muscles: MuscleGroup[]): boolean => {
+  const backMuscles = [
+    MuscleGroup.TRAPS,
+    MuscleGroup.GLUTES,
+    MuscleGroup.CALVES,
+    MuscleGroup.HAMS,
+    MuscleGroup.LOWER_BACK,
+    MuscleGroup.LATS,
+    MuscleGroup.SHOULDERS,
+    MuscleGroup.TRICEPS,
+    MuscleGroup.FOREARMS
+  ];
+  return muscles.some(m => backMuscles.includes(m));
+};
+
 class FullBody extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -77,27 +106,42 @@ class FullBody extends React.Component<Props, State> {
       width
     } = this.props;
     const tab = this.state.tab;
+
+    const hasFront = hasFrontMuscles(selected);
+    const hasBack = hasBackMuscles(selected);
+    const hasBoth = hasFront && hasBack;
+
+    // Only use tabs if both front and back are present
+    const showFront: boolean =
+      (!hasBoth && hasFront) || (hasBoth && tab === TabMode.FRONT);
+
+    const showBack: boolean =
+      (!hasBoth && hasBack) || (hasBoth && tab === TabMode.BACK);
+
     return (
       <div className={classes.root}>
         {isMobile(width) ? (
           <Fragment>
-            <Tabs
-              className={classes.tabs}
-              indicatorColor="primary"
-              onChange={this.onTabChange}
-              value={tab}
-            >
-              <Tab label="Front" value={TabMode.FRONT} />
-              <Tab label="Back" value={TabMode.BACK} />
-            </Tabs>
-            {tab === TabMode.FRONT ? (
+            {hasBoth && (
+              <Tabs
+                className={classes.tabs}
+                indicatorColor="primary"
+                onChange={this.onTabChange}
+                value={tab}
+              >
+                <Tab label="Front" value={TabMode.FRONT} />
+                <Tab label="Back" value={TabMode.BACK} />
+              </Tabs>
+            )}
+            {showFront && (
               <FrontBody
                 className={classes.side}
                 menuComponent={menuComponent}
                 muscleGroupLevels={muscleGroupLevels}
                 selected={selected}
               />
-            ) : (
+            )}
+            {showBack && (
               <BackBody
                 className={classes.side}
                 menuComponent={menuComponent}
@@ -108,18 +152,22 @@ class FullBody extends React.Component<Props, State> {
           </Fragment>
         ) : (
           <Fragment>
-            <FrontBody
-              className={classes.side}
-              menuComponent={menuComponent}
-              muscleGroupLevels={muscleGroupLevels}
-              selected={selected}
-            />
-            <BackBody
-              className={classes.side}
-              menuComponent={menuComponent}
-              selected={selected}
-              muscleGroupLevels={muscleGroupLevels}
-            />
+            {hasFront && (
+              <FrontBody
+                className={classes.side}
+                menuComponent={menuComponent}
+                muscleGroupLevels={muscleGroupLevels}
+                selected={selected}
+              />
+            )}
+            {hasBack && (
+              <BackBody
+                className={classes.side}
+                menuComponent={menuComponent}
+                selected={selected}
+                muscleGroupLevels={muscleGroupLevels}
+              />
+            )}
           </Fragment>
         )}
       </div>

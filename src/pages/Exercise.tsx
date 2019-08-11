@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { compose, graphql } from "react-apollo";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
@@ -11,8 +11,12 @@ import {
   IconButton,
   withWidth,
   Tabs,
-  Tab
+  Tab,
+  Menu,
+  MenuItem
 } from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+import SettingsIcon from "@material-ui/icons/Settings";
 import {
   Exercise,
   Set,
@@ -62,15 +66,18 @@ const styles = (theme: Theme) =>
     historyList: {
       margin: 0,
       padding: 0
-      // paddingLeft: theme.spacing(2)
     },
     reps: {
       marginRight: theme.spacing(2)
     },
     sessionHeader: {
+      alignItems: "center",
       display: "flex",
       justifyContent: "space-between",
       maxWidth: 400
+    },
+    sessionIcon: {
+      marginLeft: theme.spacing(2)
     },
     sessionItem: {
       marginBottom: theme.spacing(2)
@@ -95,6 +102,8 @@ enum TabMode {
 }
 
 type State = {
+  selectedSessionIndex: number | null;
+  sessionMenuAnchor: Element | null;
   tabMode: TabMode;
 };
 
@@ -112,11 +121,16 @@ class ExercisePage extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      selectedSessionIndex: null,
+      sessionMenuAnchor: null,
       tabMode: TabMode.VALUE
     };
     this.editExercise = this.editExercise.bind(this);
+    this.closeSessionMenu = this.closeSessionMenu.bind(this);
+    this.openSessionMenu = this.openSessionMenu.bind(this);
     this.renderExerciseDefinition = this.renderExerciseDefinition.bind(this);
     this.renderCharts = this.renderCharts.bind(this);
+    this.renderHistory = this.renderHistory.bind(this);
     this.onTabChange = this.onTabChange.bind(this);
   }
 
@@ -128,6 +142,35 @@ class ExercisePage extends React.Component<Props, State> {
   onTabChange(e: any, tabMode: TabMode) {
     this.setState({
       tabMode
+    });
+  }
+
+  deleteSession() {
+    const { selectedSessionIndex } = this.state;
+    const confirmation = window.confirm(
+      `Are you sure you want to delete session ${selectedSessionIndex}?`
+    );
+    if (!confirmation) {
+      return null;
+    }
+    console.log("historyIndex", selectedSessionIndex);
+    // Reset menu after deletion
+    this.setState({
+      selectedSessionIndex: null,
+      sessionMenuAnchor: null
+    });
+  }
+
+  closeSessionMenu() {
+    this.setState({
+      sessionMenuAnchor: null
+    });
+  }
+
+  openSessionMenu(event: any, index: number) {
+    this.setState({
+      selectedSessionIndex: index,
+      sessionMenuAnchor: event.currentTarget
     });
   }
 
@@ -222,6 +265,103 @@ class ExercisePage extends React.Component<Props, State> {
     );
   }
 
+  renderSessionMenu() {
+    const { classes } = this.props;
+    const { sessionMenuAnchor } = this.state;
+    return (
+      <Menu
+        id="session-menu"
+        anchorEl={sessionMenuAnchor}
+        classes={{
+          paper: classes.filterMenu
+        }}
+        keepMounted
+        open={Boolean(sessionMenuAnchor)}
+        onClose={this.closeSessionMenu}
+      >
+        <MenuItem onClick={e => this.deleteSession()}>
+          Remove sesion
+          <DeleteIcon className={classes.sessionIcon} color="secondary" />
+        </MenuItem>
+      </Menu>
+    );
+  }
+
+  renderHistory() {
+    const classes = this.props.classes;
+    const {
+      childExercises,
+      history,
+      type,
+      unit
+    } = this.props.data.exerciseDefinition;
+    return (
+      <Fragment>
+        {this.renderSessionMenu()}
+        {history
+          .sort((a: Exercise, b: Exercise) => compareDesc(a.date, b.date))
+          .map(({ date, sets, timeTaken }: Exercise, index: number) => {
+            return (
+              <div className={classes.sessionItem} key={date}>
+                <div className={classes.sessionHeader}>
+                  <Typography color="textSecondary">
+                    {formatDate(date, true)}
+                  </Typography>
+                  <Typography color="textSecondary">{`Time: ${formatTime(
+                    timeTaken
+                  )}`}</Typography>
+                  <IconButton onClick={e => this.openSessionMenu(e, index)}>
+                    <SettingsIcon />
+                  </IconButton>
+                </div>
+                <ul className={classes.historyList}>
+                  {sets.map(
+                    ({ reps, value, exercises }: Set, index: number) => (
+                      <li className={classes.setItem} key={index}>
+                        <Typography className={classes.reps} color="primary">
+                          {`Set ${index + 1}.`}
+                        </Typography>
+                        {isCompositeExercise(type) && exercises ? (
+                          <div>
+                            {exercises.map(e => {
+                              const childDef = getChildExercisDef(
+                                e,
+                                childExercises
+                              );
+                              return (
+                                <div className={classes.setItem} key={e.id}>
+                                  <Typography className={classes.reps}>
+                                    {childDef.title}
+                                  </Typography>
+                                  <Typography
+                                    className={classes.reps}
+                                  >{`Reps: ${e.reps}`}</Typography>
+                                  <Typography>{`Value: ${e.value}${
+                                    e.unit
+                                  }`}</Typography>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className={classes.setItem}>
+                            <Typography
+                              className={classes.reps}
+                            >{`Reps: ${reps}`}</Typography>
+                            <Typography>{`Value: ${value}${unit}`}</Typography>
+                          </div>
+                        )}
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+            );
+          })}
+      </Fragment>
+    );
+  }
+
   renderExerciseDefinition(exerciseDefinition: ExerciseDefinition) {
     const classes = this.props.classes;
     const {
@@ -229,8 +369,7 @@ class ExercisePage extends React.Component<Props, State> {
       history,
       primaryMuscleGroup,
       title,
-      type = ExerciseType.STANDARD,
-      unit
+      type = ExerciseType.STANDARD
     } = exerciseDefinition;
 
     // Get muscles based on child exercises if applicable
@@ -281,63 +420,7 @@ class ExercisePage extends React.Component<Props, State> {
           <Typography>{`Sessions: ${history.length}`}</Typography>
         </div>
         {history.length > 0 ? (
-          history
-            .sort((a, b) => compareDesc(a.date, b.date))
-            .map(({ date, sets, timeTaken }: Exercise) => {
-              return (
-                <div className={classes.sessionItem} key={date}>
-                  <div className={classes.sessionHeader}>
-                    <Typography color="textSecondary">
-                      {formatDate(date, true)}
-                    </Typography>
-                    <Typography color="textSecondary">{`Time: ${formatTime(
-                      timeTaken
-                    )}`}</Typography>
-                  </div>
-                  <ul className={classes.historyList}>
-                    {sets.map(
-                      ({ reps, value, exercises }: Set, index: number) => (
-                        <li className={classes.setItem} key={index}>
-                          <Typography className={classes.reps} color="primary">
-                            {`Set ${index + 1}.`}
-                          </Typography>
-                          {isCompositeExercise(type) && exercises ? (
-                            <div>
-                              {exercises.map(e => {
-                                const childDef = getChildExercisDef(
-                                  e,
-                                  childExercises
-                                );
-                                return (
-                                  <div className={classes.setItem} key={e.id}>
-                                    <Typography className={classes.reps}>
-                                      {childDef.title}
-                                    </Typography>
-                                    <Typography
-                                      className={classes.reps}
-                                    >{`Reps: ${e.reps}`}</Typography>
-                                    <Typography>{`Value: ${e.value}${
-                                      e.unit
-                                    }`}</Typography>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <div className={classes.setItem}>
-                              <Typography
-                                className={classes.reps}
-                              >{`Reps: ${reps}`}</Typography>
-                              <Typography>{`Value: ${value}${unit}`}</Typography>
-                            </div>
-                          )}
-                        </li>
-                      )
-                    )}
-                  </ul>
-                </div>
-              );
-            })
+          this.renderHistory()
         ) : (
           <Typography>Exercise has not been attempted</Typography>
         )}

@@ -65,7 +65,6 @@ export type ExerciseDefinition = {
   childExercises?: ExerciseDefinition[];
   history: Exercise[];
   id: string;
-  personalBest: PersonalBest;
   primaryMuscleGroup: MuscleGroup[];
   title: string;
   type: ExerciseType;

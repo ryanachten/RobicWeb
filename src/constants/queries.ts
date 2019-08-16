@@ -37,23 +37,6 @@ export const GetExercises = gql`
         }
         timeTaken
       }
-      personalBest {
-        value {
-          value
-        }
-        setCount {
-          value
-        }
-        totalReps {
-          value
-        }
-        netValue {
-          value
-        }
-        timeTaken {
-          value
-        }
-      }
     }
   }
 `;
@@ -84,23 +67,6 @@ export const GetExerciseDefinitionById = gql`
           }
         }
         timeTaken
-      }
-      personalBest {
-        value {
-          value
-        }
-        setCount {
-          value
-        }
-        totalReps {
-          value
-        }
-        netValue {
-          value
-        }
-        timeTaken {
-          value
-        }
       }
     }
   }

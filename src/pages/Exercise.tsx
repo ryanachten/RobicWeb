@@ -51,16 +51,12 @@ import {
   VictoryGroup,
   VictoryTheme,
   VictoryArea,
-  VictoryContainer
+  VictoryContainer,
+  VictoryLegend
 } from "victory";
 
 const styles = (theme: Theme) =>
   createStyles({
-    chart: {
-      maxHeight: "500px",
-      maxWidth: "1000px",
-      width: "100%"
-    },
     chartWrapper: {
       display: "flex",
       flexFlow: "row wrap"
@@ -78,6 +74,33 @@ const styles = (theme: Theme) =>
     historyList: {
       margin: 0,
       padding: 0
+    },
+    legendIcon: {
+      borderRadius: "50%",
+      marginRight: theme.spacing(1),
+      minHeight: "10px",
+      minWidth: "10px"
+    },
+    legendItem: {
+      alignItems: "baseline",
+      display: "flex",
+      marginRight: theme.spacing(1)
+    },
+    legendList: {
+      display: "flex",
+      flexFlow: "row wrap",
+      padding: 0
+    },
+    overviewChart: {
+      maxHeight: "500px",
+      maxWidth: "1000px",
+      width: "100%"
+    },
+    overviewChartWrapper: {
+      alignItems: "center",
+      display: "flex",
+      flexFlow: "row wrap",
+      justifyContent: "center"
     },
     reps: {
       marginRight: theme.spacing(2)
@@ -101,6 +124,24 @@ const styles = (theme: Theme) =>
       textTransform: "capitalize"
     }
   });
+
+const chartSettings = (theme: Theme) => ({
+  NET: {
+    stroke: theme.palette.primary.main
+  },
+  VALUE: {
+    stroke: transparentize(theme.palette.text.primary, 0.5)
+  },
+  SETS: {
+    stroke: transparentize(theme.palette.text.primary, 0.4)
+  },
+  REPS: {
+    stroke: transparentize(theme.palette.text.primary, 0.3)
+  },
+  TIME: {
+    stroke: transparentize(theme.palette.text.primary, 0.2)
+  }
+});
 
 enum TabMode {
   NET = "net",
@@ -180,7 +221,7 @@ class ExercisePage extends React.Component<Props, State> {
     const { classes, theme, width } = this.props;
     const tabMode = this.state.tabMode;
     const { history, type, unit } = this.props.data.exerciseDefinition;
-
+    const settings = chartSettings(theme);
     const graphData = history
       .sort((a: any, b: any) => compareAsc(a.date, b.date))
       .reduce(
@@ -233,56 +274,100 @@ class ExercisePage extends React.Component<Props, State> {
     const valuesMax = Math.max(...graphData.values.map((d: any) => d.y));
     return (
       <div>
-        <div className={classes.chart}>
-          <VictoryGroup
-            animate={{ duration: 1000 }}
-            containerComponent={<VictoryContainer />}
-            theme={VictoryTheme.material}
-            height={500}
-            width={1000}
-          >
-            <VictoryArea
-              data={graphData.total.map((d: any) => d.y / totalMax)}
-              style={{
-                data: {
-                  stroke: theme.palette.primary.main,
-                  fill: transparentize(theme.palette.primary.main, 0.2)
-                }
-              }}
-            />
-            <VictoryLine
-              data={graphData.values.map((d: any) => d.y / valuesMax)}
-              style={{
-                data: {
-                  stroke: transparentize(theme.palette.text.primary, 0.5)
-                }
-              }}
-            />
-            <VictoryLine
-              data={graphData.reps.map((d: any) => d.y / repsMax)}
-              style={{
-                data: {
-                  stroke: transparentize(theme.palette.text.primary, 0.4)
-                }
-              }}
-            />
-            <VictoryLine
-              data={graphData.sets.map((d: any) => d.y / setsMax)}
-              style={{
-                data: {
-                  stroke: transparentize(theme.palette.text.primary, 0.3)
-                }
-              }}
-            />
-            <VictoryLine
-              data={graphData.timeTaken.map((d: any) => d.y / timeTakenMax)}
-              style={{
-                data: {
-                  stroke: transparentize(theme.palette.text.primary, 0.2)
-                }
-              }}
-            />
-          </VictoryGroup>
+        <div className={classes.overviewChartWrapper}>
+          {/* {!isMobile(width) && ( */}
+          <div>
+            <Typography variant="subtitle1">Overview</Typography>
+            <ul className={classes.legendList}>
+              <li className={classes.legendItem}>
+                <span
+                  className={classes.legendIcon}
+                  style={{ backgroundColor: settings.NET.stroke }}
+                />
+                Net
+              </li>
+              <li className={classes.legendItem}>
+                <span
+                  className={classes.legendIcon}
+                  style={{ backgroundColor: settings.VALUE.stroke }}
+                />
+                Values
+              </li>
+              <li className={classes.legendItem}>
+                <span
+                  className={classes.legendIcon}
+                  style={{ backgroundColor: settings.SETS.stroke }}
+                />
+                Sets
+              </li>
+              <li className={classes.legendItem}>
+                <span
+                  className={classes.legendIcon}
+                  style={{ backgroundColor: settings.REPS.stroke }}
+                />
+                Reps
+              </li>
+              <li className={classes.legendItem}>
+                <span
+                  className={classes.legendIcon}
+                  style={{ backgroundColor: settings.TIME.stroke }}
+                />
+                Time Taken
+              </li>
+            </ul>
+          </div>
+          {/* )} */}
+          <div className={classes.overviewChart}>
+            <VictoryGroup
+              animate={{ duration: 1000 }}
+              containerComponent={<VictoryContainer />}
+              theme={VictoryTheme.material}
+              height={500}
+              width={1000}
+            >
+              <VictoryArea
+                data={graphData.total.map((d: any) => d.y / totalMax)}
+                style={{
+                  data: {
+                    stroke: settings.NET.stroke,
+                    fill: transparentize(settings.NET.stroke, 0.2)
+                  }
+                }}
+              />
+              <VictoryLine
+                data={graphData.values.map((d: any) => d.y / valuesMax)}
+                style={{
+                  data: {
+                    stroke: settings.VALUE.stroke
+                  }
+                }}
+              />
+              <VictoryLine
+                data={graphData.reps.map((d: any) => d.y / repsMax)}
+                style={{
+                  data: {
+                    stroke: settings.REPS.stroke
+                  }
+                }}
+              />
+              <VictoryLine
+                data={graphData.sets.map((d: any) => d.y / setsMax)}
+                style={{
+                  data: {
+                    stroke: settings.SETS.stroke
+                  }
+                }}
+              />
+              <VictoryLine
+                data={graphData.timeTaken.map((d: any) => d.y / timeTakenMax)}
+                style={{
+                  data: {
+                    stroke: settings.TIME.stroke
+                  }
+                }}
+              />
+            </VictoryGroup>
+          </div>
         </div>
         {isMobile(width) ? (
           <div>

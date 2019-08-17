@@ -3,7 +3,6 @@ import { compose, graphql } from "react-apollo";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
-import EditIcon from "@material-ui/icons/Edit";
 import { Classes } from "jss";
 import { GetExerciseDefinitionById } from "../constants/queries";
 import {
@@ -11,12 +10,10 @@ import {
   IconButton,
   withWidth,
   Tabs,
-  Tab,
-  Menu,
-  MenuItem
+  Tab
 } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
-import SettingsIcon from "@material-ui/icons/Settings";
 import {
   Exercise,
   Set,
@@ -78,9 +75,6 @@ const styles = (theme: Theme) =>
       justifyContent: "space-between",
       maxWidth: 400
     },
-    sessionIcon: {
-      marginLeft: theme.spacing(2)
-    },
     sessionItem: {
       marginBottom: theme.spacing(2)
     },
@@ -104,8 +98,6 @@ enum TabMode {
 }
 
 type State = {
-  selectedSessionIndex: number | null;
-  sessionMenuAnchor: Element | null;
   tabMode: TabMode;
 };
 
@@ -124,13 +116,9 @@ class ExercisePage extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      selectedSessionIndex: null,
-      sessionMenuAnchor: null,
       tabMode: TabMode.VALUE
     };
     this.editExercise = this.editExercise.bind(this);
-    this.closeSessionMenu = this.closeSessionMenu.bind(this);
-    this.openSessionMenu = this.openSessionMenu.bind(this);
     this.renderExerciseDefinition = this.renderExerciseDefinition.bind(this);
     this.renderCharts = this.renderCharts.bind(this);
     this.renderHistory = this.renderHistory.bind(this);
@@ -148,8 +136,7 @@ class ExercisePage extends React.Component<Props, State> {
     });
   }
 
-  async deleteSession() {
-    const { selectedSessionIndex } = this.state;
+  async deleteSession(selectedSessionIndex: number) {
     const confirmation = window.confirm(
       `Are you sure you want to delete session ${selectedSessionIndex}?`
     );
@@ -174,24 +161,6 @@ class ExercisePage extends React.Component<Props, State> {
     } catch (error) {
       console.log("Error deleting session", error);
     }
-    // Reset menu after deletion
-    this.setState({
-      selectedSessionIndex: null,
-      sessionMenuAnchor: null
-    });
-  }
-
-  closeSessionMenu() {
-    this.setState({
-      sessionMenuAnchor: null
-    });
-  }
-
-  openSessionMenu(event: any, index: number) {
-    this.setState({
-      selectedSessionIndex: index,
-      sessionMenuAnchor: event.currentTarget
-    });
   }
 
   renderCharts() {
@@ -285,28 +254,6 @@ class ExercisePage extends React.Component<Props, State> {
     );
   }
 
-  renderSessionMenu() {
-    const { classes } = this.props;
-    const { sessionMenuAnchor } = this.state;
-    return (
-      <Menu
-        id="session-menu"
-        anchorEl={sessionMenuAnchor}
-        classes={{
-          paper: classes.filterMenu
-        }}
-        keepMounted
-        open={Boolean(sessionMenuAnchor)}
-        onClose={this.closeSessionMenu}
-      >
-        <MenuItem onClick={e => this.deleteSession()}>
-          Remove session
-          <DeleteIcon className={classes.sessionIcon} color="secondary" />
-        </MenuItem>
-      </Menu>
-    );
-  }
-
   renderHistory() {
     const classes = this.props.classes;
     const {
@@ -317,7 +264,6 @@ class ExercisePage extends React.Component<Props, State> {
     } = this.props.data.exerciseDefinition;
     return (
       <Fragment>
-        {this.renderSessionMenu()}
         {history
           .sort((a: Exercise, b: Exercise) => compareDesc(a.date, b.date))
           .map(({ date, sets, timeTaken }: Exercise, index: number) => {
@@ -330,8 +276,9 @@ class ExercisePage extends React.Component<Props, State> {
                   <Typography color="textSecondary">{`Time: ${formatTime(
                     timeTaken
                   )}`}</Typography>
-                  <IconButton onClick={e => this.openSessionMenu(e, index)}>
-                    <SettingsIcon />
+                  {/* e => this.openSessionMenu(e, index) */}
+                  <IconButton onClick={e => this.deleteSession(index)}>
+                    <DeleteIcon color="disabled" />
                   </IconButton>
                 </div>
                 <ul className={classes.historyList}>

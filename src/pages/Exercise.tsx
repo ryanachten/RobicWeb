@@ -46,6 +46,8 @@ import {
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
 import { FullBody } from "../components/muscles/FullBody";
+import { RemoveHistorySession } from "../constants/mutations";
+import { isNull } from "util";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -113,6 +115,7 @@ type Props = {
   loading: boolean;
   history: any;
   match: any;
+  mutate: any;
   theme: Theme;
   width: Breakpoint;
 };
@@ -145,15 +148,32 @@ class ExercisePage extends React.Component<Props, State> {
     });
   }
 
-  deleteSession() {
+  async deleteSession() {
     const { selectedSessionIndex } = this.state;
     const confirmation = window.confirm(
       `Are you sure you want to delete session ${selectedSessionIndex}?`
     );
-    if (!confirmation) {
+    if (!confirmation || isNull(selectedSessionIndex)) {
       return null;
     }
-    console.log("historyIndex", selectedSessionIndex);
+    const exerciseDefinition = this.props.data.exerciseDefinition;
+    const removeSessionId = exerciseDefinition.history[selectedSessionIndex].id;
+    try {
+      await this.props.mutate({
+        variables: {
+          definitionId: exerciseDefinition.id,
+          exerciseId: removeSessionId
+        },
+        refetchQueries: [
+          {
+            query: GetExerciseDefinitionById,
+            variables: { exerciseId: exerciseDefinition.id }
+          }
+        ]
+      });
+    } catch (error) {
+      console.log("Error deleting session", error);
+    }
     // Reset menu after deletion
     this.setState({
       selectedSessionIndex: null,
@@ -280,7 +300,7 @@ class ExercisePage extends React.Component<Props, State> {
         onClose={this.closeSessionMenu}
       >
         <MenuItem onClick={e => this.deleteSession()}>
-          Remove sesion
+          Remove session
           <DeleteIcon className={classes.sessionIcon} color="secondary" />
         </MenuItem>
       </Menu>
@@ -453,6 +473,7 @@ class ExercisePage extends React.Component<Props, State> {
 }
 
 export default compose(
+  graphql(RemoveHistorySession),
   graphql(GetExerciseDefinitionById, {
     options: (props: any) => ({
       variables: { exerciseId: props.match.params.id }

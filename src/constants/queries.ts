@@ -55,6 +55,7 @@ export const GetExerciseDefinitionById = gql`
         title
       }
       history {
+        id
         date
         sets {
           reps

@@ -44,22 +44,6 @@ export const AddExerciseDefinition = gql`
   }
 `;
 
-export const AddExercise = gql`
-  mutation AddExercise(
-    $definitionId: ID!
-    $sets: [SetInput]!
-    $timeTaken: String!
-  ) {
-    addExercise(
-      definitionId: $definitionId
-      sets: $sets
-      timeTaken: $timeTaken
-    ) {
-      id
-    }
-  }
-`;
-
 export const UpdateExercise = gql`
   mutation UpdateExerciseDefinition(
     $exerciseId: ID!
@@ -76,6 +60,30 @@ export const UpdateExercise = gql`
       primaryMuscleGroup: $primaryMuscleGroup
       type: $type
       childExercises: $childExercises
+    ) {
+      id
+    }
+  }
+`;
+
+export const RemoveHistorySession = gql`
+  mutation RemoveHistorySession($definitionId: ID!, $exerciseId: ID!) {
+    removeHistorySession(definitionId: $definitionId, exerciseId: $exerciseId) {
+      id
+    }
+  }
+`;
+
+export const AddExercise = gql`
+  mutation AddExercise(
+    $definitionId: ID!
+    $sets: [SetInput]!
+    $timeTaken: String!
+  ) {
+    addExercise(
+      definitionId: $definitionId
+      sets: $sets
+      timeTaken: $timeTaken
     ) {
       id
     }

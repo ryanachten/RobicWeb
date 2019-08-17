@@ -194,7 +194,7 @@ class ExercisePage extends React.Component<Props, State> {
               date.getSeconds() * 1000 +
               date.getMilliseconds();
             const minutes = millis / 60000;
-            return (minutes / sets.length).toFixed(2);
+            return parseFloat((minutes / sets.length).toFixed(2));
           };
 
           return {
@@ -276,7 +276,6 @@ class ExercisePage extends React.Component<Props, State> {
                   <Typography color="textSecondary">{`Time: ${formatTime(
                     timeTaken
                   )}`}</Typography>
-                  {/* e => this.openSessionMenu(e, index) */}
                   <IconButton onClick={e => this.deleteSession(index)}>
                     <DeleteIcon color="disabled" />
                   </IconButton>

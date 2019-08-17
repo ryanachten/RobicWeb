@@ -28,7 +28,8 @@ import {
   isCompositeExercise,
   getChildExerciseMuscles,
   getChildExercisDef,
-  getNetTotalFromSets
+  getNetTotalFromSets,
+  transparentize
 } from "../utils";
 import { compareDesc, compareAsc } from "date-fns";
 import routes from "../constants/routes";
@@ -45,9 +46,21 @@ import { isMobile } from "../constants/sizes";
 import { FullBody } from "../components/muscles/FullBody";
 import { RemoveHistorySession } from "../constants/mutations";
 import { isNull } from "util";
+import {
+  VictoryLine,
+  VictoryGroup,
+  VictoryTheme,
+  VictoryArea,
+  VictoryContainer
+} from "victory";
 
 const styles = (theme: Theme) =>
   createStyles({
+    chart: {
+      maxHeight: "500px",
+      maxWidth: "1000px",
+      width: "100%"
+    },
     chartWrapper: {
       display: "flex",
       flexFlow: "row wrap"
@@ -164,7 +177,7 @@ class ExercisePage extends React.Component<Props, State> {
   }
 
   renderCharts() {
-    const { classes, width } = this.props;
+    const { classes, theme, width } = this.props;
     const tabMode = this.state.tabMode;
     const { history, type, unit } = this.props.data.exerciseDefinition;
 
@@ -213,43 +226,110 @@ class ExercisePage extends React.Component<Props, State> {
         },
         { reps: [], sets: [], timeTaken: [], total: [], values: [] }
       );
-    return isMobile(width) ? (
+    const repsMax = Math.max(...graphData.reps.map((d: any) => d.y));
+    const setsMax = Math.max(...graphData.sets.map((d: any) => d.y));
+    const timeTakenMax = Math.max(...graphData.timeTaken.map((d: any) => d.y));
+    const totalMax = Math.max(...graphData.total.map((d: any) => d.y));
+    const valuesMax = Math.max(...graphData.values.map((d: any) => d.y));
+    return (
       <div>
-        <Tabs
-          indicatorColor="primary"
-          onChange={this.onTabChange}
-          scrollButtons="on"
-          value={tabMode}
-          variant="scrollable"
-        >
-          <Tab label={`${unit} (Avg)`} value={TabMode.VALUE} />
-          <Tab label={`${unit} (Net)`} value={TabMode.NET} />
-          <Tab label="Reps" value={TabMode.REPS} />
-          <Tab label="Sets" value={TabMode.SETS} />
-          <Tab label="Min / Set" value={TabMode.TIME} />
-        </Tabs>
-        {tabMode === TabMode.REPS && (
-          <Chart label="Reps" mobile data={graphData.reps} />
+        <div className={classes.chart}>
+          <VictoryGroup
+            animate={{ duration: 1000 }}
+            containerComponent={<VictoryContainer />}
+            theme={VictoryTheme.material}
+            height={500}
+            width={1000}
+          >
+            <VictoryArea
+              data={graphData.total.map((d: any) => d.y / totalMax)}
+              style={{
+                data: {
+                  stroke: theme.palette.primary.main,
+                  fill: transparentize(theme.palette.primary.main, 0.2)
+                }
+              }}
+            />
+            <VictoryLine
+              data={graphData.values.map((d: any) => d.y / valuesMax)}
+              style={{
+                data: {
+                  stroke: transparentize(theme.palette.text.primary, 0.5)
+                }
+              }}
+            />
+            <VictoryLine
+              data={graphData.reps.map((d: any) => d.y / repsMax)}
+              style={{
+                data: {
+                  stroke: transparentize(theme.palette.text.primary, 0.4)
+                }
+              }}
+            />
+            <VictoryLine
+              data={graphData.sets.map((d: any) => d.y / setsMax)}
+              style={{
+                data: {
+                  stroke: transparentize(theme.palette.text.primary, 0.3)
+                }
+              }}
+            />
+            <VictoryLine
+              data={graphData.timeTaken.map((d: any) => d.y / timeTakenMax)}
+              style={{
+                data: {
+                  stroke: transparentize(theme.palette.text.primary, 0.2)
+                }
+              }}
+            />
+          </VictoryGroup>
+        </div>
+        {isMobile(width) ? (
+          <div>
+            <Tabs
+              indicatorColor="primary"
+              onChange={this.onTabChange}
+              scrollButtons="on"
+              value={tabMode}
+              variant="scrollable"
+            >
+              <Tab label={`${unit} (Avg)`} value={TabMode.VALUE} />
+              <Tab label={`${unit} (Net)`} value={TabMode.NET} />
+              <Tab label="Reps" value={TabMode.REPS} />
+              <Tab label="Sets" value={TabMode.SETS} />
+              <Tab label="Min / Set" value={TabMode.TIME} />
+            </Tabs>
+            {tabMode === TabMode.REPS && (
+              <Chart label="Reps" mobile data={graphData.reps} />
+            )}
+            {tabMode === TabMode.NET && (
+              <Chart label="Net" mobile data={graphData.total} />
+            )}
+            {tabMode === TabMode.VALUE && (
+              <Chart label="Values" mobile data={graphData.values} />
+            )}
+            {tabMode === TabMode.SETS && (
+              <Chart label="Sets" mobile data={graphData.sets} />
+            )}
+            {tabMode === TabMode.TIME && (
+              <Chart label="Min / Set" mobile data={graphData.timeTaken} />
+            )}
+          </div>
+        ) : (
+          <div className={classes.chartWrapper}>
+            <Chart
+              label={`${getUnitLabel(unit)} (Avg)`}
+              data={graphData.values}
+            />
+            <Chart
+              label={`${getUnitLabel(unit)} (Net)`}
+              data={graphData.total}
+            />
+            <Chart label="Reps" data={graphData.reps} />
+            <Chart label="Sets" data={graphData.sets} />
+            <Chart label="Min / Set" data={graphData.timeTaken} />
+          </div>
         )}
-        {tabMode === TabMode.NET && (
-          <Chart label="Net" mobile data={graphData.total} />
-        )}
-        {tabMode === TabMode.VALUE && (
-          <Chart label="Values" mobile data={graphData.values} />
-        )}
-        {tabMode === TabMode.SETS && (
-          <Chart label="Sets" mobile data={graphData.sets} />
-        )}
-        {tabMode === TabMode.TIME && (
-          <Chart label="Min / Set" mobile data={graphData.timeTaken} />
-        )}
-      </div>
-    ) : (
-      <div className={classes.chartWrapper}>
-        <Chart label={`${getUnitLabel(unit)} (Avg)`} data={graphData.values} />
-        <Chart label={`${getUnitLabel(unit)} (Net)`} data={graphData.total} />
-        <Chart label="Sets" data={graphData.sets} />
-        <Chart label="Min / Set" data={graphData.timeTaken} />
       </div>
     );
   }

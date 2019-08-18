@@ -52,7 +52,9 @@ import {
   VictoryTheme,
   VictoryArea,
   VictoryContainer,
-  VictoryLegend
+  VictoryLegend,
+  VictoryChart,
+  VictoryAxis
 } from "victory";
 
 const styles = (theme: Theme) =>
@@ -130,7 +132,7 @@ const chartSettings = (theme: Theme) => ({
     stroke: theme.palette.primary.main
   },
   VALUE: {
-    stroke: transparentize(theme.palette.text.primary, 0.5)
+    stroke: transparentize(theme.palette.text.primary, 0.6)
   },
   SETS: {
     stroke: transparentize(theme.palette.text.primary, 0.4)
@@ -139,7 +141,7 @@ const chartSettings = (theme: Theme) => ({
     stroke: transparentize(theme.palette.text.primary, 0.3)
   },
   TIME: {
-    stroke: transparentize(theme.palette.text.primary, 0.2)
+    stroke: transparentize(theme.palette.secondary.main, 0.5)
   }
 });
 
@@ -318,13 +320,18 @@ class ExercisePage extends React.Component<Props, State> {
           </div>
           {/* )} */}
           <div className={classes.overviewChart}>
-            <VictoryGroup
+            <VictoryChart
               animate={{ duration: 1000 }}
               containerComponent={<VictoryContainer />}
               theme={VictoryTheme.material}
               height={500}
               width={1000}
             >
+              <VictoryAxis />
+              <VictoryAxis
+                dependentAxis
+                tickFormat={tick => `${tick * 100}%`}
+              />
               <VictoryArea
                 data={graphData.total.map((d: any) => d.y / totalMax)}
                 style={{
@@ -362,11 +369,12 @@ class ExercisePage extends React.Component<Props, State> {
                 data={graphData.timeTaken.map((d: any) => d.y / timeTakenMax)}
                 style={{
                   data: {
-                    stroke: settings.TIME.stroke
+                    stroke: settings.TIME.stroke,
+                    strokeDasharray: "5, 7"
                   }
                 }}
               />
-            </VictoryGroup>
+            </VictoryChart>
           </div>
         </div>
         {isMobile(width) ? (

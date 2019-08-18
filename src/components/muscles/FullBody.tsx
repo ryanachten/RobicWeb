@@ -62,7 +62,8 @@ const hasFrontMuscles = (muscles: MuscleGroup[]): boolean => {
     MuscleGroup.OBLIQUES,
     MuscleGroup.CALVES,
     MuscleGroup.QUADS,
-    MuscleGroup.ABS
+    MuscleGroup.ABS,
+    MuscleGroup.CHEST
   ];
   return muscles.some(m => frontMuscles.includes(m));
 };

@@ -19,7 +19,8 @@ import {
   Set,
   ExerciseDefinition,
   ExerciseType,
-  MuscleGroup
+  MuscleGroup,
+  Unit
 } from "../constants/types";
 import {
   formatDate,
@@ -48,11 +49,9 @@ import { RemoveHistorySession } from "../constants/mutations";
 import { isNull } from "util";
 import {
   VictoryLine,
-  VictoryGroup,
   VictoryTheme,
   VictoryArea,
   VictoryContainer,
-  VictoryLegend,
   VictoryChart,
   VictoryAxis
 } from "victory";
@@ -127,20 +126,25 @@ const styles = (theme: Theme) =>
     }
   });
 
-const chartSettings = (theme: Theme) => ({
+const chartSettings = (unit: Unit, theme: Theme) => ({
   NET: {
+    label: `${getUnitLabel(unit)} (Net)`,
     stroke: theme.palette.primary.main
   },
   VALUE: {
+    label: `${getUnitLabel(unit)} (Avg)`,
     stroke: transparentize(theme.palette.text.primary, 0.6)
   },
   SETS: {
+    label: "Reps",
     stroke: transparentize(theme.palette.text.primary, 0.4)
   },
   REPS: {
+    label: "Sets",
     stroke: transparentize(theme.palette.text.primary, 0.3)
   },
   TIME: {
+    label: "Min / Set",
     stroke: transparentize(theme.palette.secondary.main, 0.5)
   }
 });
@@ -223,7 +227,7 @@ class ExercisePage extends React.Component<Props, State> {
     const { classes, theme, width } = this.props;
     const tabMode = this.state.tabMode;
     const { history, type, unit } = this.props.data.exerciseDefinition;
-    const settings = chartSettings(theme);
+    const settings = chartSettings(unit, theme);
     const graphData = history
       .sort((a: any, b: any) => compareAsc(a.date, b.date))
       .reduce(
@@ -269,15 +273,17 @@ class ExercisePage extends React.Component<Props, State> {
         },
         { reps: [], sets: [], timeTaken: [], total: [], values: [] }
       );
+
+    // Get maxes for relative values
     const repsMax = Math.max(...graphData.reps.map((d: any) => d.y));
     const setsMax = Math.max(...graphData.sets.map((d: any) => d.y));
     const timeTakenMax = Math.max(...graphData.timeTaken.map((d: any) => d.y));
     const totalMax = Math.max(...graphData.total.map((d: any) => d.y));
     const valuesMax = Math.max(...graphData.values.map((d: any) => d.y));
+
     return (
       <div>
         <div className={classes.overviewChartWrapper}>
-          {/* {!isMobile(width) && ( */}
           <div>
             <Typography variant="subtitle1">Overview</Typography>
             <ul className={classes.legendList}>
@@ -286,39 +292,38 @@ class ExercisePage extends React.Component<Props, State> {
                   className={classes.legendIcon}
                   style={{ backgroundColor: settings.NET.stroke }}
                 />
-                Net
+                {settings.NET.label}
               </li>
               <li className={classes.legendItem}>
                 <span
                   className={classes.legendIcon}
                   style={{ backgroundColor: settings.VALUE.stroke }}
                 />
-                Values
+                {settings.VALUE.label}
               </li>
               <li className={classes.legendItem}>
                 <span
                   className={classes.legendIcon}
                   style={{ backgroundColor: settings.SETS.stroke }}
                 />
-                Sets
+                {settings.SETS.label}
               </li>
               <li className={classes.legendItem}>
                 <span
                   className={classes.legendIcon}
                   style={{ backgroundColor: settings.REPS.stroke }}
                 />
-                Reps
+                {settings.REPS.label}
               </li>
               <li className={classes.legendItem}>
                 <span
                   className={classes.legendIcon}
                   style={{ backgroundColor: settings.TIME.stroke }}
                 />
-                Time Taken
+                {settings.TIME.label}
               </li>
             </ul>
           </div>
-          {/* )} */}
           <div className={classes.overviewChart}>
             <VictoryChart
               animate={{ duration: 1000 }}
@@ -386,41 +391,43 @@ class ExercisePage extends React.Component<Props, State> {
               value={tabMode}
               variant="scrollable"
             >
-              <Tab label={`${unit} (Avg)`} value={TabMode.VALUE} />
-              <Tab label={`${unit} (Net)`} value={TabMode.NET} />
-              <Tab label="Reps" value={TabMode.REPS} />
-              <Tab label="Sets" value={TabMode.SETS} />
-              <Tab label="Min / Set" value={TabMode.TIME} />
+              <Tab label={settings.VALUE.label} value={TabMode.VALUE} />
+              <Tab label={settings.NET.label} value={TabMode.NET} />
+              <Tab label={settings.REPS.label} value={TabMode.REPS} />
+              <Tab label={settings.SETS.label} value={TabMode.SETS} />
+              <Tab label={settings.TIME.label} value={TabMode.TIME} />
             </Tabs>
             {tabMode === TabMode.REPS && (
-              <Chart label="Reps" mobile data={graphData.reps} />
+              <Chart label={settings.REPS.label} mobile data={graphData.reps} />
             )}
             {tabMode === TabMode.NET && (
-              <Chart label="Net" mobile data={graphData.total} />
+              <Chart label={settings.NET.label} mobile data={graphData.total} />
             )}
             {tabMode === TabMode.VALUE && (
-              <Chart label="Values" mobile data={graphData.values} />
+              <Chart
+                label={settings.VALUE.label}
+                mobile
+                data={graphData.values}
+              />
             )}
             {tabMode === TabMode.SETS && (
-              <Chart label="Sets" mobile data={graphData.sets} />
+              <Chart label={settings.SETS.label} mobile data={graphData.sets} />
             )}
             {tabMode === TabMode.TIME && (
-              <Chart label="Min / Set" mobile data={graphData.timeTaken} />
+              <Chart
+                label={settings.TIME.label}
+                mobile
+                data={graphData.timeTaken}
+              />
             )}
           </div>
         ) : (
           <div className={classes.chartWrapper}>
-            <Chart
-              label={`${getUnitLabel(unit)} (Avg)`}
-              data={graphData.values}
-            />
-            <Chart
-              label={`${getUnitLabel(unit)} (Net)`}
-              data={graphData.total}
-            />
-            <Chart label="Reps" data={graphData.reps} />
-            <Chart label="Sets" data={graphData.sets} />
-            <Chart label="Min / Set" data={graphData.timeTaken} />
+            <Chart label={settings.VALUE.label} data={graphData.values} />
+            <Chart label={settings.NET.label} data={graphData.total} />
+            <Chart label={settings.REPS.label} data={graphData.reps} />
+            <Chart label={settings.SETS.label} data={graphData.sets} />
+            <Chart label={settings.TIME.label} data={graphData.timeTaken} />
           </div>
         )}
       </div>

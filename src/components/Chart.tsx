@@ -22,6 +22,7 @@ const styles = (theme: Theme) =>
   });
 
 type Props = {
+  color?: string;
   classes: Classes;
   data: {
     x: number;
@@ -33,9 +34,11 @@ type Props = {
   theme: Theme;
 };
 
-const Chart = ({ classes, data, label, mobile, theme }: Props) => {
+const Chart = ({ classes, color, data, label, mobile, theme }: Props) => {
   // Check if all chart y values are the same
   const yAllTheSame = !data.map(d => d.y === data[0].y).includes(false);
+
+  const strokeColor = color || theme.palette.primary.main;
 
   return (
     <div className={classes.chart}>
@@ -76,7 +79,7 @@ const Chart = ({ classes, data, label, mobile, theme }: Props) => {
         <VictoryLine
           data={data}
           style={{
-            data: { stroke: theme.palette.primary.main }
+            data: { stroke: strokeColor }
           }}
         />
       </VictoryChart>

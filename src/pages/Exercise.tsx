@@ -135,11 +135,11 @@ const chartSettings = (unit: Unit, theme: Theme) => ({
     label: `${getUnitLabel(unit)} (Avg)`,
     stroke: transparentize(theme.palette.text.primary, 0.6)
   },
-  SETS: {
+  REPS: {
     label: "Reps",
     stroke: transparentize(theme.palette.text.primary, 0.4)
   },
-  REPS: {
+  SETS: {
     label: "Sets",
     stroke: transparentize(theme.palette.text.primary, 0.3)
   },
@@ -227,9 +227,9 @@ class ExercisePage extends React.Component<Props, State> {
     const { classes, theme, width } = this.props;
     const tabMode = this.state.tabMode;
     const { history, type, unit } = this.props.data.exerciseDefinition;
-    const settings = chartSettings(unit, theme);
+    const settings: any = chartSettings(unit, theme);
     const graphData = history
-      .sort((a: any, b: any) => compareAsc(a.date, b.date))
+      .sort((a: Exercise, b: Exercise) => compareAsc(a.date, b.date))
       .reduce(
         (data: any, exercise: Exercise, index: number) => {
           const { sets, timeTaken } = exercise;
@@ -287,41 +287,15 @@ class ExercisePage extends React.Component<Props, State> {
           <div>
             <Typography variant="subtitle1">Overview</Typography>
             <ul className={classes.legendList}>
-              <li className={classes.legendItem}>
-                <span
-                  className={classes.legendIcon}
-                  style={{ backgroundColor: settings.NET.stroke }}
-                />
-                {settings.NET.label}
-              </li>
-              <li className={classes.legendItem}>
-                <span
-                  className={classes.legendIcon}
-                  style={{ backgroundColor: settings.VALUE.stroke }}
-                />
-                {settings.VALUE.label}
-              </li>
-              <li className={classes.legendItem}>
-                <span
-                  className={classes.legendIcon}
-                  style={{ backgroundColor: settings.SETS.stroke }}
-                />
-                {settings.SETS.label}
-              </li>
-              <li className={classes.legendItem}>
-                <span
-                  className={classes.legendIcon}
-                  style={{ backgroundColor: settings.REPS.stroke }}
-                />
-                {settings.REPS.label}
-              </li>
-              <li className={classes.legendItem}>
-                <span
-                  className={classes.legendIcon}
-                  style={{ backgroundColor: settings.TIME.stroke }}
-                />
-                {settings.TIME.label}
-              </li>
+              {Object.keys(settings).map(key => (
+                <li key={key} className={classes.legendItem}>
+                  <span
+                    className={classes.legendIcon}
+                    style={{ backgroundColor: settings[key].stroke }}
+                  />
+                  {settings[key].label}
+                </li>
+              ))}
             </ul>
           </div>
           <div className={classes.overviewChart}>
@@ -423,11 +397,31 @@ class ExercisePage extends React.Component<Props, State> {
           </div>
         ) : (
           <div className={classes.chartWrapper}>
-            <Chart label={settings.VALUE.label} data={graphData.values} />
-            <Chart label={settings.NET.label} data={graphData.total} />
-            <Chart label={settings.REPS.label} data={graphData.reps} />
-            <Chart label={settings.SETS.label} data={graphData.sets} />
-            <Chart label={settings.TIME.label} data={graphData.timeTaken} />
+            <Chart
+              color={settings.NET.stroke}
+              label={settings.NET.label}
+              data={graphData.total}
+            />
+            <Chart
+              color={settings.VALUE.stroke}
+              label={settings.VALUE.label}
+              data={graphData.values}
+            />
+            <Chart
+              color={settings.REPS.stroke}
+              label={settings.REPS.label}
+              data={graphData.reps}
+            />
+            <Chart
+              color={settings.SETS.stroke}
+              label={settings.SETS.label}
+              data={graphData.sets}
+            />
+            <Chart
+              color={settings.TIME.stroke}
+              label={settings.TIME.label}
+              data={graphData.timeTaken}
+            />
           </div>
         )}
       </div>

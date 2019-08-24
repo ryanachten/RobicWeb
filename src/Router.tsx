@@ -7,6 +7,7 @@ import Exercise from "./pages/Exercise";
 import Exercises from "./pages/Exercises";
 import NewExercise from "./pages/NewExercise";
 import Dashboard from "./pages/Dashboard";
+import Landing from "./pages/Landing";
 import Loading from "./pages/Loading";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -34,7 +35,8 @@ const UnauthedRoutes = () => (
   <Switch>
     <Route path={routes.LOGIN.route} exact component={Login} />
     <Route path={routes.REGISTER.route} exact component={Register} />
-    <Redirect to={routes.LOGIN.route} />
+    <Route path={routes.LANDING.route} exact component={Landing} />
+    <Redirect to={routes.LANDING.route} />
   </Switch>
 );
 

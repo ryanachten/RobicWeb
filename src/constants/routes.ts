@@ -3,6 +3,10 @@ export default {
     route: "/",
     label: "Dashboard"
   },
+  LANDING: {
+    route: "/",
+    label: "Landing"
+  },
   EDIT_EXERCISE: (id: string = ":id", label: string = "Edit Exercise") => ({
     label,
     route: `/exercises/edit/${id}`

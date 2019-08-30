@@ -20,6 +20,7 @@ import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import routes from "../constants/routes";
 import { Link } from "../components/Link";
 import { isMobile } from "../constants/sizes";
+import { LOGO_FONT } from "../constants/fonts";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -42,7 +43,7 @@ const styles = (theme: Theme) =>
       top: 0
     },
     robicLogo: {
-      fontFamily: "'Hammersmith One', sans-serif"
+      fontFamily: LOGO_FONT
     },
     spacer: {
       flexGrow: 1

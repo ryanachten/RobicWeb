@@ -5,13 +5,20 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
+import { LOGO_FONT } from "../constants/fonts";
+import { Button } from "@material-ui/core";
+import routes from "../constants/routes";
 
 const styles = (theme: Theme) =>
   createStyles({
+    robicLogo: {
+      fontFamily: LOGO_FONT
+    },
     root: {
       alignItems: "center",
       display: "flex",
-      flexFlow: "column"
+      flexFlow: "column",
+      paddingTop: theme.spacing(8)
     },
     sectionRoot: {
       marginBottom: theme.spacing(2),
@@ -35,24 +42,33 @@ type SectionProps = {
 const Section = withStyles(styles)(
   ({ classes, title, content }: SectionProps) => (
     <section className={classes.sectionRoot}>
-      <Typography variant="h5">{title}</Typography>
+      <Typography variant="h6">{title}</Typography>
       <Typography>{content}</Typography>
     </section>
   )
 );
 
 class Landing extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.navigateToLogin = this.navigateToLogin.bind(this);
+  }
+
+  navigateToLogin() {
+    this.props.history.push(routes.LOGIN.route);
+  }
+
   render() {
     const { classes } = this.props;
     return (
       <main className={classes.root}>
-        <Typography variant="h1">Robic</Typography>
+        <Typography className={classes.robicLogo} variant="h1">
+          robic
+        </Typography>
         <article>
           <section className={classes.sectionRoot}>
-            <Typography variant="h6">
-              Robic is an open-source exercise analytics service, created to
-              help you monitor and improve your performance through data
-              aggregation and reporting.
+            <Typography align="center" color="textSecondary" variant="h5">
+              exercise analytics to help monitor and improve your performance
             </Typography>
           </section>
           <Section
@@ -68,6 +84,13 @@ class Landing extends React.Component<Props, State> {
             content="Over time, Robic will be able to provide you insight into areas you are excelling in, and areas which could do with some improvement. Analytics can also be viewed on a specific exercise or over a period of time."
           />
         </article>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => this.navigateToLogin()}
+        >
+          Get started!
+        </Button>
       </main>
     );
   }

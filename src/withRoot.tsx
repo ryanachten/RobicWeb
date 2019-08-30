@@ -1,18 +1,7 @@
 import * as React from "react";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import orange from "@material-ui/core/colors/orange";
-import red from "@material-ui/core/colors/red";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      ...orange,
-      contrastText: "#fff"
-    },
-    secondary: red
-  }
-});
+import theme from "./theme";
 
 function withRoot<P>(Component: React.ComponentType<P>) {
   function WithRoot(props: P) {

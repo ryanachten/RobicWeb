@@ -22,6 +22,7 @@ type Props = {
   loading: boolean;
   history: any;
   mutate: any;
+  result: any;
 };
 
 class NewExercise extends React.Component<Props, State> {
@@ -50,9 +51,9 @@ class NewExercise extends React.Component<Props, State> {
   }
 
   render() {
-    const { loading } = this.props.data;
+    const { error, loading } = this.props.result;
     return (
-      <PageRoot loading={loading}>
+      <PageRoot error={error} loading={loading}>
         <PageTitle
           label={routes.NEW_EXERCISE.label}
           breadcrumb={{

@@ -148,9 +148,9 @@ class Exercises extends React.Component<Props, State> {
   render() {
     const { classes, data } = this.props;
     const { exercises, search } = this.state;
-    const { loading } = data;
+    const { loading, error } = data;
     return (
-      <PageRoot loading={loading}>
+      <PageRoot error={error} loading={loading}>
         <PageTitle label="Exercises" />
         <div className={classes.header}>
           <Link

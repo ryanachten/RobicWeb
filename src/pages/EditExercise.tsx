@@ -23,6 +23,7 @@ type Props = {
   history: any;
   match: any;
   mutate: any;
+  result: any;
 };
 
 class EditExercise extends React.Component<Props, State> {
@@ -53,10 +54,10 @@ class EditExercise extends React.Component<Props, State> {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, result } = this.props;
     const { exerciseDefinition, loading } = data;
     return (
-      <PageRoot loading={loading}>
+      <PageRoot error={result.error} loading={loading}>
         <PageTitle
           label={routes.EDIT_EXERCISE().label}
           breadcrumb={{

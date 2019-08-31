@@ -11,7 +11,7 @@ import { Classes } from "jss";
 import { LoginUser, RegisterUser } from "../constants/mutations";
 import { Divider } from "@material-ui/core";
 import routes from "../constants/routes";
-import { Link } from "../components";
+import { Link, ErrorMessage } from "../components";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -51,7 +51,7 @@ type State = {
   lastName: string;
   email: string;
   password: string;
-  error: Error | null;
+  error?: Error;
 };
 
 type Props = RouteChildrenProps & {
@@ -67,8 +67,7 @@ class Register extends React.Component<Props, State> {
       email: "",
       password: "",
       firstName: "",
-      lastName: "",
-      error: null
+      lastName: ""
     };
     this.submitForm = this.submitForm.bind(this);
   }
@@ -165,11 +164,7 @@ class Register extends React.Component<Props, State> {
               Sign Up
             </Button>
           </div>
-          {error && (
-            <Typography className={classes.error} color="error">
-              {error.message}
-            </Typography>
-          )}
+          <ErrorMessage error={error} className={classes.error} />
         </form>
         <Divider />
         <Typography>Already have an account?</Typography>

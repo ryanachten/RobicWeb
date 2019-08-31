@@ -1,4 +1,5 @@
 // Page components
+export * from "./page/ErrorMessage";
 export * from "./page/LoadingSplash";
 export * from "./page/PageRoot";
 export * from "./page/PageTitle";

@@ -54,6 +54,7 @@ type Props = {
   loading: boolean;
   history: any;
   mutate: any;
+  result: any;
   theme: Theme;
 };
 
@@ -339,7 +340,11 @@ class Activity extends React.Component<Props, State> {
   render() {
     const { data } = this.props;
     const loading = data.loading;
-    return <PageRoot loading={loading}>{this.renderCharts()}</PageRoot>;
+    return (
+      <PageRoot loading={loading} error={data.error}>
+        {this.renderCharts()}
+      </PageRoot>
+    );
   }
 }
 

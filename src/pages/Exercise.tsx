@@ -569,21 +569,11 @@ class ExercisePage extends React.Component<Props, State> {
 
   render() {
     const { data } = this.props;
-    const { exerciseDefinition, loading } = data;
-
+    const { exerciseDefinition, loading, error } = data;
     return (
-      <PageRoot loading={loading}>
-        {exerciseDefinition ? (
-          this.renderExerciseDefinition(exerciseDefinition)
-        ) : (
-          <div>
-            <PageTitle label="Oops!" />
-            <Typography color="error">
-              Sorry, this exercise cannot be found. It may have been deleted or
-              created by a different user.
-            </Typography>
-          </div>
-        )}
+      <PageRoot error={error} loading={loading}>
+        {exerciseDefinition &&
+          this.renderExerciseDefinition(exerciseDefinition)}
       </PageRoot>
     );
   }

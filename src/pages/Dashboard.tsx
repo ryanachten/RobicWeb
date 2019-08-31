@@ -38,7 +38,8 @@ import {
   PageTitle,
   Select,
   Link,
-  ExerciseTypeIcon
+  ExerciseTypeIcon,
+  ErrorMessage
 } from "../components";
 
 const styles = (theme: Theme) =>
@@ -135,6 +136,7 @@ type Props = {
   data: any;
   history: any;
   mutate: any;
+  result: any;
 };
 
 const FILTER_ALL = "all";
@@ -678,7 +680,7 @@ class Index extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes, data } = this.props;
+    const { classes, data, result } = this.props;
     const {
       filteredExercises,
       filterMenuAnchor,
@@ -688,7 +690,7 @@ class Index extends React.Component<Props, State> {
     const exercises =
       filteredExercises.length > 0 ? filteredExercises : exerciseDefinitions;
     return (
-      <PageRoot>
+      <PageRoot error={result.error}>
         {loading ? (
           <LoadingSplash />
         ) : (

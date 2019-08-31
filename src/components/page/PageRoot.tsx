@@ -1,10 +1,13 @@
 import React from "react";
 import { withStyles, createStyles, Theme } from "@material-ui/core";
 import { Classes } from "jss";
-import classnames from "../../utils";
+import { ErrorMessage } from "./ErrorMessage";
 
 const styles = (theme: Theme) =>
   createStyles({
+    error: {
+      marginTop: theme.spacing(4)
+    },
     root: {
       padding: theme.spacing(4),
       [theme.breakpoints.only("xs")]: {
@@ -16,10 +19,16 @@ const styles = (theme: Theme) =>
 type Props = {
   children: any;
   classes: Classes;
+  error?: Error; // hook up via GraphQL result.error prop
 };
-const PageRoot = ({ children, classes }: Props) => {
-  const activeClasses = [classes.root];
-  return <div className={classnames(activeClasses)}>{children}</div>;
+
+const PageRoot = ({ children, classes, error }: Props) => {
+  return (
+    <main className={classes.root}>
+      {children}
+      <ErrorMessage className={classes.error} error={error} />
+    </main>
+  );
 };
 
 const styled = withStyles(styles)(PageRoot);

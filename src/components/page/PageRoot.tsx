@@ -2,6 +2,7 @@ import React from "react";
 import { withStyles, createStyles, Theme } from "@material-ui/core";
 import { Classes } from "jss";
 import { ErrorMessage } from "./ErrorMessage";
+import { LoadingSplash } from "./LoadingSplash";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -19,13 +20,14 @@ const styles = (theme: Theme) =>
 type Props = {
   children: any;
   classes: Classes;
+  loading: boolean;
   error?: Error; // hook up via GraphQL result.error prop
 };
 
-const PageRoot = ({ children, classes, error }: Props) => {
+const PageRoot = ({ children, classes, error, loading }: Props) => {
   return (
     <main className={classes.root}>
-      {children}
+      {loading ? <LoadingSplash /> : children}
       <ErrorMessage className={classes.error} error={error} />
     </main>
   );

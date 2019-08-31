@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { compose, graphql } from "react-apollo";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
@@ -10,13 +10,7 @@ import { ExerciseDefinition } from "../constants/types";
 import { Typography, TextField, withWidth } from "@material-ui/core";
 import routes from "../constants/routes";
 import { formatDate, compareExerciseDates } from "../utils";
-import {
-  Link,
-  PageRoot,
-  PageTitle,
-  LoadingSplash,
-  ExerciseTypeIcon
-} from "../components";
+import { Link, PageRoot, PageTitle, ExerciseTypeIcon } from "../components";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
 
@@ -156,46 +150,40 @@ class Exercises extends React.Component<Props, State> {
     const { exercises, search } = this.state;
     const { loading } = data;
     return (
-      <PageRoot>
-        {loading ? (
-          <LoadingSplash />
-        ) : (
-          <Fragment>
-            <PageTitle label="Exercises" />
-            <div className={classes.header}>
-              <Link
-                className={classes.createLink}
-                label={routes.NEW_EXERCISE.label}
-                url={routes.NEW_EXERCISE.route}
-              />
-              <div className={classes.search}>
-                <TextField
-                  label="Search"
-                  onChange={this.onUpdateSearch}
-                  value={search}
-                />
-                <SearchIcon />
-              </div>
+      <PageRoot loading={loading}>
+        <PageTitle label="Exercises" />
+        <div className={classes.header}>
+          <Link
+            className={classes.createLink}
+            label={routes.NEW_EXERCISE.label}
+            url={routes.NEW_EXERCISE.route}
+          />
+          <div className={classes.search}>
+            <TextField
+              label="Search"
+              onChange={this.onUpdateSearch}
+              value={search}
+            />
+            <SearchIcon />
+          </div>
+        </div>
+        <ul className={classes.exerciseList}>
+          {exercises.length > 0 ? (
+            exercises
+              .sort(compareExerciseDates)
+              .map((exercise: ExerciseDefinition) =>
+                this.renderExercise(exercise)
+              )
+          ) : (
+            <div>
+              <Typography>
+                {search
+                  ? `Oops! No exercises match '${search}'`
+                  : "Looks like you don't have any exercises yet"}
+              </Typography>
             </div>
-            <ul className={classes.exerciseList}>
-              {exercises.length > 0 ? (
-                exercises
-                  .sort(compareExerciseDates)
-                  .map((exercise: ExerciseDefinition) =>
-                    this.renderExercise(exercise)
-                  )
-              ) : (
-                <div>
-                  <Typography>
-                    {search
-                      ? `Oops! No exercises match '${search}'`
-                      : "Looks like you don't have any exercises yet"}
-                  </Typography>
-                </div>
-              )}
-            </ul>
-          </Fragment>
-        )}
+          )}
+        </ul>
       </PageRoot>
     );
   }

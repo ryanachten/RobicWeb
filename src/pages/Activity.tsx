@@ -6,7 +6,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import routes from "../constants/routes";
 import { GetExercises } from "../constants/queries";
-import { PageRoot, PageTitle, LoadingSplash } from "../components";
+import { PageRoot, PageTitle } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
@@ -339,9 +339,7 @@ class Activity extends React.Component<Props, State> {
   render() {
     const { data } = this.props;
     const loading = data.loading;
-    return (
-      <PageRoot>{loading ? <LoadingSplash /> : this.renderCharts()}</PageRoot>
-    );
+    return <PageRoot loading={loading}>{this.renderCharts()}</PageRoot>;
   }
 }
 

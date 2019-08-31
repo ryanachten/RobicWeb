@@ -7,7 +7,7 @@ import { Classes } from "jss";
 import { UpdateExercise } from "../constants/mutations";
 import routes from "../constants/routes";
 import { GetExercises, GetExerciseDefinitionById } from "../constants/queries";
-import { PageRoot, PageTitle, LoadingSplash } from "../components";
+import { PageRoot, PageTitle } from "../components";
 import ExerciseForm, {
   State as FormFields
 } from "../components/inputs/ExerciseForm";
@@ -56,7 +56,7 @@ class EditExercise extends React.Component<Props, State> {
     const { data } = this.props;
     const { exerciseDefinition, loading } = data;
     return (
-      <PageRoot>
+      <PageRoot loading={loading}>
         <PageTitle
           label={routes.EDIT_EXERCISE().label}
           breadcrumb={{
@@ -64,14 +64,10 @@ class EditExercise extends React.Component<Props, State> {
             onClick: () => this.props.history.goBack()
           }}
         />
-        {loading ? (
-          <LoadingSplash />
-        ) : (
-          <ExerciseForm
-            exerciseDefinition={exerciseDefinition}
-            onSubmit={(fields: any) => this.submitForm(fields)}
-          />
-        )}
+        <ExerciseForm
+          exerciseDefinition={exerciseDefinition}
+          onSubmit={(fields: any) => this.submitForm(fields)}
+        />
       </PageRoot>
     );
   }

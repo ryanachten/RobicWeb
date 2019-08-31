@@ -33,13 +33,11 @@ import {
   isBodyWeight
 } from "../utils";
 import {
-  LoadingSplash,
   PageRoot,
   PageTitle,
   Select,
   Link,
-  ExerciseTypeIcon,
-  ErrorMessage
+  ExerciseTypeIcon
 } from "../components";
 
 const styles = (theme: Theme) =>
@@ -690,65 +688,57 @@ class Index extends React.Component<Props, State> {
     const exercises =
       filteredExercises.length > 0 ? filteredExercises : exerciseDefinitions;
     return (
-      <PageRoot error={result.error}>
-        {loading ? (
-          <LoadingSplash />
+      <PageRoot loading={loading} error={result.error}>
+        <PageTitle label="Get started" />
+        {exercises && exercises.length > 0 ? (
+          <div className={classes.selectWrapper}>
+            <Typography className={classes.selectTitle}>
+              Select an exercise
+            </Typography>
+            <Select
+              label="Exercise"
+              className={classes.formControl}
+              onChange={this.onSelectExercise}
+              options={exercises
+                .sort(this.sortExericises)
+                .map(({ id, title }: ExerciseDefinition) => ({
+                  id,
+                  value: id,
+                  label: title
+                }))}
+              value={selectedExercise ? selectedExercise.id : ""}
+            />
+            <IconButton
+              aria-controls="exercise-filter"
+              aria-haspopup="true"
+              onClick={this.openFilterMenu}
+            >
+              <FilterIcon
+                color={filteredExercises.length > 0 ? "primary" : "inherit"}
+              />
+            </IconButton>
+            {Boolean(filterMenuAnchor) && this.renderExerciseFilter()}
+          </div>
         ) : (
-          <Fragment>
-            <PageTitle label="Get started" />
-            {exercises && exercises.length > 0 ? (
-              <div className={classes.selectWrapper}>
-                <Typography className={classes.selectTitle}>
-                  Select an exercise
-                </Typography>
-                <Select
-                  label="Exercise"
-                  className={classes.formControl}
-                  onChange={this.onSelectExercise}
-                  options={exercises
-                    .sort(this.sortExericises)
-                    .map(({ id, title }: ExerciseDefinition) => ({
-                      id,
-                      value: id,
-                      label: title
-                    }))}
-                  value={selectedExercise ? selectedExercise.id : ""}
-                />
-                <IconButton
-                  aria-controls="exercise-filter"
-                  aria-haspopup="true"
-                  onClick={this.openFilterMenu}
-                >
-                  <FilterIcon
-                    color={filteredExercises.length > 0 ? "primary" : "inherit"}
-                  />
-                </IconButton>
-                {Boolean(filterMenuAnchor) && this.renderExerciseFilter()}
-              </div>
-            ) : (
-              <div>
-                <Link
-                  className={classes.createExerciseLink}
-                  label="Create Exercise"
-                  url={routes.NEW_EXERCISE.route}
-                />
-                <Typography>
-                  Looks like you don't have any exercises yet
-                </Typography>
-              </div>
-            )}
-            {selectedExercise ? (
-              this.renderExerciseForm()
-            ) : (
-              <Typography
-                className={classes.selectMessage}
-                color="textSecondary"
-                variant="h5"
-              >
-                select an exercise to get started...
-              </Typography>
-            )}
-          </Fragment>
+          <div>
+            <Link
+              className={classes.createExerciseLink}
+              label="Create Exercise"
+              url={routes.NEW_EXERCISE.route}
+            />
+            <Typography>Looks like you don't have any exercises yet</Typography>
+          </div>
+        )}
+        {selectedExercise ? (
+          this.renderExerciseForm()
+        ) : (
+          <Typography
+            className={classes.selectMessage}
+            color="textSecondary"
+            variant="h5"
+          >
+            select an exercise to get started...
+          </Typography>
         )}
       </PageRoot>
     );

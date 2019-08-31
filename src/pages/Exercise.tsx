@@ -39,7 +39,6 @@ import {
   ExerciseTypeIcon,
   PageRoot,
   PageTitle,
-  LoadingSplash,
   Link
 } from "../components";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
@@ -573,10 +572,8 @@ class ExercisePage extends React.Component<Props, State> {
     const { exerciseDefinition, loading } = data;
 
     return (
-      <PageRoot>
-        {loading ? (
-          <LoadingSplash />
-        ) : exerciseDefinition ? (
+      <PageRoot loading={loading}>
+        {exerciseDefinition ? (
           this.renderExerciseDefinition(exerciseDefinition)
         ) : (
           <div>

@@ -50,8 +50,9 @@ class NewExercise extends React.Component<Props, State> {
   }
 
   render() {
+    const { loading } = this.props.data;
     return (
-      <PageRoot>
+      <PageRoot loading={loading}>
         <PageTitle
           label={routes.NEW_EXERCISE.label}
           breadcrumb={{

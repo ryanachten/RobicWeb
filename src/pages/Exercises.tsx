@@ -3,6 +3,7 @@ import { compose, graphql } from "react-apollo";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
+import AddIcon from "@material-ui/icons/Add";
 import SearchIcon from "@material-ui/icons/Search";
 import { Classes } from "jss";
 import { GetExercises } from "../constants/queries";
@@ -19,14 +20,23 @@ const styles = (theme: Theme) =>
     createLink: {
       marginRight: theme.spacing(4)
     },
+    createLinkWrapper: {
+      display: "flex",
+      flexFlow: "row wrap"
+    },
     exerciseList: {
       padding: 0
     },
     exerciseTitle: {
       cursor: "pointer",
       listStyle: "none",
-      marginBottom: theme.spacing(2),
-      textTransform: "capitalize"
+      marginBottom: theme.spacing(2)
+    },
+    exerciseTitleText: {
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      textTransform: "capitalize",
+      whiteSpace: "nowrap"
     },
     exerciseTitleWrapper: {
       display: "flex"
@@ -35,7 +45,7 @@ const styles = (theme: Theme) =>
       marginLeft: theme.spacing(1) / 2
     },
     header: {
-      alignItems: "baseline",
+      alignItems: "flex-end",
       display: "flex",
       flexFlow: "row wrap",
       marginBottom: theme.spacing(4)
@@ -130,6 +140,7 @@ class Exercises extends React.Component<Props, State> {
         <div className={classes.exerciseTitleWrapper}>
           <ExerciseTypeIcon type={exercise.type} showLabel={false} />
           <Typography
+            className={classes.exerciseTitleText}
             onClick={() => this.navigateToExercise(exercise)}
             variant={isMobile(width) ? "h3" : "h2"}
           >
@@ -153,11 +164,14 @@ class Exercises extends React.Component<Props, State> {
       <PageRoot error={error} loading={loading}>
         <PageTitle label="Exercises" />
         <div className={classes.header}>
-          <Link
-            className={classes.createLink}
-            label={routes.NEW_EXERCISE.label}
-            url={routes.NEW_EXERCISE.route}
-          />
+          <div className={classes.createLinkWrapper}>
+            <AddIcon color="primary" />
+            <Link
+              className={classes.createLink}
+              label={routes.NEW_EXERCISE.label}
+              url={routes.NEW_EXERCISE.route}
+            />
+          </div>
           <div className={classes.search}>
             <TextField
               label="Search"

@@ -12,6 +12,10 @@ type Option = {
 
 type Props = {
   label: string;
+  classes?: {
+    MenuItem?: string;
+    MuiSelect?: string;
+  };
   className?: string;
   options: Option[];
   onChange: (e: any) => void;
@@ -20,6 +24,7 @@ type Props = {
 
 export const Select = ({
   className,
+  classes,
   label,
   options,
   onChange,
@@ -28,6 +33,7 @@ export const Select = ({
   <FormControl className={className}>
     <InputLabel htmlFor={label}>{label}</InputLabel>
     <MuiSelect
+      className={classes && classes.MuiSelect}
       onChange={onChange}
       value={value}
       inputProps={{
@@ -37,7 +43,11 @@ export const Select = ({
     >
       {options &&
         options.map((option: Option) => (
-          <MenuItem key={option.id} value={option.value}>
+          <MenuItem
+            className={classes && classes.MenuItem}
+            key={option.id}
+            value={option.value}
+          >
             {option.label}
           </MenuItem>
         ))}

@@ -67,7 +67,8 @@ const styles = (theme: Theme) =>
     },
     exerciseTitle: {
       marginBottom: theme.spacing(3),
-      marginTop: theme.spacing(4)
+      marginTop: theme.spacing(4),
+      textTransform: "capitalize"
     },
     form: {
       display: "flex",
@@ -75,6 +76,9 @@ const styles = (theme: Theme) =>
     },
     formControl: {
       width: "150px"
+    },
+    formControlSelect: {
+      textTransform: "capitalize"
     },
     historyHeader: {
       alignItems: "center",
@@ -93,11 +97,16 @@ const styles = (theme: Theme) =>
       marginRight: theme.spacing(1)
     },
     selectMessage: {
-      marginTop: theme.spacing(4)
+      marginTop: theme.spacing(10)
     },
     selectWrapper: {
       alignItems: "baseline",
       display: "flex"
+    },
+    sessionForm: {
+      display: "flex",
+      flexFlow: "column",
+      width: "fit-content"
     },
     setItem: {
       marginRight: theme.spacing(2)
@@ -532,7 +541,7 @@ class Index extends React.Component<Props, State> {
     const compositeType = isCompositeExercise(type);
 
     return (
-      <form onSubmit={this.submitForm}>
+      <form className={classes.sessionForm} onSubmit={this.submitForm}>
         <div className={classes.exerciseTitle}>
           <Typography variant="h3">{title}</Typography>
           <ExerciseTypeIcon type={type} />
@@ -698,6 +707,10 @@ class Index extends React.Component<Props, State> {
             <Select
               label="Exercise"
               className={classes.formControl}
+              classes={{
+                MenuItem: classes.formControlSelect,
+                MuiSelect: classes.formControlSelect
+              }}
               onChange={this.onSelectExercise}
               options={exercises
                 .sort(this.sortExericises)
@@ -732,13 +745,11 @@ class Index extends React.Component<Props, State> {
         {selectedExercise ? (
           this.renderExerciseForm()
         ) : (
-          <Typography
-            className={classes.selectMessage}
-            color="textSecondary"
-            variant="h5"
-          >
-            select an exercise to get started...
-          </Typography>
+          <div className={classes.selectMessage}>
+            <Typography align="center" color="primary" variant="h5">
+              select an exercise to get started
+            </Typography>
+          </div>
         )}
       </PageRoot>
     );

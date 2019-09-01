@@ -21,6 +21,9 @@ import { Typography, IconButton, Menu, MenuItem } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import FilterIcon from "@material-ui/icons/FilterList";
 import RemoveIcon from "@material-ui/icons/Remove";
+import StartIcon from "@material-ui/icons/PlayArrow";
+import PauseIcon from "@material-ui/icons/Pause";
+import ResetIcon from "@material-ui/icons/Refresh";
 import routes from "../constants/routes";
 import Stopwatch from "../components/Stopwatch";
 import {
@@ -39,6 +42,7 @@ import {
   Link,
   ExerciseTypeIcon
 } from "../components";
+import { isNull } from "util";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -75,6 +79,7 @@ const styles = (theme: Theme) =>
       flexFlow: "row wrap"
     },
     formControl: {
+      marginRight: theme.spacing(2),
       width: "150px"
     },
     formControlSelect: {
@@ -94,7 +99,7 @@ const styles = (theme: Theme) =>
       padding: theme.spacing(2)
     },
     selectTitle: {
-      marginRight: theme.spacing(1)
+      marginRight: theme.spacing(2)
     },
     selectMessage: {
       marginTop: theme.spacing(10)
@@ -584,15 +589,21 @@ class Index extends React.Component<Props, State> {
         )}
         <div className={classes.buttonWrapper}>
           <Stopwatch ref={(stopwatch: any) => (this.stopwatch = stopwatch)} />
-          <Button className={classes.timerButton} onClick={this.toggleTimer}>
-            {timerRunning ? "Pause" : "Start"}
-          </Button>
-          <Button
+          <IconButton
             className={classes.timerButton}
-            onClick={() => this.stopwatch.reset()}
+            onClick={this.toggleTimer}
           >
-            Reset
-          </Button>
+            {timerRunning ? <PauseIcon /> : <StartIcon />}
+          </IconButton>
+          {console.log("this.stopwatch", this.stopwatch)}
+          {this.stopwatch && !isNull(this.stopwatch.time) && (
+            <IconButton
+              className={classes.timerButton}
+              onClick={() => this.stopwatch.reset()}
+            >
+              <ResetIcon />
+            </IconButton>
+          )}
         </div>
         <Button
           className={classes.doneButton}

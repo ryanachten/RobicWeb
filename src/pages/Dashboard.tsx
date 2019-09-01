@@ -85,6 +85,10 @@ const styles = (theme: Theme) =>
     formControlSelect: {
       textTransform: "capitalize"
     },
+    historyContent: {
+      display: "flex",
+      flexFlow: "row wrap"
+    },
     historyHeader: {
       alignItems: "center",
       display: "flex"
@@ -386,7 +390,7 @@ class Index extends React.Component<Props, State> {
             true
           )}`}</Typography>
         </div>
-        <div className={classes.setWrapper}>
+        <div className={classes.historyContent}>
           {personalBest.sets.map(({ reps, value, exercises }, index) => (
             <div key={index}>
               {composite && childExercises && exercises ? (
@@ -437,7 +441,7 @@ class Index extends React.Component<Props, State> {
             true
           )}`}</Typography>
         </div>
-        <div className={classes.setWrapper}>
+        <div className={classes.historyContent}>
           {sets.map(({ reps, value, exercises }, index) => (
             <div key={index}>
               {composite && childExercises && exercises ? (

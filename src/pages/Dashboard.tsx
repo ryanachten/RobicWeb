@@ -36,8 +36,8 @@ import {
   isBodyWeight
 } from "../utils";
 import {
+  ActionPanel,
   PageRoot,
-  PageTitle,
   Select,
   Link,
   ExerciseTypeIcon
@@ -713,7 +713,7 @@ class Index extends React.Component<Props, State> {
       filteredExercises.length > 0 ? filteredExercises : exerciseDefinitions;
     return (
       <PageRoot loading={loading} error={result.error}>
-        <PageTitle label="Get started" />
+        <ActionPanel />
         {exercises && exercises.length > 0 ? (
           <div className={classes.selectWrapper}>
             <Typography className={classes.selectTitle}>

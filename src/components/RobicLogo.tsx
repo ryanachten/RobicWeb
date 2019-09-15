@@ -1,11 +1,24 @@
 import React from "react";
+import { withStyles, createStyles } from "@material-ui/styles";
+import { Classes } from "jss";
+import classnames from "../utils";
 
 type Props = {
   className?: string;
+  classes: Classes;
 };
 
-export const RobicLogo = ({ className }: Props) => (
-  <div className={className}>
+const styles = () =>
+  createStyles({
+    root: {
+      display: "flex",
+      height: "39px",
+      width: "80px"
+    }
+  });
+
+const RobicLogo = ({ className, classes }: Props) => (
+  <div className={classnames(classes.root, className)}>
     <svg
       width="149px"
       height="48px"
@@ -39,3 +52,6 @@ export const RobicLogo = ({ className }: Props) => (
     </svg>
   </div>
 );
+
+const styled = withStyles(styles)(RobicLogo);
+export { styled as RobicLogo };

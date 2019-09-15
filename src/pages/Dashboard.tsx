@@ -41,7 +41,8 @@ import {
   Select,
   Link,
   ExerciseTypeIcon,
-  BackgroundMode
+  BackgroundMode,
+  RobicLogo
 } from "../components";
 import { isNull } from "util";
 
@@ -181,6 +182,7 @@ class Index extends React.Component<Props, State> {
     this.removeSet = this.removeSet.bind(this);
     this.renderSetInputs = this.renderSetInputs.bind(this);
     this.cancelFilter = this.cancelFilter.bind(this);
+    this.renderExerciseSelect = this.renderExerciseSelect.bind(this);
     this.resetFilter = this.resetFilter.bind(this);
     this.submitFilter = this.submitFilter.bind(this);
     this.submitForm = this.submitForm.bind(this);
@@ -702,74 +704,92 @@ class Index extends React.Component<Props, State> {
     );
   }
 
-  render() {
-    const { classes, data, result } = this.props;
+  renderExerciseSelect(exercises: ExerciseDefinition[]) {
+    const { classes } = this.props;
     const {
       filteredExercises,
       filterMenuAnchor,
       selectedExercise
     } = this.state;
+    return (
+      <div className={classes.selectWrapper}>
+        <Select
+          label="Exercise"
+          className={classes.formControl}
+          classes={{
+            MenuItem: classes.formControlSelect,
+            MuiSelect: classes.formControlSelect
+          }}
+          onChange={this.onSelectExercise}
+          options={exercises
+            .sort(this.sortExericises)
+            .map(({ id, title }: ExerciseDefinition) => ({
+              id,
+              value: id,
+              label: title
+            }))}
+          value={selectedExercise ? selectedExercise.id : ""}
+        />
+        <IconButton
+          aria-controls="exercise-filter"
+          aria-haspopup="true"
+          onClick={this.openFilterMenu}
+        >
+          <FilterIcon
+            color={filteredExercises.length > 0 ? "primary" : "inherit"}
+          />
+        </IconButton>
+        {Boolean(filterMenuAnchor) && this.renderExerciseFilter()}
+      </div>
+    );
+  }
+
+  render() {
+    const { classes, data, result } = this.props;
+    const { filteredExercises, selectedExercise } = this.state;
     const { exerciseDefinitions, loading } = data;
     const exercises =
       filteredExercises.length > 0 ? filteredExercises : exerciseDefinitions;
     return (
       <PageRoot
-        backgroundMode={BackgroundMode.purple}
+        backgroundMode={
+          selectedExercise ? BackgroundMode.light : BackgroundMode.purple
+        }
         loading={loading}
         error={result.error}
       >
-        {exercises && exercises.length > 0 ? (
-          <ActionPanel>
-            <Typography className={classes.selectTitle}>
-              Select an exercise
-            </Typography>
-            <div className={classes.selectWrapper}>
-              <Select
-                label="Exercise"
-                className={classes.formControl}
-                classes={{
-                  MenuItem: classes.formControlSelect,
-                  MuiSelect: classes.formControlSelect
-                }}
-                onChange={this.onSelectExercise}
-                options={exercises
-                  .sort(this.sortExericises)
-                  .map(({ id, title }: ExerciseDefinition) => ({
-                    id,
-                    value: id,
-                    label: title
-                  }))}
-                value={selectedExercise ? selectedExercise.id : ""}
-              />
-              <IconButton
-                aria-controls="exercise-filter"
-                aria-haspopup="true"
-                onClick={this.openFilterMenu}
-              >
-                <FilterIcon
-                  color={filteredExercises.length > 0 ? "primary" : "inherit"}
-                />
-              </IconButton>
-              {Boolean(filterMenuAnchor) && this.renderExerciseFilter()}
-            </div>
-          </ActionPanel>
+        {selectedExercise ? (
+          <div>
+            <RobicLogo />
+            {this.renderExerciseSelect(exercises)}
+            {this.renderExerciseForm()}
+          </div>
         ) : (
           <div>
-            <Link
-              className={classes.createExerciseLink}
-              label="Create Exercise"
-              url={routes.NEW_EXERCISE.route}
-            />
-            <Typography>Looks like you don't have any exercises yet</Typography>
-          </div>
-        )}
-        {selectedExercise ? (
-          this.renderExerciseForm()
-        ) : (
-          <div className={classes.selectMessage}>
-            <Typography align="center" color="primary" variant="h5">
-              select an exercise to get started
-            </Typography>
+            {exercises && exercises.length > 0 ? (
+              <ActionPanel>
+                <Typography className={classes.selectTitle}>
+                  Select an exercise
+                </Typography>
+                {this.renderExerciseSelect(exercises)}
+              </ActionPanel>
+            ) : (
+              <div>
+                <Link
+                  className={classes.createExerciseLink}
+                  label="Create Exercise"
+                  url={routes.NEW_EXERCISE.route}
+                />
+                <Typography>
+                  Looks like you don't have any exercises yet
+                </Typography>
+              </div>
+            )}
+            <div className={classes.selectMessage}>
+              <Typography align="center" color="primary" variant="h5">
+                select an exercise to get started
+              </Typography>
+            </div>
           </div>
         )}
       </PageRoot>

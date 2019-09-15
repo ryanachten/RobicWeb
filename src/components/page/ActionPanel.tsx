@@ -11,11 +11,8 @@ const styles = (theme: Theme) =>
       marginBottom: theme.spacing(2)
     },
     logo: {
-      display: "flex",
-      height: "39px",
       margin: "0 auto",
-      marginBottom: theme.spacing(2),
-      width: "80px"
+      marginBottom: theme.spacing(2)
     },
     root: {
       padding: theme.spacing(4)

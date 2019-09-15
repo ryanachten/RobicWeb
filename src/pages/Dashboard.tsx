@@ -17,8 +17,16 @@ import {
   MuscleGroup,
   ExerciseType
 } from "../constants/types";
-import { Typography, IconButton, Menu, MenuItem } from "@material-ui/core";
+import {
+  Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  Switch
+} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+import AwardIcon from "@material-ui/icons/Star";
+import RecentIcon from "@material-ui/icons/AccessTime";
 import FilterIcon from "@material-ui/icons/FilterList";
 import RemoveIcon from "@material-ui/icons/Remove";
 import StartIcon from "@material-ui/icons/PlayArrow";
@@ -45,6 +53,7 @@ import {
   RobicLogo
 } from "../components";
 import { isNull } from "util";
+import { HEADER_FONT } from "../constants/fonts";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -104,6 +113,9 @@ const styles = (theme: Theme) =>
     input: {
       padding: theme.spacing(2)
     },
+    robicLogo: {
+      marginBottom: theme.spacing(2)
+    },
     selectTitle: {
       marginRight: theme.spacing(2)
     },
@@ -131,8 +143,21 @@ const styles = (theme: Theme) =>
       display: "flex",
       flexFlow: "row wrap"
     },
+    switchesWrapper: {
+      display: "flex",
+      marginBottom: theme.spacing(2)
+    },
+    switchWrapper: {
+      alignItems: "center",
+      display: "flex",
+      marginRight: theme.spacing(2)
+    },
     timerButton: {
       marginLeft: theme.spacing(2)
+    },
+    title: {
+      color: theme.palette.primary.light,
+      fontFamily: HEADER_FONT
     }
   });
 
@@ -146,6 +171,8 @@ type State = {
   filterTempMuscleGroup: string;
   selectedExercise: ExerciseDefinition | null;
   sets: Set[];
+  showPbSession: boolean;
+  showRecentSession: boolean;
   timerRunning: boolean;
 };
 
@@ -173,7 +200,9 @@ class Index extends React.Component<Props, State> {
       filterTempExerciseType: FILTER_ALL,
       filterTempMuscleGroup: FILTER_ALL,
       selectedExercise: null,
-      sets: [], //this will be set on exercise select
+      sets: [], //this will be set on exercise select,
+      showPbSession: false,
+      showRecentSession: false,
       timerRunning: false
     };
     this.addSet = this.addSet.bind(this);
@@ -187,7 +216,8 @@ class Index extends React.Component<Props, State> {
     this.submitFilter = this.submitFilter.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.openFilterMenu = this.openFilterMenu.bind(this);
-    this.toggleTimer = this.toggleTimer.bind(this);
+    // this.toggleSwitch = this.toggleSwitch.bind(this);
+    // this.toggleTimer = this.toggleTimer.bind(this);
     this.sortExericises = (a: ExerciseDefinition, b: ExerciseDefinition) => {
       return a.title >= b.title ? 1 : -1;
     };
@@ -339,6 +369,12 @@ class Index extends React.Component<Props, State> {
       selectedExercise: exercise
     });
   };
+
+  toggleSwitch(switchName: "showPbSession" | "showRecentSession") {
+    const state: any = { ...this.state };
+    state[switchName] = !this.state[switchName];
+    this.setState(state);
+  }
 
   closeFilterMenu() {
     this.cancelFilter();
@@ -545,7 +581,13 @@ class Index extends React.Component<Props, State> {
 
   renderExerciseForm() {
     const { classes } = this.props;
-    const { selectedExercise, sets, timerRunning } = this.state;
+    const {
+      selectedExercise,
+      sets,
+      showPbSession,
+      showRecentSession,
+      timerRunning
+    } = this.state;
     if (!selectedExercise) {
       return null;
     }
@@ -555,13 +597,33 @@ class Index extends React.Component<Props, State> {
     return (
       <form className={classes.sessionForm} onSubmit={this.submitForm}>
         <div className={classes.exerciseTitle}>
-          <Typography variant="h3">{title}</Typography>
+          <Typography className={classes.title} variant="h3">
+            {title}
+          </Typography>
           <ExerciseTypeIcon type={type} />
         </div>
-        {history &&
+        <div className={classes.switchesWrapper}>
+          <div className={classes.switchWrapper}>
+            <AwardIcon color="secondary" />
+            <Switch
+              onChange={() => this.toggleSwitch("showPbSession")}
+              checked={showPbSession}
+            />
+          </div>
+          <div className={classes.switchWrapper}>
+            <RecentIcon color="secondary" />
+            <Switch
+              onChange={() => this.toggleSwitch("showRecentSession")}
+              checked={showRecentSession}
+            />
+          </div>
+        </div>
+        {showPbSession &&
+          history &&
           history.length > 0 &&
           this.renderPersonalBest(history, compositeType, unit, childExercises)}
-        {history &&
+        {showRecentSession &&
+          history &&
           history.length > 0 &&
           this.renderHistory(history, compositeType, unit, childExercises)}
         {sets.map((set: Set, index: number) =>
@@ -760,7 +822,7 @@ class Index extends React.Component<Props, State> {
       >
         {selectedExercise ? (
           <div>
-            <RobicLogo />
+            <RobicLogo className={classes.robicLogo} />
             {this.renderExerciseSelect(exercises)}
             {this.renderExerciseForm()}
           </div>

@@ -35,8 +35,7 @@ const styles = (theme: Theme) =>
     exerciseTitleText: {
       overflow: "hidden",
       textOverflow: "ellipsis",
-      textTransform: "capitalize",
-      whiteSpace: "nowrap"
+      textTransform: "capitalize"
     },
     exerciseTitleWrapper: {
       display: "flex"

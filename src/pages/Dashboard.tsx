@@ -718,40 +718,41 @@ class Index extends React.Component<Props, State> {
         loading={loading}
         error={result.error}
       >
-        <ActionPanel />
         {exercises && exercises.length > 0 ? (
-          <div className={classes.selectWrapper}>
+          <ActionPanel>
             <Typography className={classes.selectTitle}>
               Select an exercise
             </Typography>
-            <Select
-              label="Exercise"
-              className={classes.formControl}
-              classes={{
-                MenuItem: classes.formControlSelect,
-                MuiSelect: classes.formControlSelect
-              }}
-              onChange={this.onSelectExercise}
-              options={exercises
-                .sort(this.sortExericises)
-                .map(({ id, title }: ExerciseDefinition) => ({
-                  id,
-                  value: id,
-                  label: title
-                }))}
-              value={selectedExercise ? selectedExercise.id : ""}
-            />
-            <IconButton
-              aria-controls="exercise-filter"
-              aria-haspopup="true"
-              onClick={this.openFilterMenu}
-            >
-              <FilterIcon
-                color={filteredExercises.length > 0 ? "primary" : "inherit"}
+            <div className={classes.selectWrapper}>
+              <Select
+                label="Exercise"
+                className={classes.formControl}
+                classes={{
+                  MenuItem: classes.formControlSelect,
+                  MuiSelect: classes.formControlSelect
+                }}
+                onChange={this.onSelectExercise}
+                options={exercises
+                  .sort(this.sortExericises)
+                  .map(({ id, title }: ExerciseDefinition) => ({
+                    id,
+                    value: id,
+                    label: title
+                  }))}
+                value={selectedExercise ? selectedExercise.id : ""}
               />
-            </IconButton>
-            {Boolean(filterMenuAnchor) && this.renderExerciseFilter()}
-          </div>
+              <IconButton
+                aria-controls="exercise-filter"
+                aria-haspopup="true"
+                onClick={this.openFilterMenu}
+              >
+                <FilterIcon
+                  color={filteredExercises.length > 0 ? "primary" : "inherit"}
+                />
+              </IconButton>
+              {Boolean(filterMenuAnchor) && this.renderExerciseFilter()}
+            </div>
+          </ActionPanel>
         ) : (
           <div>
             <Link

@@ -7,6 +7,9 @@ import { Classes } from "jss";
 
 const styles = (theme: Theme) =>
   createStyles({
+    divider: {
+      marginBottom: theme.spacing(2)
+    },
     logo: {
       display: "flex",
       height: "39px",
@@ -43,7 +46,7 @@ const ActionPanel = ({ classes, children }: Props) => (
     <Typography variant="subtitle1" className={classes.subtitle}>
       Select an exercise to get started
     </Typography>
-    <Divider />
+    <Divider className={classes.divider} />
     {children}
   </Card>
 );

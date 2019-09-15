@@ -22,7 +22,8 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Switch
+  Switch,
+  Card
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import AwardIcon from "@material-ui/icons/Star";
@@ -73,8 +74,23 @@ const styles = (theme: Theme) =>
     filterMenu: {
       padding: theme.spacing(2)
     },
+    addButton: {
+      alignItems: "center",
+      backgroundColor: theme.palette.common.white,
+      borderRadius: "50%",
+      display: "flex",
+      height: "48px",
+      justifyContent: "center",
+      maxWidth: "48px",
+      minWidth: "48px"
+    },
+    addButtonWrapper: {
+      display: "flex",
+      justifyContent: "center"
+    },
     iconButton: {
       height: "48px",
+      justifyContent: "center",
       minWidth: "48px"
     },
     doneButton: {
@@ -568,13 +584,6 @@ class Index extends React.Component<Props, State> {
         ) : (
           <div className={classes.iconButton} />
         )}
-        {index === sets.length - 1 ? (
-          <IconButton className={classes.iconButton} onClick={this.addSet}>
-            <AddIcon />
-          </IconButton>
-        ) : (
-          <div className={classes.iconButton} />
-        )}
       </Fragment>
     );
   }
@@ -656,6 +665,15 @@ class Index extends React.Component<Props, State> {
             </div>
           )
         )}
+        <div className={classes.addButtonWrapper}>
+          <Button
+            variant="contained"
+            className={classes.addButton}
+            onClick={this.addSet}
+          >
+            <AddIcon color="secondary" />
+          </Button>
+        </div>
         <div className={classes.buttonWrapper}>
           <Stopwatch ref={(stopwatch: any) => (this.stopwatch = stopwatch)} />
           <IconButton

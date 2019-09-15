@@ -40,7 +40,8 @@ import {
   PageRoot,
   Select,
   Link,
-  ExerciseTypeIcon
+  ExerciseTypeIcon,
+  BackgroundMode
 } from "../components";
 import { isNull } from "util";
 
@@ -712,7 +713,11 @@ class Index extends React.Component<Props, State> {
     const exercises =
       filteredExercises.length > 0 ? filteredExercises : exerciseDefinitions;
     return (
-      <PageRoot loading={loading} error={result.error}>
+      <PageRoot
+        backgroundMode={BackgroundMode.purple}
+        loading={loading}
+        error={result.error}
+      >
         <ActionPanel />
         {exercises && exercises.length > 0 ? (
           <div className={classes.selectWrapper}>

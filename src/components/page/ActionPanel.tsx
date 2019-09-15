@@ -15,7 +15,7 @@ const styles = (theme: Theme) =>
       width: "80px"
     },
     root: {
-      padding: theme.spacing(2)
+      padding: theme.spacing(4)
     },
     subtitle: {
       marginBottom: theme.spacing(2),

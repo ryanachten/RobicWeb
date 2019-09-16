@@ -1,9 +1,27 @@
 // Time functionality via https://codepen.io/_Billy_Brown/pen/dbJeh
 
 import * as React from "react";
-import { Typography } from "@material-ui/core";
+import { Typography, createStyles, Theme } from "@material-ui/core";
+import { Classes } from "jss";
+import { withStyles } from "@material-ui/styles";
+import TimerIcon from "@material-ui/icons/Timer";
+
+const styles = (theme: Theme) =>
+  createStyles({
+    icon: {
+      marginRight: theme.spacing(1)
+    },
+    root: {
+      backgroundColor: theme.palette.common.white,
+      border: `1px solid ${theme.palette.text.disabled}`,
+      borderRadius: "8px",
+      display: "flex",
+      padding: theme.spacing(1)
+    }
+  });
 
 type Props = {
+  classes: Classes;
   ref: any;
 };
 
@@ -117,21 +135,14 @@ class Stopwatch extends React.Component<Props, State> {
   }
 
   public render() {
+    const classes = this.props.classes;
     const times = this.state.times;
     return (
-      <div style={{ display: "flex" }}>
-        <Typography variant="h5" component="p">{`${pad0(
-          times[0],
-          2
-        )}:`}</Typography>
-        <Typography variant="h5" component="p">{`${pad0(
-          times[1],
-          2
-        )}:`}</Typography>
-        <Typography variant="h5" component="p">{`${pad0(
-          Math.floor(times[2]),
-          2
-        )}`}</Typography>
+      <div className={classes.root}>
+        <TimerIcon className={classes.icon} color="disabled" />
+        <Typography>{`${pad0(times[0], 2)}:`}</Typography>
+        <Typography>{`${pad0(times[1], 2)}:`}</Typography>
+        <Typography>{`${pad0(Math.floor(times[2]), 2)}`}</Typography>
       </div>
     );
   }
@@ -143,4 +154,4 @@ function pad0(value: number, count: number) {
   return result;
 }
 
-export default Stopwatch;
+export default withStyles(styles)(Stopwatch);

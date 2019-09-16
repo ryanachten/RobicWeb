@@ -232,8 +232,8 @@ class Index extends React.Component<Props, State> {
     this.submitFilter = this.submitFilter.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.openFilterMenu = this.openFilterMenu.bind(this);
-    // this.toggleSwitch = this.toggleSwitch.bind(this);
-    // this.toggleTimer = this.toggleTimer.bind(this);
+    this.toggleSwitch = this.toggleSwitch.bind(this);
+    this.toggleTimer = this.toggleTimer.bind(this);
     this.sortExericises = (a: ExerciseDefinition, b: ExerciseDefinition) => {
       return a.title >= b.title ? 1 : -1;
     };
@@ -680,7 +680,11 @@ class Index extends React.Component<Props, State> {
             className={classes.timerButton}
             onClick={this.toggleTimer}
           >
-            {timerRunning ? <PauseIcon /> : <StartIcon />}
+            {timerRunning ? (
+              <PauseIcon color="secondary" />
+            ) : (
+              <StartIcon color="secondary" />
+            )}
           </IconButton>
           {console.log("this.stopwatch", this.stopwatch)}
           {this.stopwatch && !isNull(this.stopwatch.time) && (
@@ -688,7 +692,7 @@ class Index extends React.Component<Props, State> {
               className={classes.timerButton}
               onClick={() => this.stopwatch.reset()}
             >
-              <ResetIcon />
+              <ResetIcon color="secondary" />
             </IconButton>
           )}
         </div>

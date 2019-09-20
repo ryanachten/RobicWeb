@@ -18,17 +18,15 @@ import { GetCurrentUser } from "./constants/queries";
 import EditExercise from "./pages/EditExercise";
 
 const AuthedRoutes = () => (
-  <Navigation>
-    <Switch>
-      <Route path={routes.HOME.route} exact component={Dashboard} />
-      <Route path={routes.EDIT_EXERCISE().route} component={EditExercise} />} />
-      <Route path={routes.EXERCISES.route} exact component={Exercises} />
-      <Route path={routes.NEW_EXERCISE.route} exact component={NewExercise} />
-      <Route path={routes.EXERCISE().route} component={Exercise} />} />
-      <Route path={routes.ACTIVITY.route} exact component={Activity} />
-      <Redirect to={routes.HOME.route} />
-    </Switch>
-  </Navigation>
+  <Switch>
+    <Route path={routes.HOME.route} exact component={Dashboard} />
+    <Route path={routes.EDIT_EXERCISE().route} component={EditExercise} />} />
+    <Route path={routes.EXERCISES.route} exact component={Exercises} />
+    <Route path={routes.NEW_EXERCISE.route} exact component={NewExercise} />
+    <Route path={routes.EXERCISE().route} component={Exercise} />} />
+    <Route path={routes.ACTIVITY.route} exact component={Activity} />
+    <Redirect to={routes.HOME.route} />
+  </Switch>
 );
 
 const UnauthedRoutes = () => (

@@ -4,6 +4,7 @@ import { Classes } from "jss";
 import { ErrorMessage } from "./ErrorMessage";
 import { LoadingSplash } from "./LoadingSplash";
 import { PURPLE_GRADIENT, LIGHT_GRADIENT } from "../../constants/colors";
+import Navigation from "../Navigation";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -43,8 +44,10 @@ const PageRoot = ({
     backgroundMode === BackgroundMode.purple ? PURPLE_GRADIENT : LIGHT_GRADIENT;
   return (
     <main className={classes.root} style={{ backgroundImage: gradient }}>
-      {loading ? <LoadingSplash /> : children}
-      <ErrorMessage className={classes.error} error={error} />
+      <Navigation backgroundMode={backgroundMode}>
+        {loading ? <LoadingSplash /> : children}
+        <ErrorMessage className={classes.error} error={error} />
+      </Navigation>
     </main>
   );
 };

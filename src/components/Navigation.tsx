@@ -21,6 +21,7 @@ import routes from "../constants/routes";
 import { Link } from "../components/Link";
 import { isMobile } from "../constants/sizes";
 import { LOGO_FONT } from "../constants/fonts";
+import { BackgroundMode } from "./page/PageRoot";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -36,17 +37,22 @@ const styles = (theme: Theme) =>
     link: {
       margin: theme.spacing(2)
     },
+    linkWrapper: {
+      display: "flex",
+      flexGrow: 1
+    },
     mobileProfileWrapper: {
       padding: theme.spacing(2),
       position: "fixed",
       right: 0,
       top: 0
     },
+    profileButton: {
+      position: "absolute",
+      right: theme.spacing(2)
+    },
     robicLogo: {
       fontFamily: LOGO_FONT
-    },
-    spacer: {
-      flexGrow: 1
     },
     toolbar: {
       background: "transparent"
@@ -59,8 +65,10 @@ type MenuLink = {
 };
 
 type Props = RouteComponentProps & {
+  backgroundMode?: BackgroundMode;
   children: any;
   classes: Classes;
+  theme: Theme;
   width: Breakpoint;
 };
 
@@ -101,14 +109,16 @@ class Navigation extends React.Component<Props, State> {
 
   renderProfileMenu() {
     const anchorEl = this.state.anchorEl;
+    const { classes } = this.props;
     return (
       <Fragment>
         <IconButton
           aria-controls="profile-menu"
+          className={classes.profileButton}
           aria-haspopup="true"
           onClick={this.onMenuClick}
         >
-          <PersonIcon />
+          <PersonIcon color="disabled" />
         </IconButton>
         <Menu
           id="profile-menu"
@@ -124,30 +134,40 @@ class Navigation extends React.Component<Props, State> {
   }
 
   renderDesktop() {
-    const { children, classes } = this.props;
+    const { backgroundMode, children, classes, theme } = this.props;
+    const purpleBg = backgroundMode === BackgroundMode.purple;
+    const marginRight = purpleBg ? 0 : "48px";
+    const justifyContent = purpleBg ? "center" : "flex-end";
+    const color = purpleBg
+      ? theme.palette.common.white
+      : theme.palette.primary.main;
     return (
       <div>
         <AppBar className={classes.appBar} color="inherit" position="static">
           <Toolbar className={classes.toolbar}>
-            <Typography className={classes.robicLogo} variant="h5">
-              robic
-            </Typography>
-            <div className={classes.spacer} />
-            <Link
-              className={classes.link}
-              url={routes.HOME.route}
-              label={routes.HOME.label}
-            />
-            <Link
-              className={classes.link}
-              url={routes.EXERCISES.route}
-              label={routes.EXERCISES.label}
-            />
-            <Link
-              className={classes.link}
-              url={routes.ACTIVITY.route}
-              label={routes.ACTIVITY.label}
-            />
+            <div
+              className={classes.linkWrapper}
+              style={{ justifyContent, marginRight }}
+            >
+              <Link
+                className={classes.link}
+                label={routes.HOME.label}
+                style={{ color }}
+                url={routes.HOME.route}
+              />
+              <Link
+                className={classes.link}
+                label={routes.EXERCISES.label}
+                style={{ color }}
+                url={routes.EXERCISES.route}
+              />
+              <Link
+                className={classes.link}
+                label={routes.ACTIVITY.label}
+                style={{ color }}
+                url={routes.ACTIVITY.route}
+              />
+            </div>
             {this.renderProfileMenu()}
           </Toolbar>
         </AppBar>
@@ -194,5 +214,7 @@ class Navigation extends React.Component<Props, State> {
   }
 }
 
-export const styled = withStyles(styles)(withWidth()(Navigation));
+export const styled = withStyles(styles, { withTheme: true })(
+  withWidth()(Navigation)
+);
 export default withRouter(styled);

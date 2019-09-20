@@ -20,15 +20,17 @@ type Props = {
   classes: Classes;
   label: string;
   onClick?: () => void;
+  style?: any;
   url?: string;
 };
 
-const Link = ({ className, classes, label, onClick, url }: Props) => (
+const Link = ({ className, classes, label, onClick, style, url }: Props) => (
   <RouterLink
     className={classnames(className, classes.link)}
     key={url}
     onClick={onClick}
     to={url || "#"}
+    style={style}
   >
     <MuiLink color="inherit" component="span" variant="body1">
       {label}

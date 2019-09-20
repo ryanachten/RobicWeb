@@ -47,6 +47,9 @@ const styles = (theme: Theme) =>
     },
     spacer: {
       flexGrow: 1
+    },
+    toolbar: {
+      background: "transparent"
     }
   });
 
@@ -74,6 +77,7 @@ class Navigation extends React.Component<Props, State> {
     this.onMenuClick = this.onMenuClick.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.navigateToRoute = this.navigateToRoute.bind(this);
+    this.renderDesktop = this.renderDesktop.bind(this);
     this.renderProfileMenu = this.renderProfileMenu.bind(this);
   }
 
@@ -119,64 +123,73 @@ class Navigation extends React.Component<Props, State> {
     );
   }
 
-  render() {
-    const { children, classes, width } = this.props;
+  renderDesktop() {
+    const { children, classes } = this.props;
     return (
       <div>
-        {isMobile(width) ? (
-          <div className={classes.mobileProfileWrapper}>
-            {this.renderProfileMenu()}
-          </div>
-        ) : (
-          <AppBar className={classes.appBar} color="inherit" position="static">
-            <Toolbar>
-              <Typography className={classes.robicLogo} variant="h5">
-                robic
-              </Typography>
-              <div className={classes.spacer} />
-              <Link
-                className={classes.link}
-                url={routes.HOME.route}
-                label={routes.HOME.label}
-              />
-              <Link
-                className={classes.link}
-                url={routes.EXERCISES.route}
-                label={routes.EXERCISES.label}
-              />
-              <Link
-                className={classes.link}
-                url={routes.ACTIVITY.route}
-                label={routes.ACTIVITY.label}
-              />
-              {this.renderProfileMenu()}
-            </Toolbar>
-          </AppBar>
-        )}
-
-        {children}
-
-        {isMobile(width) && (
-          <BottomNavigation
-            className={classes.bottomNav}
-            showLabels
-            onChange={(e, val) => this.navigateToRoute(val)}
-          >
-            <BottomNavigationAction
+        <AppBar className={classes.appBar} color="inherit" position="static">
+          <Toolbar className={classes.toolbar}>
+            <Typography className={classes.robicLogo} variant="h5">
+              robic
+            </Typography>
+            <div className={classes.spacer} />
+            <Link
+              className={classes.link}
+              url={routes.HOME.route}
               label={routes.HOME.label}
-              value={routes.HOME.route}
             />
-            <BottomNavigationAction
+            <Link
+              className={classes.link}
+              url={routes.EXERCISES.route}
               label={routes.EXERCISES.label}
-              value={routes.EXERCISES.route}
             />
-            <BottomNavigationAction
+            <Link
+              className={classes.link}
+              url={routes.ACTIVITY.route}
               label={routes.ACTIVITY.label}
-              value={routes.ACTIVITY.route}
             />
-          </BottomNavigation>
-        )}
+            {this.renderProfileMenu()}
+          </Toolbar>
+        </AppBar>
+        {children}
       </div>
+    );
+  }
+
+  renderMobile() {
+    const { children, classes } = this.props;
+    return (
+      <div>
+        <div className={classes.mobileProfileWrapper}>
+          {this.renderProfileMenu()}
+        </div>
+        {children}
+        <BottomNavigation
+          className={classes.bottomNav}
+          showLabels
+          onChange={(e, val) => this.navigateToRoute(val)}
+        >
+          <BottomNavigationAction
+            label={routes.HOME.label}
+            value={routes.HOME.route}
+          />
+          <BottomNavigationAction
+            label={routes.EXERCISES.label}
+            value={routes.EXERCISES.route}
+          />
+          <BottomNavigationAction
+            label={routes.ACTIVITY.label}
+            value={routes.ACTIVITY.route}
+          />
+        </BottomNavigation>
+      </div>
+    );
+  }
+
+  render() {
+    const { width } = this.props;
+    return (
+      <div>{isMobile(width) ? this.renderMobile() : this.renderDesktop()}</div>
     );
   }
 }

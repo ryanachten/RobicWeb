@@ -22,7 +22,7 @@ type Props = {
 };
 const LoadingSplash = ({ classes }: Props) => (
   <div className={classes.root}>
-    <CircularProgress />
+    <CircularProgress color="secondary" />
   </div>
 );
 

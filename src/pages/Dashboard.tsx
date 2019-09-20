@@ -94,7 +94,9 @@ const styles = (theme: Theme) =>
       minWidth: "48px"
     },
     doneButton: {
-      marginTop: theme.spacing(2)
+      marginTop: theme.spacing(2),
+      backgroundColor: theme.palette.common.white,
+      color: theme.palette.secondary.main
     },
     exerciseTitle: {
       marginBottom: theme.spacing(3),
@@ -869,11 +871,6 @@ class Index extends React.Component<Props, State> {
                 </Typography>
               </div>
             )}
-            <div className={classes.selectMessage}>
-              <Typography align="center" color="primary" variant="h5">
-                select an exercise to get started
-              </Typography>
-            </div>
           </div>
         )}
       </PageRoot>

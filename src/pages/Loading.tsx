@@ -35,7 +35,7 @@ class Loading extends React.Component<WithStyles<typeof styles>, State> {
         <Typography className={classes.title} variant="h2" component="h1">
           hold tight, we're loading...
         </Typography>
-        <CircularProgress />
+        <CircularProgress color="secondary" />
       </div>
     );
   }

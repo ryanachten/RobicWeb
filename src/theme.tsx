@@ -20,7 +20,7 @@ const theme = createMuiTheme({
   overrides: {
     MuiButton: {
       root: {
-        textTransform: "capitalize"
+        textTransform: "lowercase"
       }
     }
   }

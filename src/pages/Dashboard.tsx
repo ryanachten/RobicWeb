@@ -147,10 +147,16 @@ const styles = (theme: Theme) =>
     sessionForm: {
       display: "flex",
       flexFlow: "column",
+      maxWidth: "100%",
       width: "fit-content"
     },
     setItem: {
       marginRight: theme.spacing(2)
+    },
+    setCard: {
+      marginBottom: theme.spacing(2),
+      padding: theme.spacing(2),
+      width: "fit-content"
     },
     setWrapper: {
       alignItems: "center",
@@ -175,7 +181,9 @@ const styles = (theme: Theme) =>
     },
     title: {
       color: theme.palette.primary.light,
-      fontFamily: HEADER_FONT
+      fontFamily: HEADER_FONT,
+      overflowX: "hidden",
+      textOverflow: "ellipsis"
     }
   });
 
@@ -661,10 +669,12 @@ class Index extends React.Component<Props, State> {
             </div>
           ) : (
             // ... if not composite type, just use set rep/value for form state
-            <div className={classes.setWrapper} key={index}>
-              {this.renderSetInputs(index, set.reps, set.value, unit)}
-              {this.renderSetButtons(index, sets)}
-            </div>
+            <Card className={classes.setCard} key={index}>
+              <div className={classes.setWrapper}>
+                {this.renderSetInputs(index, set.reps, set.value, unit)}
+                {this.renderSetButtons(index, sets)}
+              </div>
+            </Card>
           )
         )}
         <div className={classes.addButtonWrapper}>

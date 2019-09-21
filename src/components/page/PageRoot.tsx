@@ -43,12 +43,12 @@ const PageRoot = ({
   const gradient =
     backgroundMode === BackgroundMode.purple ? PURPLE_GRADIENT : LIGHT_GRADIENT;
   return (
-    <main className={classes.root} style={{ backgroundImage: gradient }}>
-      <Navigation backgroundMode={backgroundMode}>
-        {loading ? <LoadingSplash /> : children}
-        <ErrorMessage className={classes.error} error={error} />
-      </Navigation>
-    </main>
+    // <main className={classes.root} style={{ backgroundImage: gradient }}>
+    <Navigation backgroundMode={backgroundMode}>
+      {loading ? <LoadingSplash /> : children}
+      <ErrorMessage className={classes.error} error={error} />
+    </Navigation>
+    // </main>
   );
 };
 

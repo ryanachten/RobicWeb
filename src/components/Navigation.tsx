@@ -13,7 +13,7 @@ import {
   withWidth,
   BottomNavigation,
   BottomNavigationAction,
-  Typography,
+  Drawer,
   IconButton
 } from "@material-ui/core";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
@@ -22,6 +22,8 @@ import { Link } from "../components/Link";
 import { isMobile } from "../constants/sizes";
 import { LOGO_FONT } from "../constants/fonts";
 import { BackgroundMode } from "./page/PageRoot";
+import { PURPLE_GRADIENT } from "../constants/colors";
+import classnames from "../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -35,11 +37,16 @@ const styles = (theme: Theme) =>
       width: "100%"
     },
     link: {
+      color: theme.palette.common.white,
       margin: theme.spacing(2)
     },
     linkWrapper: {
       display: "flex",
-      flexGrow: 1
+      flexGrow: 1,
+      justifyContent: "center"
+    },
+    linkWrapperSidebar: {
+      flexFlow: "column"
     },
     mobileProfileWrapper: {
       padding: theme.spacing(2),
@@ -51,8 +58,18 @@ const styles = (theme: Theme) =>
       position: "absolute",
       right: theme.spacing(2)
     },
+    purpleBackground: {
+      backgroundImage: PURPLE_GRADIENT,
+      minHeight: "100vh"
+    },
     robicLogo: {
       fontFamily: LOGO_FONT
+    },
+    sidebar: {
+      width: "200px"
+    },
+    sidebarWrapper: {
+      display: "flex"
     },
     toolbar: {
       background: "transparent"
@@ -85,7 +102,10 @@ class Navigation extends React.Component<Props, State> {
     this.onMenuClick = this.onMenuClick.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.navigateToRoute = this.navigateToRoute.bind(this);
+    this.renderColumnDesktop = this.renderColumnDesktop.bind(this);
+    this.renderSidebarDesktop = this.renderSidebarDesktop.bind(this);
     this.renderDesktop = this.renderDesktop.bind(this);
+    this.renderNavLinks = this.renderNavLinks.bind(this);
     this.renderProfileMenu = this.renderProfileMenu.bind(this);
   }
 
@@ -133,47 +153,67 @@ class Navigation extends React.Component<Props, State> {
     );
   }
 
-  renderDesktop() {
-    const { backgroundMode, children, classes, theme } = this.props;
-    const purpleBg = backgroundMode === BackgroundMode.purple;
-    const marginRight = purpleBg ? 0 : "48px";
-    const justifyContent = purpleBg ? "center" : "flex-end";
-    const color = purpleBg
-      ? theme.palette.common.white
-      : theme.palette.primary.main;
+  renderNavLinks(additionalClasses?: { root: string }) {
+    const classes = this.props.classes;
     return (
-      <div>
+      <div
+        className={classnames(
+          classes.linkWrapper,
+          additionalClasses && additionalClasses.root
+        )}
+      >
+        <Link
+          className={classes.link}
+          label={routes.HOME.label}
+          url={routes.HOME.route}
+        />
+        <Link
+          className={classes.link}
+          label={routes.EXERCISES.label}
+          url={routes.EXERCISES.route}
+        />
+        <Link
+          className={classes.link}
+          label={routes.ACTIVITY.label}
+          url={routes.ACTIVITY.route}
+        />
+      </div>
+    );
+  }
+
+  renderSidebarDesktop() {
+    const { children, classes } = this.props;
+    return (
+      <div className={classes.sidebarWrapper}>
+        <PurpleBackground rootStyles={classes.sidebar}>
+          {this.renderNavLinks({ root: classes.linkWrapperSidebar })}
+        </PurpleBackground>
+        <article>{children}</article>
+      </div>
+    );
+  }
+
+  renderColumnDesktop() {
+    const { children, classes } = this.props;
+    return (
+      <PurpleBackground>
         <AppBar className={classes.appBar} color="inherit" position="static">
           <Toolbar className={classes.toolbar}>
-            <div
-              className={classes.linkWrapper}
-              style={{ justifyContent, marginRight }}
-            >
-              <Link
-                className={classes.link}
-                label={routes.HOME.label}
-                style={{ color }}
-                url={routes.HOME.route}
-              />
-              <Link
-                className={classes.link}
-                label={routes.EXERCISES.label}
-                style={{ color }}
-                url={routes.EXERCISES.route}
-              />
-              <Link
-                className={classes.link}
-                label={routes.ACTIVITY.label}
-                style={{ color }}
-                url={routes.ACTIVITY.route}
-              />
-            </div>
+            {this.renderNavLinks()}
             {this.renderProfileMenu()}
           </Toolbar>
         </AppBar>
         {children}
-      </div>
+      </PurpleBackground>
     );
+  }
+
+  renderDesktop() {
+    const { backgroundMode } = this.props;
+    const columnMode = backgroundMode === BackgroundMode.purple;
+    return columnMode
+      ? this.renderColumnDesktop()
+      : this.renderSidebarDesktop();
   }
 
   renderMobile() {
@@ -213,6 +253,22 @@ class Navigation extends React.Component<Props, State> {
     );
   }
 }
+
+type PurpleBackgroundProps = {
+  children: any;
+  classes: Classes;
+  rootStyles?: string;
+};
+
+const PurpleBackground = withStyles(styles)(
+  ({ classes, children, rootStyles }: PurpleBackgroundProps) => {
+    return (
+      <div className={classnames(classes.purpleBackground, rootStyles)}>
+        {children}
+      </div>
+    );
+  }
+);
 
 export const styled = withStyles(styles, { withTheme: true })(
   withWidth()(Navigation)

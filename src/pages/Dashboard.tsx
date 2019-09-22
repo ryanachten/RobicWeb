@@ -862,25 +862,25 @@ class Index extends React.Component<Props, State> {
           </div>
         ) : (
           <div>
-            {exercises && exercises.length > 0 ? (
+            {/* {exercises && exercises.length > 0 ? (
               <ActionPanel>
                 <Typography className={classes.selectTitle}>
                   Select an exercise
                 </Typography>
                 {this.renderExerciseSelect(exercises)}
               </ActionPanel>
-            ) : (
-              <div>
-                <Link
-                  className={classes.createExerciseLink}
-                  label="Create Exercise"
-                  url={routes.NEW_EXERCISE.route}
-                />
-                <Typography>
-                  Looks like you don't have any exercises yet
-                </Typography>
-              </div>
-            )}
+            ) : ( */}
+            <div>
+              <Link
+                className={classes.createExerciseLink}
+                label="Create Exercise"
+                url={routes.NEW_EXERCISE.route}
+              />
+              <Typography>
+                Looks like you don't have any exercises yet
+              </Typography>
+            </div>
+            {/* )} */}
           </div>
         )}
       </PageRoot>

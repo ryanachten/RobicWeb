@@ -15,6 +15,8 @@ const styles = (theme: Theme) =>
       marginBottom: theme.spacing(2)
     },
     root: {
+      margin: "0 auto",
+      maxWidth: "640px",
       padding: theme.spacing(4)
     },
     subtitle: {

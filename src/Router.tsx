@@ -1,7 +1,6 @@
 import * as React from "react";
 import { ApolloProvider, graphql } from "react-apollo";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import Navigation from "./components/Navigation";
 import Activity from "./pages/Activity";
 import Exercise from "./pages/Exercise";
 import Exercises from "./pages/Exercises";

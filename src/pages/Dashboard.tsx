@@ -845,17 +845,29 @@ class Index extends React.Component<Props, State> {
     const { exerciseDefinitions, loading } = data;
     const exercises =
       filteredExercises.length > 0 ? filteredExercises : exerciseDefinitions;
+    const noExercises = !loading && exercises.length === 0;
     return (
       <PageRoot
         actionPanel={{
           title: "Morning Ryan!",
           tagline: "Select an exercise to get started",
-          children: (
+          children: !noExercises ? (
             <Fragment>
               <Typography className={classes.selectTitle}>
                 Select an exercise
               </Typography>
               {exercises && this.renderExerciseSelect(exercises)}
+            </Fragment>
+          ) : (
+            <Fragment>
+              <Link
+                className={classes.createExerciseLink}
+                label="Create Exercise"
+                url={routes.NEW_EXERCISE.route}
+              />
+              <Typography>
+                Looks like you don't have any exercises yet
+              </Typography>
             </Fragment>
           )
         }}
@@ -865,20 +877,11 @@ class Index extends React.Component<Props, State> {
         loading={loading}
         error={result.error}
       >
-        {selectedExercise ? (
+        {selectedExercise && (
           <div>
             <RobicLogo className={classes.robicLogo} />
             {this.renderExerciseSelect(exercises)}
             {this.renderExerciseForm()}
-          </div>
-        ) : (
-          <div>
-            <Link
-              className={classes.createExerciseLink}
-              label="Create Exercise"
-              url={routes.NEW_EXERCISE.route}
-            />
-            <Typography>Looks like you don't have any exercises yet</Typography>
           </div>
         )}
       </PageRoot>

@@ -37,6 +37,9 @@ const styles = (theme: Theme) =>
       position: "fixed",
       width: "100%"
     },
+    contentWrapper: {
+      padding: theme.spacing(2)
+    },
     error: {
       marginTop: theme.spacing(4)
     },
@@ -114,6 +117,8 @@ class PageRoot extends React.Component<Props, State> {
     this.renderActionPanel = this.renderActionPanel.bind(this);
     this.renderColumnDesktop = this.renderColumnDesktop.bind(this);
     this.renderSidebarDesktop = this.renderSidebarDesktop.bind(this);
+    this.renderLightMobile = this.renderLightMobile.bind(this);
+    this.renderDarkMobile = this.renderDarkMobile.bind(this);
     this.renderDesktop = this.renderDesktop.bind(this);
     this.renderNavLinks = this.renderNavLinks.bind(this);
     this.renderProfileMenu = this.renderProfileMenu.bind(this);
@@ -225,20 +230,47 @@ class PageRoot extends React.Component<Props, State> {
     );
   }
 
-  renderDesktop() {
-    const { backgroundMode } = this.props;
-    const columnMode = backgroundMode === BackgroundMode.purple;
-    return columnMode
-      ? this.renderColumnDesktop()
-      : this.renderSidebarDesktop();
+  renderLightMobile() {
+    const { children, classes } = this.props;
+    return (
+      <Fragment>
+        <div className={classes.contentWrapper}>
+          <div className={classes.mobileProfileWrapper}>
+            {this.renderProfileMenu()}
+          </div>
+          {children}
+        </div>
+        <BottomNavigation
+          className={classes.bottomNav}
+          showLabels
+          onChange={(e, val) => this.navigateToRoute(val)}
+        >
+          <BottomNavigationAction
+            label={routes.HOME.label}
+            value={routes.HOME.route}
+          />
+          <BottomNavigationAction
+            label={routes.EXERCISES.label}
+            value={routes.EXERCISES.route}
+          />
+          <BottomNavigationAction
+            label={routes.ACTIVITY.label}
+            value={routes.ACTIVITY.route}
+          />
+        </BottomNavigation>
+      </Fragment>
+    );
   }
 
-  renderMobile() {
+  renderDarkMobile() {
     const { children, classes } = this.props;
     return (
       <PurpleBackground>
-        <div className={classes.mobileProfileWrapper}>
-          {this.renderProfileMenu()}
+        <div className={classes.contentWrapper}>
+          <div className={classes.mobileProfileWrapper}>
+            {this.renderProfileMenu()}
+          </div>
+          {this.renderActionPanel()}
         </div>
         {children}
         <BottomNavigation
@@ -261,6 +293,21 @@ class PageRoot extends React.Component<Props, State> {
         </BottomNavigation>
       </PurpleBackground>
     );
+  }
+
+  renderDesktop() {
+    const { backgroundMode } = this.props;
+    const columnMode = backgroundMode === BackgroundMode.purple;
+    return columnMode
+      ? this.renderColumnDesktop()
+      : this.renderSidebarDesktop();
+  }
+
+  renderMobile() {
+    const { backgroundMode } = this.props;
+    return backgroundMode === BackgroundMode.purple
+      ? this.renderDarkMobile()
+      : this.renderLightMobile();
   }
 
   render() {

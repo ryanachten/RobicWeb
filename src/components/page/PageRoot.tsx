@@ -73,9 +73,15 @@ const styles = (theme: Theme) =>
       fontFamily: LOGO_FONT
     },
     sidebar: {
-      marginRight: theme.spacing(4),
-      padding: theme.spacing(4),
-      width: "300px"
+      minWidth: "320px",
+      padding: theme.spacing(4)
+    },
+    sidebarContent: {
+      maxWidth: "255px",
+      position: "fixed"
+    },
+    sidebarMain: {
+      padding: theme.spacing(4)
     },
     sidebarWrapper: {
       display: "flex"
@@ -206,10 +212,12 @@ class PageRoot extends React.Component<Props, State> {
     return (
       <div className={classes.sidebarWrapper}>
         <PurpleBackground rootStyles={classes.sidebar}>
-          {this.renderActionPanel()}
-          {this.renderNavLinks({ root: classes.linkWrapperSidebar })}
+          <aside className={classes.sidebarContent}>
+            {this.renderActionPanel()}
+            {this.renderNavLinks({ root: classes.linkWrapperSidebar })}
+          </aside>
         </PurpleBackground>
-        <article>{children}</article>
+        <main className={classes.sidebarMain}>{children}</main>
       </div>
     );
   }

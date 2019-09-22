@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { compose, graphql } from "react-apollo";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
@@ -160,26 +160,33 @@ class Exercises extends React.Component<Props, State> {
     const { exercises, search } = this.state;
     const { loading, error } = data;
     return (
-      <PageRoot error={error} loading={loading}>
-        <PageTitle label="Exercises" />
-        <div className={classes.header}>
-          <div className={classes.createLinkWrapper}>
-            <AddIcon color="primary" />
-            <Link
-              className={classes.createLink}
-              label={routes.NEW_EXERCISE.label}
-              url={routes.NEW_EXERCISE.route}
-            />
-          </div>
-          <div className={classes.search}>
-            <TextField
-              label="Search"
-              onChange={this.onUpdateSearch}
-              value={search}
-            />
-            <SearchIcon />
-          </div>
-        </div>
+      <PageRoot
+        actionPanel={{
+          title: "Exercises",
+          children: (
+            <Fragment>
+              <div className={classes.createLinkWrapper}>
+                <AddIcon color="primary" />
+                <Link
+                  className={classes.createLink}
+                  label={routes.NEW_EXERCISE.label}
+                  url={routes.NEW_EXERCISE.route}
+                />
+              </div>
+              <div className={classes.search}>
+                <TextField
+                  label="Search"
+                  onChange={this.onUpdateSearch}
+                  value={search}
+                />
+                <SearchIcon />
+              </div>
+            </Fragment>
+          )
+        }}
+        error={error}
+        loading={loading}
+      >
         <ul className={classes.exerciseList}>
           {exercises.length > 0 ? (
             exercises

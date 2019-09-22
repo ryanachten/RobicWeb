@@ -45,7 +45,6 @@ import {
   isBodyWeight
 } from "../utils";
 import {
-  ActionPanel,
   PageRoot,
   Select,
   Link,
@@ -848,6 +847,18 @@ class Index extends React.Component<Props, State> {
       filteredExercises.length > 0 ? filteredExercises : exerciseDefinitions;
     return (
       <PageRoot
+        actionPanel={{
+          title: "Morning Ryan!",
+          tagline: "Select an exercise to get started",
+          children: (
+            <Fragment>
+              <Typography className={classes.selectTitle}>
+                Select an exercise
+              </Typography>
+              {exercises && this.renderExerciseSelect(exercises)}
+            </Fragment>
+          )
+        }}
         backgroundMode={
           selectedExercise ? BackgroundMode.light : BackgroundMode.purple
         }
@@ -862,25 +873,12 @@ class Index extends React.Component<Props, State> {
           </div>
         ) : (
           <div>
-            {/* {exercises && exercises.length > 0 ? (
-              <ActionPanel>
-                <Typography className={classes.selectTitle}>
-                  Select an exercise
-                </Typography>
-                {this.renderExerciseSelect(exercises)}
-              </ActionPanel>
-            ) : ( */}
-            <div>
-              <Link
-                className={classes.createExerciseLink}
-                label="Create Exercise"
-                url={routes.NEW_EXERCISE.route}
-              />
-              <Typography>
-                Looks like you don't have any exercises yet
-              </Typography>
-            </div>
-            {/* )} */}
+            <Link
+              className={classes.createExerciseLink}
+              label="Create Exercise"
+              url={routes.NEW_EXERCISE.route}
+            />
+            <Typography>Looks like you don't have any exercises yet</Typography>
           </div>
         )}
       </PageRoot>

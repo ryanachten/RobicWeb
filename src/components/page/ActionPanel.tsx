@@ -31,19 +31,29 @@ const styles = (theme: Theme) =>
     }
   });
 
-type Props = {
+export type ActionPanelProps = {
+  title?: string;
+  tagline?: string;
   children?: any;
+};
+
+type Props = ActionPanelProps & {
   classes: Classes;
 };
 
-const ActionPanel = ({ classes, children }: Props) => (
+const ActionPanel = ({
+  classes,
+  children,
+  title = "",
+  tagline = ""
+}: Props) => (
   <Card className={classes.root}>
     <RobicLogo className={classes.logo} />
     <Typography variant="h5" className={classes.title}>
-      Morning Ryan!
+      {title}
     </Typography>
     <Typography variant="subtitle1" className={classes.subtitle}>
-      Select an exercise to get started
+      {tagline}
     </Typography>
     <Divider className={classes.divider} />
     {children}

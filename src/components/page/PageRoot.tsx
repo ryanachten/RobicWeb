@@ -13,9 +13,7 @@ import {
   withWidth,
   BottomNavigation,
   BottomNavigationAction,
-  Drawer,
-  IconButton,
-  Typography
+  IconButton
 } from "@material-ui/core";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import routes from "../../constants/routes";
@@ -24,7 +22,7 @@ import { isMobile } from "../../constants/sizes";
 import { LOGO_FONT } from "../../constants/fonts";
 import { PURPLE_GRADIENT } from "../../constants/colors";
 import classnames from "../../utils";
-import { ActionPanel } from "../page/ActionPanel";
+import { ActionPanel, ActionPanelProps } from "../page/ActionPanel";
 import { ErrorMessage } from "../page/ErrorMessage";
 import { LoadingSplash } from "../page/LoadingSplash";
 
@@ -84,17 +82,13 @@ const styles = (theme: Theme) =>
     }
   });
 
-type MenuLink = {
-  url: string;
-  text: string;
-};
-
 export enum BackgroundMode {
   purple,
   light
 }
 
 type Props = RouteComponentProps & {
+  actionPanel?: ActionPanelProps;
   backgroundMode?: BackgroundMode;
   children: any;
   classes: Classes;
@@ -170,16 +164,8 @@ class PageRoot extends React.Component<Props, State> {
   }
 
   renderActionPanel() {
-    const { classes } = this.props;
-    return (
-      <ActionPanel>
-        <Typography className={classes.selectTitle}>
-          Select an exercise
-        </Typography>
-        {/* Children */}
-        Testing
-      </ActionPanel>
-    );
+    const { actionPanel } = this.props;
+    return <ActionPanel {...actionPanel} />;
   }
 
   renderNavLinks(additionalClasses?: { root: string }) {

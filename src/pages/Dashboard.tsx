@@ -33,6 +33,7 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import StartIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
 import ResetIcon from "@material-ui/icons/Refresh";
+import TimerIcon from "@material-ui/icons/Timer";
 import routes from "../constants/routes";
 import Stopwatch from "../components/Stopwatch";
 import {
@@ -54,6 +55,7 @@ import {
 } from "../components";
 import { isNull } from "util";
 import { HEADER_FONT } from "../constants/fonts";
+import { LIGHT_CARD } from "../constants/colors";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -119,13 +121,27 @@ const styles = (theme: Theme) =>
     },
     historyHeader: {
       alignItems: "center",
-      display: "flex"
+      display: "flex",
+      marginBottom: theme.spacing(2)
+    },
+    historyIcon: {
+      marginRight: theme.spacing(1)
+    },
+    historyTimerWrapper: {
+      display: "flex",
+      marginTop: theme.spacing(2)
+    },
+    historyTimerIcon: {
+      marginRight: theme.spacing(1)
     },
     historyTitle: {
       marginRight: theme.spacing(2)
     },
     historyWrapper: {
-      marginBottom: theme.spacing(4)
+      backgroundColor: LIGHT_CARD,
+      borderRadius: theme.shape.borderRadius,
+      marginBottom: theme.spacing(4),
+      padding: theme.spacing(2)
     },
     input: {
       padding: theme.spacing(2)
@@ -446,6 +462,7 @@ class Index extends React.Component<Props, State> {
     return (
       <div className={classes.historyWrapper}>
         <div className={classes.historyHeader}>
+          <AwardIcon className={classes.historyIcon} color="secondary" />
           <Typography className={classes.historyTitle} variant="subtitle1">
             Personal Best
           </Typography>
@@ -464,10 +481,7 @@ class Index extends React.Component<Props, State> {
                     <Typography
                       key={e.id}
                       className={classes.setItem}
-                      color="textSecondary"
-                    >{`${e.reps} reps x ${e.value} ${
-                      childDef.unit
-                    }`}</Typography>
+                    >{`${e.reps} reps x ${e.value} ${childDef.unit}`}</Typography>
                   );
                 })
               ) : (
@@ -478,6 +492,9 @@ class Index extends React.Component<Props, State> {
               )}
             </div>
           ))}
+        </div>
+        <div className={classes.historyTimerWrapper}>
+          <TimerIcon className={classes.historyTimerIcon} color="disabled" />
           <Typography className={classes.setItem} color="textSecondary">
             {formatTime(personalBest.timeTaken)}
           </Typography>
@@ -497,6 +514,7 @@ class Index extends React.Component<Props, State> {
     return (
       <div className={classes.historyWrapper}>
         <div className={classes.historyHeader}>
+          <RecentIcon className={classes.historyIcon} color="secondary" />
           <Typography className={classes.historyTitle} variant="subtitle1">
             Last session
           </Typography>
@@ -516,19 +534,19 @@ class Index extends React.Component<Props, State> {
                       key={e.id}
                       className={classes.setItem}
                       color="textSecondary"
-                    >{`${e.reps} reps x ${e.value} ${
-                      childDef.unit
-                    }`}</Typography>
+                    >{`${e.reps} reps x ${e.value} ${childDef.unit}`}</Typography>
                   );
                 })
               ) : (
                 <Typography
                   className={classes.setItem}
-                  color="textSecondary"
                 >{`${reps} reps x ${value} ${unit}`}</Typography>
               )}
             </div>
           ))}
+        </div>
+        <div className={classes.historyTimerWrapper}>
+          <TimerIcon className={classes.historyTimerIcon} color="disabled" />
           <Typography className={classes.setItem} color="textSecondary">
             {formatTime(timeTaken)}
           </Typography>

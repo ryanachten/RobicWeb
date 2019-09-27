@@ -127,6 +127,10 @@ const styles = (theme: Theme) =>
     historyIcon: {
       marginRight: theme.spacing(1)
     },
+    historySectionWrapper: {
+      display: "flex",
+      flexFlow: "row wrap"
+    },
     historyTimerWrapper: {
       display: "flex",
       marginTop: theme.spacing(2)
@@ -141,6 +145,9 @@ const styles = (theme: Theme) =>
       backgroundColor: LIGHT_CARD,
       borderRadius: theme.shape.borderRadius,
       marginBottom: theme.spacing(4),
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      maxWidth: "500px",
       padding: theme.spacing(2)
     },
     input: {
@@ -654,14 +661,21 @@ class Index extends React.Component<Props, State> {
             />
           </div>
         </div>
-        {showPbSession &&
-          history &&
-          history.length > 0 &&
-          this.renderPersonalBest(history, compositeType, unit, childExercises)}
-        {showRecentSession &&
-          history &&
-          history.length > 0 &&
-          this.renderHistory(history, compositeType, unit, childExercises)}
+        <div className={classes.historySectionWrapper}>
+          {showPbSession &&
+            history &&
+            history.length > 0 &&
+            this.renderPersonalBest(
+              history,
+              compositeType,
+              unit,
+              childExercises
+            )}
+          {showRecentSession &&
+            history &&
+            history.length > 0 &&
+            this.renderHistory(history, compositeType, unit, childExercises)}
+        </div>
         {sets.map((set: Set, index: number) =>
           compositeType && set.exercises ? (
             // Use set exercises for form state if exercise is composite type

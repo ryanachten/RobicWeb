@@ -23,7 +23,8 @@ import {
   Menu,
   MenuItem,
   Switch,
-  Card
+  Card,
+  withWidth
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import AwardIcon from "@material-ui/icons/Star";
@@ -56,6 +57,8 @@ import {
 import { isNull } from "util";
 import { HEADER_FONT } from "../constants/fonts";
 import { LIGHT_CARD } from "../constants/colors";
+import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
+import { isMobile } from "../constants/sizes";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -205,6 +208,7 @@ const styles = (theme: Theme) =>
       color: theme.palette.primary.light,
       fontFamily: HEADER_FONT,
       overflowX: "hidden",
+      overflowY: "hidden",
       textOverflow: "ellipsis"
     }
   });
@@ -230,6 +234,7 @@ type Props = {
   history: any;
   mutate: any;
   result: any;
+  width: Breakpoint;
 };
 
 const FILTER_ALL = "all";
@@ -872,7 +877,7 @@ class Index extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes, data, result } = this.props;
+    const { classes, data, result, width } = this.props;
     const { filteredExercises, selectedExercise } = this.state;
     const { exerciseDefinitions, loading } = data;
     const exercises =
@@ -911,8 +916,12 @@ class Index extends React.Component<Props, State> {
       >
         {selectedExercise && (
           <div>
-            <RobicLogo className={classes.robicLogo} />
-            {this.renderExerciseSelect(exercises)}
+            {isMobile(width) && (
+              <Fragment>
+                <RobicLogo className={classes.robicLogo} />
+                {this.renderExerciseSelect(exercises)}
+              </Fragment>
+            )}
             {this.renderExerciseForm()}
           </div>
         )}
@@ -921,7 +930,9 @@ class Index extends React.Component<Props, State> {
   }
 }
 
+const styled = withStyles(styles)(withWidth()(Index));
+
 export default compose(
   graphql(GetExercises),
   graphql(AddExercise)
-)(withStyles(styles)(Index));
+)(styled);

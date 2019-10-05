@@ -8,10 +8,15 @@ import SearchIcon from "@material-ui/icons/Search";
 import { Classes } from "jss";
 import { GetExercises } from "../constants/queries";
 import { ExerciseDefinition } from "../constants/types";
-import { Typography, TextField, withWidth } from "@material-ui/core";
+import { Typography, TextField, withWidth, Card } from "@material-ui/core";
 import routes from "../constants/routes";
 import { formatDate, compareExerciseDates } from "../utils";
-import { Link, PageRoot, PageTitle, ExerciseTypeIcon } from "../components";
+import {
+  Link,
+  PageRoot,
+  ExerciseTypeIcon,
+  BackgroundMode
+} from "../components";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
 
@@ -27,10 +32,21 @@ const styles = (theme: Theme) =>
     exerciseList: {
       padding: 0
     },
-    exerciseTitle: {
+    exerciseCard: {
+      padding: theme.spacing(2)
+    },
+    exerciseItem: {
       cursor: "pointer",
       listStyle: "none",
-      marginBottom: theme.spacing(2)
+      marginLeft: theme.spacing(2),
+      marginRight: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+      maxWidth: theme.breakpoints.values.sm,
+
+      [theme.breakpoints.up("sm")]: {
+        marginLeft: "auto",
+        marginRight: "auto"
+      }
     },
     exerciseTitleText: {
       overflow: "hidden",
@@ -41,7 +57,12 @@ const styles = (theme: Theme) =>
       display: "flex"
     },
     exerciseDate: {
-      marginLeft: theme.spacing(1) / 2
+      marginRight: theme.spacing(1)
+    },
+    exerciseDateWrapper: {
+      display: "flex",
+      flexFlow: "row wrap",
+      marginTop: theme.spacing(1)
     },
     header: {
       alignItems: "flex-end",
@@ -135,22 +156,27 @@ class Exercises extends React.Component<Props, State> {
         ? formatDate(exercise.history[exercise.history.length - 1].date, true)
         : null;
     return (
-      <li className={classes.exerciseTitle} key={exercise.id}>
-        <div className={classes.exerciseTitleWrapper}>
-          <ExerciseTypeIcon type={exercise.type} showLabel={false} />
-          <Typography
-            className={classes.exerciseTitleText}
-            onClick={() => this.navigateToExercise(exercise)}
-            variant={isMobile(width) ? "h3" : "h2"}
-          >
-            {exercise.title}
-          </Typography>
-        </div>
-        {formattedDate && (
-          <Typography
-            className={classes.exerciseDate}
-          >{`Last completed ${formattedDate}`}</Typography>
-        )}
+      <li className={classes.exerciseItem} key={exercise.id}>
+        <Card className={classes.exerciseCard}>
+          <div className={classes.exerciseTitleWrapper}>
+            <ExerciseTypeIcon type={exercise.type} showLabel={false} />
+            <Typography
+              className={classes.exerciseTitleText}
+              onClick={() => this.navigateToExercise(exercise)}
+              variant={isMobile(width) ? "h4" : "h3"}
+            >
+              {exercise.title}
+            </Typography>
+          </div>
+          {formattedDate && (
+            <div className={classes.exerciseDateWrapper}>
+              <Typography className={classes.exerciseDate}>
+                {"Last completed "}
+              </Typography>
+              <Typography color="primary">{formattedDate}</Typography>
+            </div>
+          )}
+        </Card>
       </li>
     );
   }
@@ -159,6 +185,7 @@ class Exercises extends React.Component<Props, State> {
     const { classes, data } = this.props;
     const { exercises, search } = this.state;
     const { loading, error } = data;
+
     return (
       <PageRoot
         actionPanel={{
@@ -184,6 +211,7 @@ class Exercises extends React.Component<Props, State> {
             </Fragment>
           )
         }}
+        backgroundMode={BackgroundMode.purple}
         error={error}
         loading={loading}
       >

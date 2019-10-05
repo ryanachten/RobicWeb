@@ -67,6 +67,7 @@ const styles = (theme: Theme) =>
     },
     purpleBackground: {
       backgroundImage: PURPLE_GRADIENT,
+      height: "100%",
       minHeight: "100vh"
     },
     robicLogo: {

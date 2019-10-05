@@ -16,7 +16,7 @@ const styles = (theme: Theme) =>
     },
     root: {
       margin: "0 auto",
-      maxWidth: "640px",
+      maxWidth: theme.breakpoints.values.sm,
       padding: theme.spacing(4)
     },
     subtitle: {

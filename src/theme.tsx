@@ -26,4 +26,6 @@ const theme = createMuiTheme({
   }
 });
 
+theme.breakpoints.values.sm = 640;
+
 export default theme;

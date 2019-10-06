@@ -20,6 +20,7 @@ import { formatDate, compareExerciseDates } from "../utils";
 import { PageRoot, ExerciseTypeIcon, BackgroundMode } from "../components";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
+import { LIGHT_GRADIENT } from "../constants/colors";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -41,7 +42,12 @@ const styles = (theme: Theme) =>
       flexFlow: "row wrap"
     },
     exerciseList: {
-      padding: 0
+      background: LIGHT_GRADIENT,
+      maxWidth: theme.breakpoints.values.sm,
+      margin: "0 auto",
+      padding: theme.spacing(3),
+      position: "relative",
+      top: "-4px"
     },
     exerciseCard: {
       padding: theme.spacing(3)
@@ -49,15 +55,7 @@ const styles = (theme: Theme) =>
     exerciseItem: {
       cursor: "pointer",
       listStyle: "none",
-      marginLeft: theme.spacing(2),
-      marginRight: theme.spacing(2),
-      marginBottom: theme.spacing(2),
-      maxWidth: theme.breakpoints.values.sm,
-
-      [theme.breakpoints.up("sm")]: {
-        marginLeft: "auto",
-        marginRight: "auto"
-      }
+      marginBottom: theme.spacing(2)
     },
     exerciseTitleText: {
       overflow: "hidden",

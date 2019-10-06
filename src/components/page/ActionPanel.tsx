@@ -1,9 +1,11 @@
 import React from "react";
-import { Card, Typography, Theme, Divider } from "@material-ui/core";
+import { Card, Typography, Theme, Divider, withWidth } from "@material-ui/core";
 import { RobicLogo } from "../RobicLogo";
 import { withStyles, createStyles } from "@material-ui/styles";
 import { HEADER_FONT } from "../../constants/fonts";
 import { Classes } from "jss";
+import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
+import { isMobile } from "../../constants/sizes";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -27,14 +29,16 @@ const styles = (theme: Theme) =>
       color: theme.palette.primary.light,
       fontFamily: HEADER_FONT,
       marginBottom: theme.spacing(2),
-      textAlign: "center"
+      textAlign: "center",
+      textTransform: "lowercase"
     }
   });
 
 export type ActionPanelProps = {
+  children?: any;
   title?: string;
   tagline?: string;
-  children?: any;
+  width?: Breakpoint;
 };
 
 type Props = ActionPanelProps & {
@@ -45,21 +49,25 @@ const ActionPanel = ({
   classes,
   children,
   title = "",
-  tagline = ""
+  tagline = "",
+  width
 }: Props) => (
   <Card className={classes.root}>
     <RobicLogo className={classes.logo} />
-    <Typography variant="h5" className={classes.title}>
+    <Typography
+      variant={width && isMobile(width) ? "h5" : "h4"}
+      className={classes.title}
+    >
       {title}
     </Typography>
     <Typography variant="subtitle1" className={classes.subtitle}>
       {tagline}
     </Typography>
-    <Divider className={classes.divider} />
+    {width && isMobile(width) && <Divider className={classes.divider} />}
     {children}
   </Card>
 );
 
-const styled = withStyles(styles)(ActionPanel);
+const styled = withStyles(styles)(withWidth()(ActionPanel));
 
 export { styled as ActionPanel };

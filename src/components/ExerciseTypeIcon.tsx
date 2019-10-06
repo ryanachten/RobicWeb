@@ -32,10 +32,10 @@ const ExerciseTypeIcon = ({ classes, showLabel = true, type }: Props) => {
   return (
     <div className={classes.typeWrapper}>
       {type === ExerciseType.CIRCUIT && (
-        <CircuitIcon className={classes.typeIcon} color="primary" />
+        <CircuitIcon className={classes.typeIcon} color="secondary" />
       )}
       {type === ExerciseType.SUPERSET && (
-        <SupersetIcon className={classes.typeIcon} color="primary" />
+        <SupersetIcon className={classes.typeIcon} color="secondary" />
       )}
       {showLabel && (
         <Typography color="textSecondary" variant="h6">

@@ -8,24 +8,35 @@ import SearchIcon from "@material-ui/icons/Search";
 import { Classes } from "jss";
 import { GetExercises } from "../constants/queries";
 import { ExerciseDefinition } from "../constants/types";
-import { Typography, TextField, withWidth, Card } from "@material-ui/core";
+import {
+  Typography,
+  TextField,
+  withWidth,
+  Card,
+  IconButton
+} from "@material-ui/core";
 import routes from "../constants/routes";
 import { formatDate, compareExerciseDates } from "../utils";
-import {
-  Link,
-  PageRoot,
-  ExerciseTypeIcon,
-  BackgroundMode
-} from "../components";
+import { PageRoot, ExerciseTypeIcon, BackgroundMode } from "../components";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
 
 const styles = (theme: Theme) =>
   createStyles({
+    actionPanel: {
+      alignItems: "center",
+      display: "flex",
+      flexFlow: "column"
+    },
     createLink: {
       marginRight: theme.spacing(4)
     },
+    createLinkIcon: {
+      boxShadow: theme.shadows[1],
+      marginLeft: theme.spacing(2)
+    },
     createLinkWrapper: {
+      alignItems: "center",
       display: "flex",
       flexFlow: "row wrap"
     },
@@ -33,7 +44,7 @@ const styles = (theme: Theme) =>
       padding: 0
     },
     exerciseCard: {
-      padding: theme.spacing(2)
+      padding: theme.spacing(3)
     },
     exerciseItem: {
       cursor: "pointer",
@@ -191,14 +202,12 @@ class Exercises extends React.Component<Props, State> {
         actionPanel={{
           title: "Exercises",
           children: (
-            <Fragment>
+            <div className={classes.actionPanel}>
               <div className={classes.createLinkWrapper}>
-                <AddIcon color="primary" />
-                <Link
-                  className={classes.createLink}
-                  label={routes.NEW_EXERCISE.label}
-                  url={routes.NEW_EXERCISE.route}
-                />
+                <Typography>Create new exercise</Typography>
+                <IconButton className={classes.createLinkIcon}>
+                  <AddIcon color="secondary" />
+                </IconButton>
               </div>
               <div className={classes.search}>
                 <TextField
@@ -208,7 +217,7 @@ class Exercises extends React.Component<Props, State> {
                 />
                 <SearchIcon />
               </div>
-            </Fragment>
+            </div>
           )
         }}
         backgroundMode={BackgroundMode.purple}

@@ -75,7 +75,8 @@ const styles = (theme: Theme) =>
     },
     sidebar: {
       minWidth: "320px",
-      padding: theme.spacing(4)
+      padding: theme.spacing(4),
+      height: "unset"
     },
     sidebarContent: {
       maxWidth: "255px",

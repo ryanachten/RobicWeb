@@ -25,6 +25,10 @@ import { LIGHT_GRADIENT } from "../constants/colors";
 const styles = (theme: Theme) =>
   createStyles({
     actionPanel: {
+      position: "relative",
+      zIndex: 99
+    },
+    actionPanelContent: {
       alignItems: "center",
       display: "flex",
       flexFlow: "column"
@@ -39,13 +43,15 @@ const styles = (theme: Theme) =>
     createLinkWrapper: {
       alignItems: "center",
       display: "flex",
-      flexFlow: "row wrap"
+      flexFlow: "row wrap",
+      marginBottom: theme.spacing(1)
     },
     exerciseList: {
       background: LIGHT_GRADIENT,
       maxWidth: theme.breakpoints.values.sm,
       margin: "0 auto",
       padding: theme.spacing(3),
+      paddingTop: theme.spacing(4),
       position: "relative",
       top: "-4px"
     },
@@ -105,6 +111,7 @@ class Exercises extends React.Component<Props, State> {
       exercises: [],
       search: ""
     };
+    this.navigateToCreateExercise = this.navigateToCreateExercise.bind(this);
     this.navigateToExercise = this.navigateToExercise.bind(this);
     this.onUpdateSearch = this.onUpdateSearch.bind(this);
   }
@@ -154,6 +161,10 @@ class Exercises extends React.Component<Props, State> {
     });
   }
 
+  navigateToCreateExercise() {
+    this.props.history.push(routes.NEW_EXERCISE.route);
+  }
+
   navigateToExercise(exercise: ExerciseDefinition) {
     this.props.history.push(routes.EXERCISE(exercise.id, exercise.title).route);
   }
@@ -198,12 +209,16 @@ class Exercises extends React.Component<Props, State> {
     return (
       <PageRoot
         actionPanel={{
+          className: classes.actionPanel,
           title: "Exercises",
           children: (
-            <div className={classes.actionPanel}>
+            <div className={classes.actionPanelContent}>
               <div className={classes.createLinkWrapper}>
                 <Typography>Create new exercise</Typography>
-                <IconButton className={classes.createLinkIcon}>
+                <IconButton
+                  className={classes.createLinkIcon}
+                  onClick={() => this.navigateToCreateExercise()}
+                >
                   <AddIcon color="secondary" />
                 </IconButton>
               </div>

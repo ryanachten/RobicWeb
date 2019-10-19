@@ -4,6 +4,7 @@ import { MuscleGroup } from "../../constants/types";
 import { Classes } from "jss";
 import { transparentize, lerpColor } from "../../utils";
 import { BodyMenu } from "./FullBody";
+import { CHERRY_RED } from "../../constants/colors";
 
 const styles = (theme: Theme) => createStyles({});
 
@@ -38,8 +39,8 @@ class FrontBody extends React.Component<Props, State> {
         muscle && this.props.selected.filter((m: MuscleGroup) => m === muscle);
       if (results && results.length > 0) {
         return lerpColor(
-          props.theme.palette.primary.light,
           props.theme.palette.secondary.light,
+          CHERRY_RED,
           results.length / this.props.muscleGroupLevels
         );
       }

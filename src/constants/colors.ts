@@ -1,3 +1,4 @@
+export const CHERRY_RED = "#ff5353";
 export const LIGHT_CARD = "#efefef";
 export const LIGHT_GRADIENT = "radial-gradient(#FFFFFF 54%, #F4F3FF 100%)";
 export const PURPLE_GRADIENT =

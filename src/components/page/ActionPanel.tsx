@@ -6,6 +6,7 @@ import { HEADER_FONT } from "../../constants/fonts";
 import { Classes } from "jss";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../../constants/sizes";
+import classnames from "../../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -19,7 +20,11 @@ const styles = (theme: Theme) =>
     root: {
       margin: "0 auto",
       maxWidth: theme.breakpoints.values.sm,
-      padding: theme.spacing(4)
+      padding: theme.spacing(4),
+
+      [theme.breakpoints.up("sm")]: {
+        padding: theme.spacing(8)
+      }
     },
     subtitle: {
       marginBottom: theme.spacing(2),
@@ -35,6 +40,7 @@ const styles = (theme: Theme) =>
   });
 
 export type ActionPanelProps = {
+  className?: string;
   children?: any;
   title?: string;
   tagline?: string;
@@ -46,13 +52,14 @@ type Props = ActionPanelProps & {
 };
 
 const ActionPanel = ({
+  className,
   classes,
   children,
   title = "",
   tagline = "",
   width
 }: Props) => (
-  <Card className={classes.root}>
+  <Card className={classnames(classes.root, className)}>
     <RobicLogo className={classes.logo} />
     <Typography
       variant={width && isMobile(width) ? "h5" : "h4"}

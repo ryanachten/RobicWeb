@@ -101,7 +101,7 @@ export enum BackgroundMode {
 type Props = RouteComponentProps & {
   actionPanel?: ActionPanelProps;
   backgroundMode?: BackgroundMode;
-  children: any;
+  children?: any;
   classes: Classes;
   error?: Error; // hook up via GraphQL result.error prop
   loading: boolean;

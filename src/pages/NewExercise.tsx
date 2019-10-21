@@ -7,7 +7,7 @@ import { Classes } from "jss";
 import { AddExerciseDefinition } from "../constants/mutations";
 import routes from "../constants/routes";
 import { GetExercises } from "../constants/queries";
-import { PageRoot, PageTitle } from "../components";
+import { PageRoot, PageTitle, BackgroundMode } from "../components";
 import ExerciseForm, {
   State as FormFields
 } from "../components/inputs/ExerciseForm";
@@ -53,16 +53,17 @@ class NewExercise extends React.Component<Props, State> {
   render() {
     const { error, loading } = this.props.result;
     return (
-      <PageRoot error={error} loading={loading}>
-        <PageTitle
-          label={routes.NEW_EXERCISE.label}
-          breadcrumb={{
-            label: "Back",
-            onClick: () => this.props.history.goBack()
-          }}
-        />
-        <ExerciseForm onSubmit={(fields: any) => this.submitForm(fields)} />
-      </PageRoot>
+      <PageRoot
+        backgroundMode={BackgroundMode.purple}
+        error={error}
+        loading={loading}
+        actionPanel={{
+          title: routes.NEW_EXERCISE.label,
+          children: (
+            <ExerciseForm onSubmit={(fields: any) => this.submitForm(fields)} />
+          )
+        }}
+      />
     );
   }
 }

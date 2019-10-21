@@ -48,8 +48,10 @@ const styles = (theme: Theme) =>
     },
     exerciseList: {
       background: LIGHT_GRADIENT,
+      borderRadius: `0px 0px ${theme.spacing(1)}px ${theme.spacing(1)}px`,
       maxWidth: theme.breakpoints.values.sm,
       margin: "0 auto",
+      marginBottom: theme.spacing(4),
       padding: theme.spacing(3),
       paddingTop: theme.spacing(4),
       position: "relative",

@@ -6,7 +6,8 @@ import {
   withStyles,
   createStyles,
   Theme,
-  CircularProgress
+  CircularProgress,
+  Switch
 } from "@material-ui/core";
 import { Classes } from "jss";
 import { Select } from "./Select";
@@ -28,15 +29,36 @@ const styles = (theme: Theme) =>
       marginBottom: theme.spacing(2),
       marginTop: theme.spacing(2)
     },
-    muscleSelectWrapper: {
-      margin: theme.spacing(1)
-    },
-    submitWrapper: {
-      marginTop: theme.spacing(2),
-      width: "100%"
+    form: {
+      display: "flex",
+      flexFlow: "column"
     },
     input: {
       margin: theme.spacing(1)
+    },
+    loadingWrappper: {
+      alignItems: "center",
+      display: "flex",
+      justifyContent: "center",
+      margin: theme.spacing(2)
+    },
+    muscleSelectWrapper: {
+      margin: theme.spacing(1)
+    },
+    submitButton: {
+      backgroundColor: theme.palette.common.white,
+      color: theme.palette.secondary.main
+    },
+    submitWrapper: {
+      marginTop: theme.spacing(2),
+      textAlign: "center",
+      width: "100%"
+    },
+    switchWrapper: {
+      display: "flex",
+      flexFlow: "row wrap",
+      marginLeft: theme.spacing(1),
+      marginTop: theme.spacing(1)
     }
   });
 
@@ -204,7 +226,7 @@ class ExerciseForm extends React.Component<Props, State> {
         : []
       : primaryMuscleGroup;
     return (
-      <form onSubmit={this.submitForm}>
+      <form className={classes.form} onSubmit={this.submitForm}>
         <TextField
           label="Title"
           placeholder="Exercise title"
@@ -212,20 +234,26 @@ class ExerciseForm extends React.Component<Props, State> {
           onChange={event => this.onFieldUpdate("title", event.target.value)}
           value={title}
         />
-        <Select
-          label="Type"
-          className={classes.input}
-          onChange={event => this.onFieldUpdate("type", event.target.value)}
-          options={Object.keys(ExerciseType).map((type: any) => {
-            const value = ExerciseType[type];
-            return {
-              id: value,
-              label: value,
-              value: value
-            };
+        <div className={classes.switchWrapper}>
+          {Object.keys(ExerciseType).map((key: any) => {
+            const _type = ExerciseType[key];
+            if (_type === ExerciseType.STANDARD) {
+              return;
+            }
+            return (
+              <div key={_type}>
+                <label>{_type}</label>
+                <Switch
+                  checked={type === _type}
+                  onChange={event =>
+                    this.onFieldUpdate("type", event.target.value)
+                  }
+                  value={type === _type ? ExerciseType.STANDARD : _type}
+                />
+              </div>
+            );
           })}
-          value={type}
-        />
+        </div>
         {/* Don't show unit and PMG fields for types where these are
             made up of other exercises  */}
         {!isCompositeExercise(type) && (
@@ -243,7 +271,13 @@ class ExerciseForm extends React.Component<Props, State> {
                 }))}
               value={unit}
             />
-            {loading ? <CircularProgress /> : this.renderMuscleOptions()}
+            {loading ? (
+              <div className={classes.loadingWrappper}>
+                <CircularProgress />
+              </div>
+            ) : (
+              this.renderMuscleOptions()
+            )}
           </Fragment>
         )}
         {isCompositeExercise(type) &&
@@ -255,7 +289,13 @@ class ExerciseForm extends React.Component<Props, State> {
           </Typography>
         )}
         <div className={classes.submitWrapper}>
-          <Button type="submit">Submit</Button>
+          <Button
+            className={classes.submitButton}
+            variant="contained"
+            type="submit"
+          >
+            Submit
+          </Button>
         </div>
         {muscles && <FullBody selected={muscles} />}
       </form>

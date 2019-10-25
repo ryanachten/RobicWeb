@@ -20,7 +20,7 @@ import routes from "../../constants/routes";
 import { Link } from "../../components/Link";
 import { isMobile } from "../../constants/sizes";
 import { LOGO_FONT } from "../../constants/fonts";
-import { PURPLE_GRADIENT } from "../../constants/colors";
+import { PURPLE_GRADIENT, LIGHT_GRADIENT } from "../../constants/colors";
 import classnames from "../../utils";
 import { ActionPanel, ActionPanelProps } from "../page/ActionPanel";
 import { ErrorMessage } from "../page/ErrorMessage";
@@ -72,6 +72,17 @@ const styles = (theme: Theme) =>
     },
     robicLogo: {
       fontFamily: LOGO_FONT
+    },
+    secondaryContent: {
+      background: LIGHT_GRADIENT,
+      borderRadius: `0px 0px ${theme.spacing(1)}px ${theme.spacing(1)}px`,
+      maxWidth: theme.breakpoints.values.sm,
+      margin: "0 auto",
+      marginBottom: theme.spacing(4),
+      padding: theme.spacing(3),
+      paddingTop: theme.spacing(4),
+      position: "relative",
+      top: "-4px"
     },
     sidebar: {
       minWidth: "320px",
@@ -235,7 +246,7 @@ class PageRoot extends React.Component<Props, State> {
           </Toolbar>
         </AppBar>
         {this.renderActionPanel()}
-        {children}
+        <div className={classes.secondaryContent}>{children}</div>
       </PurpleBackground>
     );
   }

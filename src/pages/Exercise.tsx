@@ -39,7 +39,8 @@ import {
   ExerciseTypeIcon,
   PageRoot,
   PageTitle,
-  Link
+  Link,
+  BackgroundMode
 } from "../components";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
@@ -475,9 +476,7 @@ class ExercisePage extends React.Component<Props, State> {
                                   <Typography
                                     className={classes.reps}
                                   >{`Reps: ${e.reps}`}</Typography>
-                                  <Typography>{`Value: ${e.value}${
-                                    e.unit
-                                  }`}</Typography>
+                                  <Typography>{`Value: ${e.value}${e.unit}`}</Typography>
                                 </div>
                               );
                             })}
@@ -571,7 +570,11 @@ class ExercisePage extends React.Component<Props, State> {
     const { data } = this.props;
     const { exerciseDefinition, loading, error } = data;
     return (
-      <PageRoot error={error} loading={loading}>
+      <PageRoot
+        backgroundMode={BackgroundMode.purple}
+        error={error}
+        loading={loading}
+      >
         {exerciseDefinition &&
           this.renderExerciseDefinition(exerciseDefinition)}
       </PageRoot>

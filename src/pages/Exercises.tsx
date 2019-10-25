@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { compose, graphql } from "react-apollo";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
@@ -20,7 +20,6 @@ import { formatDate, compareExerciseDates } from "../utils";
 import { PageRoot, ExerciseTypeIcon, BackgroundMode } from "../components";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
-import { LIGHT_GRADIENT } from "../constants/colors";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -47,15 +46,8 @@ const styles = (theme: Theme) =>
       marginBottom: theme.spacing(1)
     },
     exerciseList: {
-      background: LIGHT_GRADIENT,
-      borderRadius: `0px 0px ${theme.spacing(1)}px ${theme.spacing(1)}px`,
-      maxWidth: theme.breakpoints.values.sm,
-      margin: "0 auto",
-      marginBottom: theme.spacing(4),
-      padding: theme.spacing(3),
-      paddingTop: theme.spacing(4),
-      position: "relative",
-      top: "-4px"
+      margin: 0,
+      padding: 0
     },
     exerciseCard: {
       padding: theme.spacing(3)

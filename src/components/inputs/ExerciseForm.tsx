@@ -17,7 +17,6 @@ import {
   MuscleGroup,
   ExerciseType
 } from "../../constants/types";
-import { FullBody } from "../muscles/FullBody";
 import { compose, graphql } from "react-apollo";
 import { GetExercises } from "../../constants/queries";
 import { MultiSelect } from "./MultiSelect";
@@ -238,7 +237,7 @@ class ExerciseForm extends React.Component<Props, State> {
           {Object.keys(ExerciseType).map((key: any) => {
             const _type = ExerciseType[key];
             if (_type === ExerciseType.STANDARD) {
-              return;
+              return null;
             }
             return (
               <div key={_type}>
@@ -297,7 +296,6 @@ class ExerciseForm extends React.Component<Props, State> {
             Submit
           </Button>
         </div>
-        {muscles && <FullBody selected={muscles} />}
       </form>
     );
   }

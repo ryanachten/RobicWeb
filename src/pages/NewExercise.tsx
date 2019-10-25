@@ -7,7 +7,7 @@ import { Classes } from "jss";
 import { AddExerciseDefinition } from "../constants/mutations";
 import routes from "../constants/routes";
 import { GetExercises } from "../constants/queries";
-import { PageRoot, PageTitle, BackgroundMode } from "../components";
+import { PageRoot, BackgroundMode } from "../components";
 import ExerciseForm, {
   State as FormFields
 } from "../components/inputs/ExerciseForm";

@@ -7,7 +7,7 @@ import { Classes } from "jss";
 import { UpdateExercise } from "../constants/mutations";
 import routes from "../constants/routes";
 import { GetExercises, GetExerciseDefinitionById } from "../constants/queries";
-import { PageRoot, PageTitle } from "../components";
+import { PageRoot, BackgroundMode } from "../components";
 import ExerciseForm, {
   State as FormFields
 } from "../components/inputs/ExerciseForm";
@@ -57,19 +57,20 @@ class EditExercise extends React.Component<Props, State> {
     const { data, result } = this.props;
     const { exerciseDefinition, loading } = data;
     return (
-      <PageRoot error={result.error} loading={loading}>
-        <PageTitle
-          label={routes.EDIT_EXERCISE().label}
-          breadcrumb={{
-            label: "Back",
-            onClick: () => this.props.history.goBack()
-          }}
-        />
-        <ExerciseForm
-          exerciseDefinition={exerciseDefinition}
-          onSubmit={(fields: any) => this.submitForm(fields)}
-        />
-      </PageRoot>
+      <PageRoot
+        backgroundMode={BackgroundMode.purple}
+        error={result.error}
+        loading={loading}
+        actionPanel={{
+          title: routes.EDIT_EXERCISE().label,
+          children: (
+            <ExerciseForm
+              exerciseDefinition={exerciseDefinition}
+              onSubmit={(fields: any) => this.submitForm(fields)}
+            />
+          )
+        }}
+      />
     );
   }
 }

@@ -42,6 +42,7 @@ const styles = (theme: Theme) =>
 export type ActionPanelProps = {
   className?: string;
   children?: any;
+  containerWidth?: Breakpoint;
   title?: string;
   tagline?: string;
   width?: Breakpoint;
@@ -49,17 +50,25 @@ export type ActionPanelProps = {
 
 type Props = ActionPanelProps & {
   classes: Classes;
+  theme: Theme;
 };
 
 const ActionPanel = ({
   className,
   classes,
   children,
+  containerWidth,
   title = "",
   tagline = "",
+  theme,
   width
 }: Props) => (
-  <Card className={classnames(classes.root, className)}>
+  <Card
+    className={classnames(classes.root, className)}
+    style={{
+      maxWidth: containerWidth && theme.breakpoints.values[containerWidth]
+    }}
+  >
     <RobicLogo className={classes.logo} />
     <Typography
       variant={width && isMobile(width) ? "h5" : "h4"}
@@ -75,6 +84,8 @@ const ActionPanel = ({
   </Card>
 );
 
-const styled = withStyles(styles)(withWidth()(ActionPanel));
+const styled = withStyles(styles, { withTheme: true })(
+  withWidth()(ActionPanel)
+);
 
 export { styled as ActionPanel };

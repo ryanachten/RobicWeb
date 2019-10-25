@@ -25,6 +25,7 @@ import classnames from "../../utils";
 import { ActionPanel, ActionPanelProps } from "../page/ActionPanel";
 import { ErrorMessage } from "../page/ErrorMessage";
 import { LoadingSplash } from "../page/LoadingSplash";
+import theme from "../../theme";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -114,6 +115,7 @@ type Props = RouteComponentProps & {
   backgroundMode?: BackgroundMode;
   children?: any;
   classes: Classes;
+  containerWidth?: Breakpoint;
   error?: Error; // hook up via GraphQL result.error prop
   loading: boolean;
   theme: Theme;
@@ -188,8 +190,8 @@ class PageRoot extends React.Component<Props, State> {
   }
 
   renderActionPanel() {
-    const { actionPanel } = this.props;
-    return <ActionPanel {...actionPanel} />;
+    const { actionPanel, containerWidth } = this.props;
+    return <ActionPanel {...actionPanel} containerWidth={containerWidth} />;
   }
 
   renderNavLinks(additionalClasses?: { root: string }) {
@@ -236,7 +238,7 @@ class PageRoot extends React.Component<Props, State> {
   }
 
   renderColumnDesktop() {
-    const { children, classes } = this.props;
+    const { children, classes, containerWidth } = this.props;
     return (
       <PurpleBackground>
         <AppBar className={classes.appBar} color="inherit" position="static">
@@ -246,7 +248,14 @@ class PageRoot extends React.Component<Props, State> {
           </Toolbar>
         </AppBar>
         {this.renderActionPanel()}
-        <div className={classes.secondaryContent}>{children}</div>
+        <div
+          className={classes.secondaryContent}
+          style={{
+            maxWidth: containerWidth && theme.breakpoints.values[containerWidth]
+          }}
+        >
+          {children}
+        </div>
       </PurpleBackground>
     );
   }

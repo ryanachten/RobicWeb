@@ -572,6 +572,7 @@ class ExercisePage extends React.Component<Props, State> {
     return (
       <PageRoot
         backgroundMode={BackgroundMode.purple}
+        containerWidth="md"
         error={error}
         loading={loading}
       >

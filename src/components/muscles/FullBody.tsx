@@ -16,6 +16,8 @@ import BackBody from "./BackBody";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../../constants/sizes";
 import { PopoverProps } from "@material-ui/core/Popover";
+import { lerpColor, transparentize } from "../../utils";
+import { CHERRY_RED } from "../../constants/colors";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -183,6 +185,24 @@ export { styled as FullBody };
 type BodyProps = PopoverProps & {
   muscleGroup: MuscleGroup | null;
   classes: Classes;
+};
+
+export const getFillColour = (
+  selectedMuscles: MuscleGroup[],
+  muscleGroupLevels: number,
+  theme: Theme,
+  muscle?: MuscleGroup
+): string => {
+  const results =
+    muscle && selectedMuscles.filter((m: MuscleGroup) => m === muscle);
+  if (results && results.length > 0) {
+    return lerpColor(
+      theme.palette.secondary.light,
+      CHERRY_RED,
+      results.length / muscleGroupLevels
+    );
+  }
+  return transparentize(theme.palette.text.disabled, 0.1);
 };
 
 export const BodyMenu = withStyles(styles)(

@@ -2,9 +2,7 @@ import React, { ReactElement } from "react";
 import { withStyles, createStyles, Theme } from "@material-ui/core";
 import { MuscleGroup } from "../../constants/types";
 import { Classes } from "jss";
-import { transparentize, lerpColor } from "../../utils";
-import { BodyMenu } from "./FullBody";
-import { CHERRY_RED } from "../../constants/colors";
+import { BodyMenu, getFillColour } from "./FullBody";
 
 const styles = (theme: Theme) => createStyles({});
 
@@ -34,18 +32,13 @@ class FrontBody extends React.Component<Props, State> {
     this.closeMenu = this.closeMenu.bind(this);
     this.showMenu = this.showMenu.bind(this);
 
-    this.fill = (muscle?: MuscleGroup) => {
-      const results =
-        muscle && this.props.selected.filter((m: MuscleGroup) => m === muscle);
-      if (results && results.length > 0) {
-        return lerpColor(
-          props.theme.palette.secondary.light,
-          CHERRY_RED,
-          results.length / this.props.muscleGroupLevels
-        );
-      }
-      return transparentize(props.theme.palette.text.disabled, 0.1);
-    };
+    this.fill = (muscle?: MuscleGroup) =>
+      getFillColour(
+        this.props.selected,
+        this.props.muscleGroupLevels,
+        props.theme,
+        muscle
+      );
   }
 
   showMenu(e: any, muscle: MuscleGroup) {

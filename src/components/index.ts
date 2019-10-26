@@ -14,6 +14,7 @@ export * from "./inputs/MultiSelect";
 export * from "./inputs/Select";
 
 // Misc components
+export * from "./InsightCard";
 export * from "./Link";
 export * from "./Chart";
 export * from "./RobicLogo";

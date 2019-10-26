@@ -11,7 +11,6 @@ import { Classes } from "jss";
 import {
   ExerciseDefinition,
   Set,
-  Exercise,
   Unit,
   SetExercise,
   MuscleGroup,
@@ -22,28 +21,21 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Switch,
   Card,
   withWidth
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import AwardIcon from "@material-ui/icons/Star";
-import RecentIcon from "@material-ui/icons/AccessTime";
 import FilterIcon from "@material-ui/icons/FilterList";
 import RemoveIcon from "@material-ui/icons/Remove";
 import StartIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
 import ResetIcon from "@material-ui/icons/Refresh";
-import TimerIcon from "@material-ui/icons/Timer";
 import routes from "../constants/routes";
 import Stopwatch from "../components/Stopwatch";
 import {
-  formatDate,
-  formatTime,
   getUnitLabel,
   isCompositeExercise,
   getChildExercisDef,
-  getNetTotalFromSets,
   isBodyWeight
 } from "../utils";
 import {
@@ -52,11 +44,11 @@ import {
   Link,
   ExerciseTypeIcon,
   BackgroundMode,
-  RobicLogo
+  RobicLogo,
+  InsightCard
 } from "../components";
 import { isNull } from "util";
 import { HEADER_FONT } from "../constants/fonts";
-import { LIGHT_CARD } from "../constants/colors";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
 
@@ -118,41 +110,6 @@ const styles = (theme: Theme) =>
     formControlSelect: {
       textTransform: "capitalize"
     },
-    historyContent: {
-      display: "flex",
-      flexFlow: "row wrap"
-    },
-    historyHeader: {
-      alignItems: "center",
-      display: "flex",
-      marginBottom: theme.spacing(2)
-    },
-    historyIcon: {
-      marginRight: theme.spacing(1)
-    },
-    historySectionWrapper: {
-      display: "flex",
-      flexFlow: "row wrap"
-    },
-    historyTimerWrapper: {
-      display: "flex",
-      marginTop: theme.spacing(2)
-    },
-    historyTimerIcon: {
-      marginRight: theme.spacing(1)
-    },
-    historyTitle: {
-      marginRight: theme.spacing(2)
-    },
-    historyWrapper: {
-      backgroundColor: LIGHT_CARD,
-      borderRadius: theme.shape.borderRadius,
-      marginBottom: theme.spacing(4),
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      maxWidth: "500px",
-      padding: theme.spacing(2)
-    },
     input: {
       padding: theme.spacing(2)
     },
@@ -175,9 +132,6 @@ const styles = (theme: Theme) =>
       maxWidth: "100%",
       width: "fit-content"
     },
-    setItem: {
-      marginRight: theme.spacing(2)
-    },
     setCard: {
       marginBottom: theme.spacing(2),
       padding: theme.spacing(2),
@@ -191,15 +145,6 @@ const styles = (theme: Theme) =>
       alignItems: "center",
       display: "flex",
       flexFlow: "row wrap"
-    },
-    switchesWrapper: {
-      display: "flex",
-      marginBottom: theme.spacing(2)
-    },
-    switchWrapper: {
-      alignItems: "center",
-      display: "flex",
-      marginRight: theme.spacing(2)
     },
     timerButton: {
       marginLeft: theme.spacing(2)
@@ -223,8 +168,6 @@ type State = {
   filterTempMuscleGroup: string;
   selectedExercise: ExerciseDefinition | null;
   sets: Set[];
-  showPbSession: boolean;
-  showRecentSession: boolean;
   timerRunning: boolean;
 };
 
@@ -253,9 +196,7 @@ class Index extends React.Component<Props, State> {
       filterTempExerciseType: FILTER_ALL,
       filterTempMuscleGroup: FILTER_ALL,
       selectedExercise: null,
-      sets: [], //this will be set on exercise select,
-      showPbSession: false,
-      showRecentSession: false,
+      sets: [], //this will be set on exercise select
       timerRunning: false
     };
     this.addSet = this.addSet.bind(this);
@@ -269,7 +210,6 @@ class Index extends React.Component<Props, State> {
     this.submitFilter = this.submitFilter.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.openFilterMenu = this.openFilterMenu.bind(this);
-    this.toggleSwitch = this.toggleSwitch.bind(this);
     this.toggleTimer = this.toggleTimer.bind(this);
     this.sortExericises = (a: ExerciseDefinition, b: ExerciseDefinition) => {
       return a.title >= b.title ? 1 : -1;
@@ -423,12 +363,6 @@ class Index extends React.Component<Props, State> {
     });
   };
 
-  toggleSwitch(switchName: "showPbSession" | "showRecentSession") {
-    const state: any = { ...this.state };
-    state[switchName] = !this.state[switchName];
-    this.setState(state);
-  }
-
   closeFilterMenu() {
     this.cancelFilter();
     this.setState({
@@ -457,114 +391,6 @@ class Index extends React.Component<Props, State> {
     this.setState(prevState => ({
       timerRunning: !prevState.timerRunning
     }));
-  }
-
-  renderPersonalBest(
-    history: Exercise[],
-    composite: boolean,
-    unit?: Unit,
-    childExercises?: ExerciseDefinition[]
-  ) {
-    const personalBest = [...history].sort((a: Exercise, b: Exercise) => {
-      const a_total = getNetTotalFromSets(a.sets, composite);
-      const b_total = getNetTotalFromSets(b.sets, composite);
-      return a_total > b_total ? -1 : 1;
-    })[0];
-    const classes = this.props.classes;
-    return (
-      <div className={classes.historyWrapper}>
-        <div className={classes.historyHeader}>
-          <AwardIcon className={classes.historyIcon} color="secondary" />
-          <Typography className={classes.historyTitle} variant="subtitle1">
-            Personal Best
-          </Typography>
-          <Typography color="textSecondary">{`${formatDate(
-            personalBest.date,
-            true
-          )}`}</Typography>
-        </div>
-        <div className={classes.historyContent}>
-          {personalBest.sets.map(({ reps, value, exercises }, index) => (
-            <div key={index}>
-              {composite && childExercises && exercises ? (
-                exercises.map(e => {
-                  const childDef = getChildExercisDef(e, childExercises);
-                  return (
-                    <Typography
-                      key={e.id}
-                      className={classes.setItem}
-                    >{`${e.reps} reps x ${e.value} ${childDef.unit}`}</Typography>
-                  );
-                })
-              ) : (
-                <Typography
-                  className={classes.setItem}
-                  color="textSecondary"
-                >{`${reps} reps x ${value} ${unit}`}</Typography>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className={classes.historyTimerWrapper}>
-          <TimerIcon className={classes.historyTimerIcon} color="disabled" />
-          <Typography className={classes.setItem} color="textSecondary">
-            {formatTime(personalBest.timeTaken)}
-          </Typography>
-        </div>
-      </div>
-    );
-  }
-
-  renderHistory(
-    history: Exercise[],
-    composite: boolean,
-    unit?: Unit,
-    childExercises?: ExerciseDefinition[]
-  ) {
-    const { date, sets, timeTaken } = history[history.length - 1];
-    const classes = this.props.classes;
-    return (
-      <div className={classes.historyWrapper}>
-        <div className={classes.historyHeader}>
-          <RecentIcon className={classes.historyIcon} color="secondary" />
-          <Typography className={classes.historyTitle} variant="subtitle1">
-            Last session
-          </Typography>
-          <Typography color="textSecondary">{`${formatDate(
-            date,
-            true
-          )}`}</Typography>
-        </div>
-        <div className={classes.historyContent}>
-          {sets.map(({ reps, value, exercises }, index) => (
-            <div key={index}>
-              {composite && childExercises && exercises ? (
-                exercises.map(e => {
-                  const childDef = getChildExercisDef(e, childExercises);
-                  return (
-                    <Typography
-                      key={e.id}
-                      className={classes.setItem}
-                      color="textSecondary"
-                    >{`${e.reps} reps x ${e.value} ${childDef.unit}`}</Typography>
-                  );
-                })
-              ) : (
-                <Typography
-                  className={classes.setItem}
-                >{`${reps} reps x ${value} ${unit}`}</Typography>
-              )}
-            </div>
-          ))}
-        </div>
-        <div className={classes.historyTimerWrapper}>
-          <TimerIcon className={classes.historyTimerIcon} color="disabled" />
-          <Typography className={classes.setItem} color="textSecondary">
-            {formatTime(timeTaken)}
-          </Typography>
-        </div>
-      </div>
-    );
   }
 
   renderSetInputs(
@@ -629,17 +455,11 @@ class Index extends React.Component<Props, State> {
 
   renderExerciseForm() {
     const { classes } = this.props;
-    const {
-      selectedExercise,
-      sets,
-      showPbSession,
-      showRecentSession,
-      timerRunning
-    } = this.state;
+    const { selectedExercise, sets, timerRunning } = this.state;
     if (!selectedExercise) {
       return null;
     }
-    const { childExercises, history, title, type, unit } = selectedExercise;
+    const { childExercises, title, type, unit } = selectedExercise;
     const compositeType = isCompositeExercise(type);
 
     return (
@@ -650,37 +470,7 @@ class Index extends React.Component<Props, State> {
           </Typography>
           <ExerciseTypeIcon type={type} />
         </div>
-        <div className={classes.switchesWrapper}>
-          <div className={classes.switchWrapper}>
-            <AwardIcon color="secondary" />
-            <Switch
-              onChange={() => this.toggleSwitch("showPbSession")}
-              checked={showPbSession}
-            />
-          </div>
-          <div className={classes.switchWrapper}>
-            <RecentIcon color="secondary" />
-            <Switch
-              onChange={() => this.toggleSwitch("showRecentSession")}
-              checked={showRecentSession}
-            />
-          </div>
-        </div>
-        <div className={classes.historySectionWrapper}>
-          {showPbSession &&
-            history &&
-            history.length > 0 &&
-            this.renderPersonalBest(
-              history,
-              compositeType,
-              unit,
-              childExercises
-            )}
-          {showRecentSession &&
-            history &&
-            history.length > 0 &&
-            this.renderHistory(history, compositeType, unit, childExercises)}
-        </div>
+        <InsightCard exerciseDefinition={selectedExercise} />
         {sets.map((set: Set, index: number) =>
           compositeType && set.exercises ? (
             // Use set exercises for form state if exercise is composite type

@@ -24,7 +24,8 @@ const styles = (theme: Theme) =>
     },
     root: {
       display: "flex",
-      flexFlow: "row wrap"
+      flexFlow: "row wrap",
+      justifyContent: "center"
     },
     side: {
       flexGrow: 1,

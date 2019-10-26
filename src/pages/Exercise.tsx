@@ -61,7 +61,8 @@ const styles = (theme: Theme) =>
   createStyles({
     chartWrapper: {
       display: "flex",
-      flexFlow: "row wrap"
+      flexFlow: "row wrap",
+      justifyContent: "space-around"
     },
     childExList: {
       margin: 0,
@@ -76,6 +77,10 @@ const styles = (theme: Theme) =>
     historyList: {
       margin: 0,
       padding: 0
+    },
+    historyWrapper: {
+      display: "flex",
+      overflowX: "auto"
     },
     legendIcon: {
       borderRadius: "50%",
@@ -114,7 +119,9 @@ const styles = (theme: Theme) =>
       maxWidth: 400
     },
     sessionItem: {
-      marginBottom: theme.spacing(2)
+      marginBottom: theme.spacing(2),
+      marginRight: theme.spacing(4),
+      minWidth: "300px"
     },
     setItem: {
       display: "flex"
@@ -559,11 +566,13 @@ class ExercisePage extends React.Component<Props, State> {
           <Typography variant="h6">History</Typography>
           <Typography>{`Sessions: ${history.length}`}</Typography>
         </div>
-        {history.length > 0 ? (
-          this.renderHistory()
-        ) : (
-          <Typography>Exercise has not been attempted</Typography>
-        )}
+        <div className={classes.historyWrapper}>
+          {history.length > 0 ? (
+            this.renderHistory()
+          ) : (
+            <Typography>Exercise has not been attempted</Typography>
+          )}
+        </div>
       </div>
     );
   }

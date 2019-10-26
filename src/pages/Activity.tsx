@@ -10,7 +10,7 @@ import { PageRoot, BackgroundMode } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
-import { Typography, Tabs, Tab } from "@material-ui/core";
+import { Typography, Tabs, Tab, withWidth } from "@material-ui/core";
 import { lerpColor } from "../utils";
 import {
   VictoryChart,
@@ -20,6 +20,8 @@ import {
   VictoryAxis
 } from "victory";
 import { CHERRY_RED, PINK, PURPLE } from "../constants/colors";
+import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
+import { isMobile } from "../constants/sizes";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -60,6 +62,7 @@ type Props = {
   mutate: any;
   result: any;
   theme: Theme;
+  width: Breakpoint;
 };
 
 class Activity extends React.Component<Props, State> {
@@ -67,6 +70,7 @@ class Activity extends React.Component<Props, State> {
     a: ExerciseDefinition,
     b: ExerciseDefinition
   ) => number;
+  sortByY: (a: { x: any; y: number }, b: { x: any; y: number }) => number;
   chartSettings: any;
   constructor(props: Props) {
     super(props);
@@ -84,27 +88,36 @@ class Activity extends React.Component<Props, State> {
       a: ExerciseDefinition,
       b: ExerciseDefinition
     ) => (a.title > b.title ? 1 : -1);
+    this.sortByY = (a: { x: string; y: number }, b: { x: any; y: number }) => {
+      if (a.y === b.y) {
+        return a.x > b.x ? 1 : -1;
+      }
+      return a.y < b.y ? 1 : -1;
+    };
 
     // Shared chart configuration
     this.chartSettings = {
       chart: {
         padding: { left: 70, right: 50, bottom: 50, top: 50 },
-        height: 300,
+        height: 250,
         theme: VictoryTheme.material,
         domainPadding: 10,
         animate: { duration: 1000 }
       },
+      clipLabel: (label: string) =>
+        label.length > 9 ? `${label.slice(0, 6)}...` : label,
       label: {
         style: {
           color: this.props.theme.palette.text.disabled,
-          fontSize: "5px"
+          fontSize: "7px"
         }
       },
       labelVertical: {
         angle: 90,
         textAnchor: "start",
         verticalAnchor: "middle"
-      }
+      },
+      maxColumnCount: () => (isMobile(this.props.width) ? 10 : 15)
     };
   }
 
@@ -167,20 +180,19 @@ class Activity extends React.Component<Props, State> {
       y: number;
       muscleGroups: MuscleGroup[];
     }[] = exercises
-      .sort(this.sortExercisesAlphabetically)
+      // .sort(this.sortExercisesAlphabetically)
       .reverse()
       .map((def: ExerciseDefinition) => {
         const validSessions = def.history.filter(e =>
           isAfter(e.date, subDays(Date.now(), dateLimit))
         );
         return {
-          x:
-            // Clip exercise graph labels to 9 characters
-            def.title.length > 9 ? `${def.title.slice(0, 6)}...` : def.title,
+          x: this.chartSettings.clipLabel(def.title),
           y: validSessions.length,
           muscleGroups: def.primaryMuscleGroup
         };
-      });
+      })
+      .sort(this.sortByY);
     const exerciseCountMax =
       (exerciseCountData && Math.max(...exerciseCountData.map(e => e.y))) || 1;
     return {
@@ -209,7 +221,7 @@ class Activity extends React.Component<Props, State> {
   }
 
   renderExerciseCountChart(exerciseCountData: any, exerciseCountMax: number) {
-    const { classes, theme } = this.props;
+    const { classes } = this.props;
 
     // Don't show the exercise count chart if y values are the same
     const yAllTheSame = !exerciseCountData
@@ -249,21 +261,17 @@ class Activity extends React.Component<Props, State> {
   renderMuscleCountChart(muscles: MuscleGroup[]) {
     const { classes, theme } = this.props;
 
-    const muscleCounts = muscles
-      .sort()
-      .reverse()
-      .reduce((total: any, muscle) => {
-        total[muscle] ? total[muscle]++ : (total[muscle] = 1);
-        return { ...total };
-      }, {});
-    const muscleData: { x: string; y: number }[] = Object.keys(
-      muscleCounts
-    ).map(muscle => ({
-      x:
-        // Clip exercise graph labels to 9 characters
-        muscle.length > 9 ? `${muscle.slice(0, 6)}...` : muscle,
-      y: muscleCounts[muscle]
-    }));
+    const muscleCounts = muscles.reverse().reduce((total: any, muscle) => {
+      total[muscle] ? total[muscle]++ : (total[muscle] = 1);
+      return { ...total };
+    }, {});
+    const muscleData: { x: string; y: number }[] = Object.keys(muscleCounts)
+      .map(muscle => ({
+        x: this.chartSettings.clipLabel(muscle),
+        y: muscleCounts[muscle]
+      }))
+      .sort(this.sortByY)
+      .slice(0, this.chartSettings.maxColumnCount());
     const maxMuscleCount = Math.max(
       ...Object.keys(muscleCounts).map((muscle: any) => muscleCounts[muscle])
     );
@@ -333,7 +341,10 @@ class Activity extends React.Component<Props, State> {
           selected={muscles}
         />
         {this.renderMuscleCountChart(muscles)}
-        {this.renderExerciseCountChart(exerciseCountData, exerciseCountMax)}
+        {this.renderExerciseCountChart(
+          exerciseCountData.slice(0, this.chartSettings.maxColumnCount()),
+          exerciseCountMax
+        )}
       </Fragment>
     );
   }
@@ -373,5 +384,5 @@ class Activity extends React.Component<Props, State> {
 }
 
 export default compose(graphql(GetExercises))(
-  withStyles(styles, { withTheme: true })(Activity)
+  withStyles(styles, { withTheme: true })(withWidth()(Activity))
 );

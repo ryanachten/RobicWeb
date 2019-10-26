@@ -40,7 +40,8 @@ import {
   PageRoot,
   PageTitle,
   Link,
-  BackgroundMode
+  BackgroundMode,
+  ActionPanelProps
 } from "../components";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
@@ -179,6 +180,7 @@ class ExercisePage extends React.Component<Props, State> {
       tabMode: TabMode.VALUE
     };
     this.editExercise = this.editExercise.bind(this);
+    this.renderActionPanel = this.renderActionPanel.bind(this);
     this.renderExerciseDefinition = this.renderExerciseDefinition.bind(this);
     this.renderCharts = this.renderCharts.bind(this);
     this.renderHistory = this.renderHistory.bind(this);
@@ -500,58 +502,58 @@ class ExercisePage extends React.Component<Props, State> {
     );
   }
 
-  renderExerciseDefinition(exerciseDefinition: ExerciseDefinition) {
+  renderActionPanel(exerciseDefinition: ExerciseDefinition): ActionPanelProps {
     const classes = this.props.classes;
     const {
-      childExercises,
-      history,
-      primaryMuscleGroup,
       title,
-      type = ExerciseType.STANDARD
+      childExercises,
+      primaryMuscleGroup,
+      type
     } = exerciseDefinition;
-
     // Get muscles based on child exercises if applicable
     const muscles: MuscleGroup[] = isCompositeExercise(type)
       ? childExercises
         ? getChildExerciseMuscles(childExercises)
         : []
       : primaryMuscleGroup;
+    return {
+      title,
+      children: (
+        <div>
+          <FullBody selected={muscles} />
+          <section>
+            <ExerciseTypeIcon type={type} />
+            {isCompositeExercise(type) && childExercises && (
+              <section className={classes.childExListWrapper}>
+                <Typography variant="subtitle1">Comprised of</Typography>
+                <ul className={classes.childExList}>
+                  {childExercises.map(exercise => (
+                    <li key={exercise.id}>
+                      <Link
+                        label={exercise.title}
+                        url={routes.EXERCISE(exercise.id).route}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </section>
+        </div>
+      )
+    };
+  }
+
+  renderExerciseDefinition(exerciseDefinition: ExerciseDefinition) {
+    const classes = this.props.classes;
+    const {
+      childExercises,
+      history,
+      primaryMuscleGroup,
+      type = ExerciseType.STANDARD
+    } = exerciseDefinition;
     return (
       <div>
-        <PageTitle
-          label="Exercise"
-          breadcrumb={{
-            label: `Back to ${routes.EXERCISES.label}`,
-            url: routes.EXERCISES.route
-          }}
-        />
-        <div className={classes.titleWrapper}>
-          <Typography component="h1" variant="h2">
-            {title}
-          </Typography>
-          <IconButton onClick={this.editExercise}>
-            <EditIcon />
-          </IconButton>
-        </div>
-        <section>
-          <ExerciseTypeIcon type={type} />
-          {isCompositeExercise(type) && childExercises && (
-            <section className={classes.childExListWrapper}>
-              <Typography variant="subtitle1">Comprised of</Typography>
-              <ul className={classes.childExList}>
-                {childExercises.map(exercise => (
-                  <li key={exercise.id}>
-                    <Link
-                      label={exercise.title}
-                      url={routes.EXERCISE(exercise.id).route}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-        </section>
-        {primaryMuscleGroup && <FullBody selected={muscles} />}
         {history.length > 1 && this.renderCharts()}
         <div className={classes.header}>
           <Typography variant="h6">History</Typography>
@@ -571,6 +573,9 @@ class ExercisePage extends React.Component<Props, State> {
     const { exerciseDefinition, loading, error } = data;
     return (
       <PageRoot
+        actionPanel={
+          exerciseDefinition && this.renderActionPanel(exerciseDefinition)
+        }
         backgroundMode={BackgroundMode.purple}
         containerWidth="md"
         error={error}

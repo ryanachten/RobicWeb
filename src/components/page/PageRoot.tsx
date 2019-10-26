@@ -80,9 +80,13 @@ const styles = (theme: Theme) =>
       maxWidth: theme.breakpoints.values.sm,
       margin: "0 auto",
       marginBottom: theme.spacing(4),
-      padding: theme.spacing(4),
+      padding: theme.spacing(2),
       position: "relative",
-      top: "-4px"
+      top: "-4px",
+
+      [theme.breakpoints.up("sm")]: {
+        padding: theme.spacing(4)
+      }
     },
     sidebar: {
       minWidth: "320px",
@@ -247,14 +251,17 @@ class PageRoot extends React.Component<Props, State> {
           </Toolbar>
         </AppBar>
         {this.renderActionPanel()}
-        <div
-          className={classes.secondaryContent}
-          style={{
-            maxWidth: containerWidth && theme.breakpoints.values[containerWidth]
-          }}
-        >
-          {children}
-        </div>
+        {children && (
+          <div
+            className={classes.secondaryContent}
+            style={{
+              maxWidth:
+                containerWidth && theme.breakpoints.values[containerWidth]
+            }}
+          >
+            {children}
+          </div>
+        )}
       </PurpleBackground>
     );
   }
@@ -301,7 +308,7 @@ class PageRoot extends React.Component<Props, State> {
           </div>
           {this.renderActionPanel()}
         </div>
-        {children}
+        {children && <div className={classes.secondaryContent}>{children}</div>}
         <BottomNavigation
           className={classes.bottomNav}
           showLabels

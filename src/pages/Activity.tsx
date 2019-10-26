@@ -270,7 +270,7 @@ class Activity extends React.Component<Props, State> {
   }
 
   renderCharts() {
-    const { dateLimit, selectedExercises, tab } = this.state;
+    const { dateLimit, selectedExercises } = this.state;
 
     // Get number of sessions per exercise within the active date range
     const { exerciseCountData, exerciseCountMax } = this.getExerciseCounts(

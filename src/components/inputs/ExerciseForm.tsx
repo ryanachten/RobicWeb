@@ -20,7 +20,7 @@ import {
 import { compose, graphql } from "react-apollo";
 import { GetExercises } from "../../constants/queries";
 import { MultiSelect } from "./MultiSelect";
-import { isCompositeExercise, getChildExerciseMuscles } from "../../utils";
+import { isCompositeExercise } from "../../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -204,26 +204,8 @@ class ExerciseForm extends React.Component<Props, State> {
 
   render() {
     const { classes, data } = this.props;
-    const {
-      childExerciseIds,
-      error,
-      primaryMuscleGroup,
-      title,
-      type,
-      unit
-    } = this.state;
+    const { error, title, type, unit } = this.state;
     const { exerciseDefinitions, loading } = data;
-    // Get muscles based on child exercises if applicable
-    const childExercises =
-      exerciseDefinitions &&
-      exerciseDefinitions.filter((e: ExerciseDefinition) =>
-        childExerciseIds.includes(e.id)
-      );
-    const muscles: MuscleGroup[] = isCompositeExercise(type)
-      ? childExercises
-        ? getChildExerciseMuscles(childExercises)
-        : []
-      : primaryMuscleGroup;
     return (
       <form className={classes.form} onSubmit={this.submitForm}>
         <TextField

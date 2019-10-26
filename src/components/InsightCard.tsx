@@ -17,6 +17,10 @@ import { withStyles } from "@material-ui/styles";
 
 const styles = (theme: Theme) =>
   createStyles({
+    divider: {
+      borderRight: `2px solid ${theme.palette.divider}`,
+      margin: theme.spacing(2)
+    },
     historyContent: {
       display: "flex",
       flexFlow: "row wrap"
@@ -29,8 +33,8 @@ const styles = (theme: Theme) =>
     historyIcon: {
       marginRight: theme.spacing(1)
     },
-
     historySectionWrapper: {
+      backgroundColor: theme.palette.common.white,
       display: "flex",
       flexFlow: "row wrap"
     },
@@ -45,13 +49,14 @@ const styles = (theme: Theme) =>
       marginRight: theme.spacing(2)
     },
     historyWrapper: {
-      backgroundColor: LIGHT_CARD,
       borderRadius: theme.shape.borderRadius,
+      flexGrow: 1,
       marginBottom: theme.spacing(4),
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
       maxWidth: "500px",
-      padding: theme.spacing(2)
+      padding: theme.spacing(2),
+      width: "40%"
     },
     setItem: {
       marginRight: theme.spacing(2)
@@ -227,21 +232,22 @@ class InsightCard extends React.Component<Props, State> {
           </div>
         )}
         <div className={classes.historySectionWrapper}>
-          {showPbSession ||
-            (!showToggles &&
-              history &&
-              history.length > 0 &&
-              this.renderPersonalBest(
-                history,
-                compositeType,
-                unit,
-                childExercises
-              ))}
-          {showRecentSession ||
-            (!showToggles &&
-              history &&
-              history.length > 0 &&
-              this.renderHistory(history, compositeType, unit, childExercises))}
+          {(showPbSession || !showToggles) &&
+            history &&
+            history.length > 0 &&
+            this.renderPersonalBest(
+              history,
+              compositeType,
+              unit,
+              childExercises
+            )}
+          {((showPbSession && showRecentSession) || !showToggles) && (
+            <div className={classes.divider} />
+          )}
+          {(showRecentSession || !showToggles) &&
+            history &&
+            history.length > 0 &&
+            this.renderHistory(history, compositeType, unit, childExercises)}
         </div>
       </div>
     );

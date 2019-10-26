@@ -470,7 +470,7 @@ class Index extends React.Component<Props, State> {
           </Typography>
           <ExerciseTypeIcon type={type} />
         </div>
-        <InsightCard exerciseDefinition={selectedExercise} />
+        <InsightCard exerciseDefinition={selectedExercise} showToggles />
         {sets.map((set: Set, index: number) =>
           compositeType && set.exercises ? (
             // Use set exercises for form state if exercise is composite type

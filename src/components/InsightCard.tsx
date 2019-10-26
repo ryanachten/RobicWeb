@@ -70,6 +70,7 @@ const styles = (theme: Theme) =>
 type Props = {
   classes: Classes;
   exerciseDefinition: ExerciseDefinition;
+  showToggles: boolean;
 };
 
 type State = {
@@ -201,42 +202,46 @@ class InsightCard extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes, exerciseDefinition } = this.props;
+    const { classes, exerciseDefinition, showToggles } = this.props;
     const { showPbSession, showRecentSession } = this.state;
     const { history, type, unit, childExercises } = exerciseDefinition;
     const compositeType = isCompositeExercise(type);
     return (
       <div>
-        <div className={classes.switchesWrapper}>
-          <div className={classes.switchWrapper}>
-            <AwardIcon color="secondary" />
-            <Switch
-              onChange={() => this.toggleSwitch("showPbSession")}
-              checked={showPbSession}
-            />
+        {showToggles && (
+          <div className={classes.switchesWrapper}>
+            <div className={classes.switchWrapper}>
+              <AwardIcon color="secondary" />
+              <Switch
+                onChange={() => this.toggleSwitch("showPbSession")}
+                checked={showPbSession}
+              />
+            </div>
+            <div className={classes.switchWrapper}>
+              <RecentIcon color="secondary" />
+              <Switch
+                onChange={() => this.toggleSwitch("showRecentSession")}
+                checked={showRecentSession}
+              />
+            </div>
           </div>
-          <div className={classes.switchWrapper}>
-            <RecentIcon color="secondary" />
-            <Switch
-              onChange={() => this.toggleSwitch("showRecentSession")}
-              checked={showRecentSession}
-            />
-          </div>
-        </div>
+        )}
         <div className={classes.historySectionWrapper}>
-          {showPbSession &&
-            history &&
-            history.length > 0 &&
-            this.renderPersonalBest(
-              history,
-              compositeType,
-              unit,
-              childExercises
-            )}
-          {showRecentSession &&
-            history &&
-            history.length > 0 &&
-            this.renderHistory(history, compositeType, unit, childExercises)}
+          {showPbSession ||
+            (!showToggles &&
+              history &&
+              history.length > 0 &&
+              this.renderPersonalBest(
+                history,
+                compositeType,
+                unit,
+                childExercises
+              ))}
+          {showRecentSession ||
+            (!showToggles &&
+              history &&
+              history.length > 0 &&
+              this.renderHistory(history, compositeType, unit, childExercises))}
         </div>
       </div>
     );

@@ -35,7 +35,11 @@ const styles = (theme: Theme) =>
       fontFamily: HEADER_FONT,
       marginBottom: theme.spacing(2),
       textAlign: "center",
-      textTransform: "lowercase"
+      textTransform: "lowercase",
+
+      [theme.breakpoints.up("sm")]: {
+        marginBottom: theme.spacing(4)
+      }
     }
   });
 
@@ -76,9 +80,11 @@ const ActionPanel = ({
     >
       {title}
     </Typography>
-    <Typography variant="subtitle1" className={classes.subtitle}>
-      {tagline}
-    </Typography>
+    {tagline && (
+      <Typography variant="subtitle1" className={classes.subtitle}>
+        {tagline}
+      </Typography>
+    )}
     {width && isMobile(width) && <Divider className={classes.divider} />}
     {children}
   </Card>

@@ -6,7 +6,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import routes from "../constants/routes";
 import { GetExercises } from "../constants/queries";
-import { PageRoot, PageTitle } from "../components";
+import { PageRoot, BackgroundMode } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
@@ -17,8 +17,7 @@ import {
   VictoryBar,
   VictoryTheme,
   VictoryLabel,
-  VictoryAxis,
-  VictoryContainer
+  VictoryAxis
 } from "victory";
 
 const styles = (theme: Theme) =>
@@ -28,11 +27,15 @@ const styles = (theme: Theme) =>
       flexFlow: "row wrap"
     },
     exerciseChart: {
-      margin: "0 auto"
+      margin: "0 auto",
+      width: "100%"
     },
     exerciseList: {
       margin: theme.spacing(2),
       width: "200px"
+    },
+    tabs: {
+      justifyContent: "center"
     }
   });
 
@@ -58,9 +61,13 @@ type Props = {
   theme: Theme;
 };
 
-const MAX_GRAPH_WIDTH = 1000;
-const MAX_GRAPH_HEIGHT = 500;
-const ANIMATION_DURATION = 1000;
+const commonChartSettings = {
+  padding: { left: 70, right: 50, bottom: 50, top: 50 },
+  height: 300,
+  theme: VictoryTheme.material,
+  domainPadding: 10,
+  animate: { duration: 1000 }
+};
 
 class Activity extends React.Component<Props, State> {
   sortExercisesAlphabetically: (
@@ -197,23 +204,10 @@ class Activity extends React.Component<Props, State> {
     }
     return (
       <section className={classes.exerciseChart}>
-        <VictoryChart
-          padding={{ left: 70, right: 50, bottom: 50, top: 50 }}
-          height={MAX_GRAPH_HEIGHT}
-          width={
-            window.screen.width > MAX_GRAPH_WIDTH
-              ? MAX_GRAPH_WIDTH
-              : window.screen.width
-          }
-          theme={VictoryTheme.material}
-          domainPadding={10}
-          containerComponent={<VictoryContainer responsive={false} />}
-          animate={{ duration: ANIMATION_DURATION }}
-        >
+        <VictoryChart {...commonChartSettings}>
           <VictoryAxis tickLabelComponent={<VictoryLabel />} />
           <VictoryAxis dependentAxis tickLabelComponent={<VictoryLabel />} />
           <VictoryBar
-            horizontal={true}
             style={{
               data: {
                 fill: d =>
@@ -254,23 +248,10 @@ class Activity extends React.Component<Props, State> {
     );
     return (
       <section className={classes.exerciseChart}>
-        <VictoryChart
-          padding={{ left: 70, right: 50, bottom: 50, top: 50 }}
-          height={MAX_GRAPH_HEIGHT}
-          width={
-            window.screen.width > MAX_GRAPH_WIDTH
-              ? MAX_GRAPH_WIDTH
-              : window.screen.width
-          }
-          theme={VictoryTheme.material}
-          domainPadding={10}
-          containerComponent={<VictoryContainer responsive={false} />}
-          animate={{ duration: ANIMATION_DURATION }}
-        >
+        <VictoryChart {...commonChartSettings}>
           <VictoryAxis tickLabelComponent={<VictoryLabel />} />
           <VictoryAxis dependentAxis tickLabelComponent={<VictoryLabel />} />
           <VictoryBar
-            horizontal={true}
             style={{
               data: {
                 fill: d =>
@@ -315,17 +296,6 @@ class Activity extends React.Component<Props, State> {
 
     return (
       <Fragment>
-        <PageTitle label={routes.ACTIVITY.label} />
-        <Typography />
-        <Tabs
-          indicatorColor="primary"
-          onChange={(e, tab: TabMode) => this.updateDate(tab)}
-          value={tab}
-        >
-          <Tab label="Weekly" value={TabMode.WEEK} />
-          <Tab label="Monthly" value={TabMode.MONTH} />
-          <Tab label="Yearly" value={TabMode.YEAR} />
-        </Tabs>
         <FullBody
           muscleGroupLevels={dateLimit}
           menuComponent={muscle => this.renderMuscleList(muscle)}
@@ -338,10 +308,33 @@ class Activity extends React.Component<Props, State> {
   }
 
   render() {
-    const { data } = this.props;
+    const { classes, data } = this.props;
+    const { tab } = this.state;
     const loading = data.loading;
     return (
-      <PageRoot loading={loading} error={data.error}>
+      <PageRoot
+        backgroundMode={BackgroundMode.purple}
+        containerWidth="md"
+        loading={loading}
+        error={data.error}
+        actionPanel={{
+          title: routes.ACTIVITY.label,
+          children: (
+            <Tabs
+              classes={{
+                flexContainer: classes.tabs
+              }}
+              indicatorColor="primary"
+              onChange={(e, tab: TabMode) => this.updateDate(tab)}
+              value={tab}
+            >
+              <Tab label="Weekly" value={TabMode.WEEK} />
+              <Tab label="Monthly" value={TabMode.MONTH} />
+              <Tab label="Yearly" value={TabMode.YEAR} />
+            </Tabs>
+          )
+        }}
+      >
         {this.renderCharts()}
       </PageRoot>
     );

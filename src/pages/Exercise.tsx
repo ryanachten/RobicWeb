@@ -12,13 +12,11 @@ import {
   Tabs,
   Tab
 } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {
   Exercise,
   Set,
   ExerciseDefinition,
-  ExerciseType,
   MuscleGroup,
   Unit
 } from "../constants/types";
@@ -38,10 +36,10 @@ import {
   Chart,
   ExerciseTypeIcon,
   PageRoot,
-  PageTitle,
   Link,
   BackgroundMode,
-  ActionPanelProps
+  ActionPanelProps,
+  InsightCard
 } from "../components";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
@@ -553,14 +551,13 @@ class ExercisePage extends React.Component<Props, State> {
 
   renderExerciseDefinition(exerciseDefinition: ExerciseDefinition) {
     const classes = this.props.classes;
-    const {
-      childExercises,
-      history,
-      primaryMuscleGroup,
-      type = ExerciseType.STANDARD
-    } = exerciseDefinition;
+    const { history } = exerciseDefinition;
     return (
       <div>
+        <InsightCard
+          exerciseDefinition={exerciseDefinition}
+          showToggles={false}
+        />
         {history.length > 1 && this.renderCharts()}
         <div className={classes.header}>
           <Typography variant="h6">History</Typography>

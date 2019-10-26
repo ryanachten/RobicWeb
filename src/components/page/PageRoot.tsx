@@ -80,8 +80,7 @@ const styles = (theme: Theme) =>
       maxWidth: theme.breakpoints.values.sm,
       margin: "0 auto",
       marginBottom: theme.spacing(4),
-      padding: theme.spacing(3),
-      paddingTop: theme.spacing(4),
+      padding: theme.spacing(4),
       position: "relative",
       top: "-4px"
     },

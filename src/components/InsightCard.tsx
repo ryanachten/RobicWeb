@@ -12,7 +12,6 @@ import { Typography, Switch, Theme, createStyles } from "@material-ui/core";
 import AwardIcon from "@material-ui/icons/Star";
 import RecentIcon from "@material-ui/icons/AccessTime";
 import TimerIcon from "@material-ui/icons/Timer";
-import { LIGHT_CARD } from "../constants/colors";
 import { withStyles } from "@material-ui/styles";
 
 const styles = (theme: Theme) =>
@@ -74,6 +73,7 @@ const styles = (theme: Theme) =>
 
 type Props = {
   classes: Classes;
+  className?: string;
   exerciseDefinition: ExerciseDefinition;
   showToggles: boolean;
 };
@@ -207,12 +207,12 @@ class InsightCard extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes, exerciseDefinition, showToggles } = this.props;
+    const { classes, className, exerciseDefinition, showToggles } = this.props;
     const { showPbSession, showRecentSession } = this.state;
     const { history, type, unit, childExercises } = exerciseDefinition;
     const compositeType = isCompositeExercise(type);
     return (
-      <div>
+      <div className={className}>
         {showToggles && (
           <div className={classes.switchesWrapper}>
             <div className={classes.switchWrapper}>

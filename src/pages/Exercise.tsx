@@ -80,6 +80,9 @@ const styles = (theme: Theme) =>
       display: "flex",
       overflowX: "auto"
     },
+    insightIcon: {
+      marginBottom: theme.spacing(4)
+    },
     legendIcon: {
       borderRadius: "50%",
       marginRight: theme.spacing(1),
@@ -555,6 +558,7 @@ class ExercisePage extends React.Component<Props, State> {
     return (
       <div>
         <InsightCard
+          className={classes.insightIcon}
           exerciseDefinition={exerciseDefinition}
           showToggles={false}
         />

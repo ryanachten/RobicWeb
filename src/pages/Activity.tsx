@@ -19,6 +19,7 @@ import {
   VictoryLabel,
   VictoryAxis
 } from "victory";
+import { CHERRY_RED, PINK, PURPLE } from "../constants/colors";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -61,19 +62,12 @@ type Props = {
   theme: Theme;
 };
 
-const commonChartSettings = {
-  padding: { left: 70, right: 50, bottom: 50, top: 50 },
-  height: 300,
-  theme: VictoryTheme.material,
-  domainPadding: 10,
-  animate: { duration: 1000 }
-};
-
 class Activity extends React.Component<Props, State> {
   sortExercisesAlphabetically: (
     a: ExerciseDefinition,
     b: ExerciseDefinition
   ) => number;
+  chartSettings: any;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -90,6 +84,28 @@ class Activity extends React.Component<Props, State> {
       a: ExerciseDefinition,
       b: ExerciseDefinition
     ) => (a.title > b.title ? 1 : -1);
+
+    // Shared chart configuration
+    this.chartSettings = {
+      chart: {
+        padding: { left: 70, right: 50, bottom: 50, top: 50 },
+        height: 300,
+        theme: VictoryTheme.material,
+        domainPadding: 10,
+        animate: { duration: 1000 }
+      },
+      label: {
+        style: {
+          color: this.props.theme.palette.text.disabled,
+          fontSize: "5px"
+        }
+      },
+      labelVertical: {
+        angle: 90,
+        textAnchor: "start",
+        verticalAnchor: "middle"
+      }
+    };
   }
 
   componentDidMount() {
@@ -204,18 +220,23 @@ class Activity extends React.Component<Props, State> {
     }
     return (
       <section className={classes.exerciseChart}>
-        <VictoryChart {...commonChartSettings}>
-          <VictoryAxis tickLabelComponent={<VictoryLabel />} />
-          <VictoryAxis dependentAxis tickLabelComponent={<VictoryLabel />} />
+        <VictoryChart {...this.chartSettings.chart}>
+          <VictoryAxis
+            tickLabelComponent={
+              <VictoryLabel
+                {...this.chartSettings.label}
+                {...this.chartSettings.labelVertical}
+              />
+            }
+          />
+          <VictoryAxis
+            dependentAxis
+            tickLabelComponent={<VictoryLabel {...this.chartSettings.label} />}
+          />
           <VictoryBar
             style={{
               data: {
-                fill: d =>
-                  lerpColor(
-                    theme.palette.primary.light,
-                    theme.palette.secondary.light,
-                    d.y / exerciseCountMax
-                  )
+                fill: d => lerpColor(PURPLE, PINK, d.y / exerciseCountMax)
               }
             }}
             data={exerciseCountData}
@@ -248,16 +269,26 @@ class Activity extends React.Component<Props, State> {
     );
     return (
       <section className={classes.exerciseChart}>
-        <VictoryChart {...commonChartSettings}>
-          <VictoryAxis tickLabelComponent={<VictoryLabel />} />
-          <VictoryAxis dependentAxis tickLabelComponent={<VictoryLabel />} />
+        <VictoryChart {...this.chartSettings.chart}>
+          <VictoryAxis
+            tickLabelComponent={
+              <VictoryLabel
+                {...this.chartSettings.label}
+                {...this.chartSettings.labelVertical}
+              />
+            }
+          />
+          <VictoryAxis
+            dependentAxis
+            tickLabelComponent={<VictoryLabel {...this.chartSettings.label} />}
+          />
           <VictoryBar
             style={{
               data: {
                 fill: d =>
                   lerpColor(
-                    theme.palette.primary.light,
                     theme.palette.secondary.light,
+                    CHERRY_RED,
                     d.y / maxMuscleCount
                   )
               }

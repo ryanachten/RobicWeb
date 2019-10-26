@@ -53,7 +53,7 @@ class BackBody extends React.Component<Props, State> {
     const { className, menuComponent } = this.props;
     const { menuAnchor, selectedMuscle } = this.state;
     const open = Boolean(menuAnchor);
-    const id = open ? "front-body-popover" : undefined;
+    const id = open ? "back-body-popover" : undefined;
 
     return (
       <div className={className}>

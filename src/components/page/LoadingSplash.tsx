@@ -6,6 +6,7 @@ import {
   CircularProgress
 } from "@material-ui/core";
 import { Classes } from "jss";
+import { RobicLogo } from "../RobicLogo";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -13,6 +14,7 @@ const styles = (theme: Theme) =>
       alignItems: "center",
       display: "flex",
       height: "80vh",
+      flexFlow: "column",
       justifyContent: "center"
     }
   });
@@ -22,7 +24,8 @@ type Props = {
 };
 const LoadingSplash = ({ classes }: Props) => (
   <div className={classes.root}>
-    <CircularProgress color="secondary" />
+    <RobicLogo size="large" />
+    <CircularProgress color="secondary" size={60} />
   </div>
 );
 

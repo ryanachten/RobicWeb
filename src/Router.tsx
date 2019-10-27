@@ -7,7 +7,6 @@ import Exercises from "./pages/Exercises";
 import NewExercise from "./pages/NewExercise";
 import Dashboard from "./pages/Dashboard";
 import Landing from "./pages/Landing";
-import Loading from "./pages/Loading";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import withRoot from "./withRoot";
@@ -15,6 +14,7 @@ import ApolloClient from "./ApolloClient";
 import routes from "./constants/routes";
 import { GetCurrentUser } from "./constants/queries";
 import EditExercise from "./pages/EditExercise";
+import { LoadingSplash } from "./components";
 
 const AuthedRoutes = () => (
   <Switch>
@@ -42,7 +42,7 @@ const Routes = graphql<any>(GetCurrentUser)(props => {
     data: { loading, currentUser }
   } = props;
   if (loading) {
-    return <Loading />;
+    return <LoadingSplash />;
   }
   return <Switch>{currentUser ? <AuthedRoutes /> : <UnauthedRoutes />}</Switch>;
 });

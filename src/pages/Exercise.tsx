@@ -37,7 +37,6 @@ import {
   ExerciseTypeIcon,
   PageRoot,
   Link,
-  BackgroundMode,
   ActionPanelProps,
   InsightCard
 } from "../components";
@@ -586,7 +585,6 @@ class ExercisePage extends React.Component<Props, State> {
         actionPanel={
           exerciseDefinition && this.renderActionPanel(exerciseDefinition)
         }
-        backgroundMode={BackgroundMode.purple}
         containerWidth="md"
         error={error}
         loading={loading}

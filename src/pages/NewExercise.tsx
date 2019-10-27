@@ -7,7 +7,7 @@ import { Classes } from "jss";
 import { AddExerciseDefinition } from "../constants/mutations";
 import routes from "../constants/routes";
 import { GetExercises } from "../constants/queries";
-import { PageRoot, BackgroundMode } from "../components";
+import { PageRoot } from "../components";
 import ExerciseForm, {
   State as FormFields
 } from "../components/inputs/ExerciseForm";
@@ -54,7 +54,6 @@ class NewExercise extends React.Component<Props, State> {
     const { error, loading } = this.props.result;
     return (
       <PageRoot
-        backgroundMode={BackgroundMode.purple}
         error={error}
         loading={loading}
         actionPanel={{

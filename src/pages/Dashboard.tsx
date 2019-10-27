@@ -43,7 +43,6 @@ import {
   Select,
   Link,
   ExerciseTypeIcon,
-  BackgroundMode,
   InsightCard
 } from "../components";
 import { isNull } from "util";
@@ -700,7 +699,6 @@ class Index extends React.Component<Props, State> {
             </Fragment>
           )
         }}
-        backgroundMode={BackgroundMode.purple}
         containerWidth="md"
         loading={loading}
         error={result.error}

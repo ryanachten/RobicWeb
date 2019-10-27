@@ -19,7 +19,6 @@ import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import routes from "../../constants/routes";
 import { Link } from "../../components/Link";
 import { isMobile } from "../../constants/sizes";
-import { LOGO_FONT } from "../../constants/fonts";
 import { PURPLE_GRADIENT, LIGHT_GRADIENT } from "../../constants/colors";
 import classnames from "../../utils";
 import { ActionPanel, ActionPanelProps } from "../page/ActionPanel";
@@ -71,9 +70,6 @@ const styles = (theme: Theme) =>
       height: "100%",
       minHeight: "100vh"
     },
-    robicLogo: {
-      fontFamily: LOGO_FONT
-    },
     secondaryContent: {
       background: LIGHT_GRADIENT,
       borderRadius: `0px 0px ${theme.spacing(1)}px ${theme.spacing(1)}px`,
@@ -88,34 +84,13 @@ const styles = (theme: Theme) =>
         padding: theme.spacing(4)
       }
     },
-    sidebar: {
-      minWidth: "320px",
-      padding: theme.spacing(4),
-      height: "unset"
-    },
-    sidebarContent: {
-      maxWidth: "255px",
-      position: "fixed"
-    },
-    sidebarMain: {
-      padding: theme.spacing(4)
-    },
-    sidebarWrapper: {
-      display: "flex"
-    },
     toolbar: {
       background: "transparent"
     }
   });
 
-export enum BackgroundMode {
-  purple,
-  light
-}
-
 type Props = RouteComponentProps & {
   actionPanel?: ActionPanelProps;
-  backgroundMode?: BackgroundMode;
   children?: any;
   classes: Classes;
   containerWidth?: Breakpoint;
@@ -139,10 +114,6 @@ class PageRoot extends React.Component<Props, State> {
     this.onLogout = this.onLogout.bind(this);
     this.navigateToRoute = this.navigateToRoute.bind(this);
     this.renderActionPanel = this.renderActionPanel.bind(this);
-    this.renderColumnDesktop = this.renderColumnDesktop.bind(this);
-    this.renderSidebarDesktop = this.renderSidebarDesktop.bind(this);
-    this.renderLightMobile = this.renderLightMobile.bind(this);
-    this.renderDarkMobile = this.renderDarkMobile.bind(this);
     this.renderDesktop = this.renderDesktop.bind(this);
     this.renderNavLinks = this.renderNavLinks.bind(this);
     this.renderProfileMenu = this.renderProfileMenu.bind(this);
@@ -225,22 +196,7 @@ class PageRoot extends React.Component<Props, State> {
     );
   }
 
-  renderSidebarDesktop() {
-    const { children, classes } = this.props;
-    return (
-      <div className={classes.sidebarWrapper}>
-        <PurpleBackground rootStyles={classes.sidebar}>
-          <aside className={classes.sidebarContent}>
-            {this.renderActionPanel()}
-            {this.renderNavLinks({ root: classes.linkWrapperSidebar })}
-          </aside>
-        </PurpleBackground>
-        <main className={classes.sidebarMain}>{children}</main>
-      </div>
-    );
-  }
-
-  renderColumnDesktop() {
+  renderDesktop() {
     const { children, classes, containerWidth } = this.props;
     return (
       <PurpleBackground>
@@ -266,39 +222,7 @@ class PageRoot extends React.Component<Props, State> {
     );
   }
 
-  renderLightMobile() {
-    const { children, classes } = this.props;
-    return (
-      <Fragment>
-        <div className={classes.contentWrapper}>
-          <div className={classes.mobileProfileWrapper}>
-            {this.renderProfileMenu()}
-          </div>
-          {children}
-        </div>
-        <BottomNavigation
-          className={classes.bottomNav}
-          showLabels
-          onChange={(e, val) => this.navigateToRoute(val)}
-        >
-          <BottomNavigationAction
-            label={routes.HOME.label}
-            value={routes.HOME.route}
-          />
-          <BottomNavigationAction
-            label={routes.EXERCISES.label}
-            value={routes.EXERCISES.route}
-          />
-          <BottomNavigationAction
-            label={routes.ACTIVITY.label}
-            value={routes.ACTIVITY.route}
-          />
-        </BottomNavigation>
-      </Fragment>
-    );
-  }
-
-  renderDarkMobile() {
+  renderMobile() {
     const { children, classes } = this.props;
     return (
       <PurpleBackground>
@@ -329,21 +253,6 @@ class PageRoot extends React.Component<Props, State> {
         </BottomNavigation>
       </PurpleBackground>
     );
-  }
-
-  renderDesktop() {
-    const { backgroundMode } = this.props;
-    const columnMode = backgroundMode === BackgroundMode.purple;
-    return columnMode
-      ? this.renderColumnDesktop()
-      : this.renderSidebarDesktop();
-  }
-
-  renderMobile() {
-    const { backgroundMode } = this.props;
-    return backgroundMode === BackgroundMode.purple
-      ? this.renderDarkMobile()
-      : this.renderLightMobile();
   }
 
   render() {

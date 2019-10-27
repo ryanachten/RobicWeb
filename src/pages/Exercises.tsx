@@ -17,7 +17,7 @@ import {
 } from "@material-ui/core";
 import routes from "../constants/routes";
 import { formatDate, compareExerciseDates } from "../utils";
-import { PageRoot, ExerciseTypeIcon, BackgroundMode } from "../components";
+import { PageRoot, ExerciseTypeIcon } from "../components";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
 
@@ -227,7 +227,6 @@ class Exercises extends React.Component<Props, State> {
             </div>
           )
         }}
-        backgroundMode={BackgroundMode.purple}
         error={error}
         loading={loading}
       >

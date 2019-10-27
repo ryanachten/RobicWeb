@@ -6,7 +6,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import routes from "../constants/routes";
 import { GetExercises } from "../constants/queries";
-import { PageRoot, BackgroundMode } from "../components";
+import { PageRoot } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
@@ -361,7 +361,6 @@ class Activity extends React.Component<Props, State> {
     const loading = data.loading;
     return (
       <PageRoot
-        backgroundMode={BackgroundMode.purple}
         containerWidth="md"
         loading={loading}
         error={data.error}

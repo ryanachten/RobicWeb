@@ -44,13 +44,10 @@ import {
   Link,
   ExerciseTypeIcon,
   BackgroundMode,
-  RobicLogo,
   InsightCard
 } from "../components";
 import { isNull } from "util";
-import { HEADER_FONT } from "../constants/fonts";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
-import { isMobile } from "../constants/sizes";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -96,7 +93,6 @@ const styles = (theme: Theme) =>
     },
     exerciseTitle: {
       marginBottom: theme.spacing(3),
-      marginTop: theme.spacing(4),
       textTransform: "capitalize"
     },
     form: {
@@ -113,9 +109,6 @@ const styles = (theme: Theme) =>
     input: {
       padding: theme.spacing(2)
     },
-    robicLogo: {
-      marginBottom: theme.spacing(2)
-    },
     selectTitle: {
       marginRight: theme.spacing(2)
     },
@@ -130,12 +123,20 @@ const styles = (theme: Theme) =>
       display: "flex",
       flexFlow: "column",
       maxWidth: "100%",
-      width: "fit-content"
+      width: "100%"
     },
     setCard: {
-      marginBottom: theme.spacing(2),
+      flexGrow: 1,
+      margin: theme.spacing(2),
+      maxWidth: "100%",
       padding: theme.spacing(2),
-      width: "fit-content"
+      width: "45%"
+    },
+    setList: {
+      display: "flex",
+      flexFlow: "row wrap",
+      justifyContent: "space-between",
+      marginBottom: theme.spacing(1)
     },
     setWrapper: {
       alignItems: "center",
@@ -144,14 +145,13 @@ const styles = (theme: Theme) =>
     setExercisesWrapper: {
       alignItems: "center",
       display: "flex",
-      flexFlow: "row wrap"
+      flexFlow: "row wrap",
+      justifyContent: "space-between"
     },
     timerButton: {
       marginLeft: theme.spacing(2)
     },
     title: {
-      color: theme.palette.primary.light,
-      fontFamily: HEADER_FONT,
       overflowX: "hidden",
       overflowY: "hidden",
       textOverflow: "ellipsis"
@@ -465,44 +465,46 @@ class Index extends React.Component<Props, State> {
     return (
       <form className={classes.sessionForm} onSubmit={this.submitForm}>
         <div className={classes.exerciseTitle}>
-          <Typography className={classes.title} variant="h3">
+          <Typography className={classes.title} variant="h5">
             {title}
           </Typography>
           <ExerciseTypeIcon type={type} />
         </div>
         <InsightCard exerciseDefinition={selectedExercise} showToggles />
-        {sets.map((set: Set, index: number) =>
-          compositeType && set.exercises ? (
-            // Use set exercises for form state if exercise is composite type
-            // for each child exercise, we provide an rep / value field
-            <div className={classes.setExercisesWrapper} key={index}>
-              {set.exercises.map((e: SetExercise, eIndex: number) => {
-                const childDef = getChildExercisDef(e, childExercises);
-                return (
-                  <div key={e.id}>
-                    <Typography>{childDef.title}</Typography>
-                    {this.renderSetInputs(
-                      index,
-                      e.reps,
-                      e.value,
-                      childDef.unit,
-                      e.id
-                    )}
-                  </div>
-                );
-              })}
-              {this.renderSetButtons(index, sets)}
-            </div>
-          ) : (
-            // ... if not composite type, just use set rep/value for form state
-            <Card className={classes.setCard} key={index}>
-              <div className={classes.setWrapper}>
-                {this.renderSetInputs(index, set.reps, set.value, unit)}
+        <div className={classes.setList}>
+          {sets.map((set: Set, index: number) =>
+            compositeType && set.exercises ? (
+              // Use set exercises for form state if exercise is composite type
+              // for each child exercise, we provide an rep / value field
+              <div className={classes.setExercisesWrapper} key={index}>
+                {set.exercises.map((e: SetExercise, eIndex: number) => {
+                  const childDef = getChildExercisDef(e, childExercises);
+                  return (
+                    <div key={e.id}>
+                      <Typography>{childDef.title}</Typography>
+                      {this.renderSetInputs(
+                        index,
+                        e.reps,
+                        e.value,
+                        childDef.unit,
+                        e.id
+                      )}
+                    </div>
+                  );
+                })}
                 {this.renderSetButtons(index, sets)}
               </div>
-            </Card>
-          )
-        )}
+            ) : (
+              // ... if not composite type, just use set rep/value for form state
+              <Card className={classes.setCard} key={index}>
+                <div className={classes.setWrapper}>
+                  {this.renderSetInputs(index, set.reps, set.value, unit)}
+                  {this.renderSetButtons(index, sets)}
+                </div>
+              </Card>
+            )
+          )}
+        </div>
         <div className={classes.addButtonWrapper}>
           <Button
             variant="contained"
@@ -667,7 +669,7 @@ class Index extends React.Component<Props, State> {
   }
 
   render() {
-    const { classes, data, result, width } = this.props;
+    const { classes, data, result } = this.props;
     const { filteredExercises, selectedExercise } = this.state;
     const { exerciseDefinitions, loading } = data;
     const exercises =
@@ -698,23 +700,12 @@ class Index extends React.Component<Props, State> {
             </Fragment>
           )
         }}
-        backgroundMode={
-          selectedExercise ? BackgroundMode.light : BackgroundMode.purple
-        }
+        backgroundMode={BackgroundMode.purple}
+        containerWidth="md"
         loading={loading}
         error={result.error}
       >
-        {selectedExercise && (
-          <div>
-            {isMobile(width) && (
-              <Fragment>
-                <RobicLogo className={classes.robicLogo} />
-                {this.renderExerciseSelect(exercises)}
-              </Fragment>
-            )}
-            {this.renderExerciseForm()}
-          </div>
-        )}
+        {selectedExercise && this.renderExerciseForm()}
       </PageRoot>
     );
   }

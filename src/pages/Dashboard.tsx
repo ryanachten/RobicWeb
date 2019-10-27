@@ -60,6 +60,10 @@ const styles = (theme: Theme) =>
       display: "block",
       marginBottom: theme.spacing(2)
     },
+    exerciseSelect: {
+      display: "flex",
+      justifyContent: "center"
+    },
     filterButtonWrapper: {
       marginTop: theme.spacing(2)
     },
@@ -109,7 +113,8 @@ const styles = (theme: Theme) =>
       padding: theme.spacing(2)
     },
     selectTitle: {
-      marginRight: theme.spacing(2)
+      marginRight: theme.spacing(2),
+      textAlign: "center"
     },
     selectMessage: {
       marginTop: theme.spacing(10)
@@ -680,12 +685,9 @@ class Index extends React.Component<Props, State> {
           title: "Morning Ryan!",
           tagline: "Select an exercise to get started",
           children: !noExercises ? (
-            <Fragment>
-              <Typography className={classes.selectTitle}>
-                Select an exercise
-              </Typography>
+            <div className={classes.exerciseSelect}>
               {exercises && this.renderExerciseSelect(exercises)}
-            </Fragment>
+            </div>
           ) : (
             <Fragment>
               <Link

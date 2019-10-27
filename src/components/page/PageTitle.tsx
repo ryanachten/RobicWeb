@@ -1,52 +1,42 @@
 import React from "react";
-import classnames from "../../utils";
 import Typography from "@material-ui/core/Typography";
-import { withStyles, Theme, createStyles } from "@material-ui/core";
-import { Link } from "../Link";
+import { withStyles, Theme, createStyles, withWidth } from "@material-ui/core";
+import { isMobile } from "../../constants/sizes";
+import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
+import { HEADER_FONT } from "../../constants/fonts";
+import { Classes } from "jss";
 
 type Props = {
-  breadcrumb?: {
-    label: string;
-    onClick?: () => void;
-    url?: string;
-  };
-  className?: string;
-  classes: any;
-  label: string;
+  classes: Classes;
+  children: string;
+  width: Breakpoint;
 };
 
 const styles = (theme: Theme) =>
   createStyles({
-    wrapper: {
-      margin: theme.spacing(4),
-      marginLeft: 0
-    },
-    text: {
-      marginLeft: 0,
-      textTransform: "lowercase"
+    title: {
+      color: theme.palette.primary.light,
+      fontFamily: HEADER_FONT,
+      marginBottom: theme.spacing(2),
+      textAlign: "center",
+      textTransform: "lowercase",
+
+      [theme.breakpoints.up("sm")]: {
+        marginBottom: theme.spacing(4)
+      }
     }
   });
 
-const PageTitle = ({ className, classes, label, breadcrumb }: Props) => {
+const PageTitle = ({ classes, children, width }: Props) => {
   return (
-    <div className={classes.wrapper}>
-      <Typography
-        className={classnames(classes.text, className)}
-        variant="h5"
-        component="h1"
-      >
-        {label}
-      </Typography>
-      {breadcrumb && (
-        <Link
-          label={breadcrumb.label}
-          url={breadcrumb.url}
-          onClick={breadcrumb.onClick}
-        />
-      )}
-    </div>
+    <Typography
+      variant={width && isMobile(width) ? "h5" : "h4"}
+      className={classes.title}
+    >
+      {children}
+    </Typography>
   );
 };
 
-const styled = withStyles(styles)(PageTitle);
+const styled = withStyles(styles)(withWidth()(PageTitle));
 export { styled as PageTitle };

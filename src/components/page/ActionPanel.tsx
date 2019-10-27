@@ -2,11 +2,11 @@ import React from "react";
 import { Card, Typography, Theme, Divider, withWidth } from "@material-ui/core";
 import { RobicLogo } from "../RobicLogo";
 import { withStyles, createStyles } from "@material-ui/styles";
-import { HEADER_FONT } from "../../constants/fonts";
 import { Classes } from "jss";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../../constants/sizes";
 import classnames from "../../utils";
+import { PageTitle } from "./PageTitle";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -29,17 +29,6 @@ const styles = (theme: Theme) =>
     subtitle: {
       marginBottom: theme.spacing(2),
       textAlign: "center"
-    },
-    title: {
-      color: theme.palette.primary.light,
-      fontFamily: HEADER_FONT,
-      marginBottom: theme.spacing(2),
-      textAlign: "center",
-      textTransform: "lowercase",
-
-      [theme.breakpoints.up("sm")]: {
-        marginBottom: theme.spacing(4)
-      }
     }
   });
 
@@ -74,12 +63,7 @@ const ActionPanel = ({
     }}
   >
     <RobicLogo className={classes.logo} />
-    <Typography
-      variant={width && isMobile(width) ? "h5" : "h4"}
-      className={classes.title}
-    >
-      {title}
-    </Typography>
+    <PageTitle>{title}</PageTitle>
     {tagline && (
       <Typography variant="subtitle1" className={classes.subtitle}>
         {tagline}

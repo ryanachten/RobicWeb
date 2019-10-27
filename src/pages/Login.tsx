@@ -11,16 +11,22 @@ import { Classes } from "jss";
 import { LoginUser } from "../constants/mutations";
 import { Divider } from "@material-ui/core";
 import routes from "../constants/routes";
-import { Link, ErrorMessage } from "../components";
+import { Link, ErrorMessage, PageTitle, RobicLogo } from "../components";
 
 const styles = (theme: Theme) =>
   createStyles({
+    divider: {
+      marginBottom: theme.spacing(2),
+      width: "100%"
+    },
     error: {
+      marginBottom: theme.spacing(2),
       marginTop: theme.spacing(1)
     },
     form: {
       display: "flex",
-      flexFlow: "row wrap"
+      flexFlow: "row wrap",
+      justifyContent: "center"
     },
     header: {
       marginBottom: theme.spacing(2),
@@ -29,7 +35,8 @@ const styles = (theme: Theme) =>
       }
     },
     input: {
-      margin: theme.spacing(1)
+      margin: theme.spacing(1),
+      flexGrow: 1
     },
     root: {
       alignItems: "center",
@@ -41,7 +48,9 @@ const styles = (theme: Theme) =>
     },
     submitWrapper: {
       marginBottom: theme.spacing(2),
+      marginTop: theme.spacing(2),
       padding: theme.spacing(1),
+      textAlign: "center",
       width: "100%"
     }
   });
@@ -108,10 +117,9 @@ class Login extends React.Component<Props, State> {
     const { email, error, password } = this.state;
     return (
       <div className={classes.root}>
-        <form onSubmit={this.submitForm}>
-          <Typography className={classes.header} variant="h1">
-            Login
-          </Typography>
+        <RobicLogo size="large" />
+        <PageTitle>Login to get started</PageTitle>
+        <form className={classes.form} onSubmit={this.submitForm}>
           <TextField
             label="Email"
             className={classes.input}
@@ -133,8 +141,8 @@ class Login extends React.Component<Props, State> {
             </Button>
           </div>
           <ErrorMessage error={error} className={classes.error} />
+          <Divider className={classes.divider} />
         </form>
-        <Divider />
         <Typography>Don't have an account?</Typography>
         <Link label={routes.REGISTER.label} url={routes.REGISTER.route} />
       </div>

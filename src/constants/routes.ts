@@ -29,10 +29,10 @@ export default {
   },
   LOGIN: {
     route: "/login/",
-    label: "Login"
+    label: "Log in"
   },
   REGISTER: {
     route: "/register/",
-    label: "Register"
+    label: "Sign up"
   }
 };

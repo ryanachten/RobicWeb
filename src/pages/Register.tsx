@@ -11,25 +11,26 @@ import { Classes } from "jss";
 import { LoginUser, RegisterUser } from "../constants/mutations";
 import { Divider } from "@material-ui/core";
 import routes from "../constants/routes";
-import { Link, ErrorMessage } from "../components";
+import { Link, ErrorMessage, RobicLogo, PageTitle } from "../components";
 
 const styles = (theme: Theme) =>
   createStyles({
+    divider: {
+      marginBottom: theme.spacing(2),
+      width: "100%"
+    },
     error: {
       marginTop: theme.spacing(1)
     },
     form: {
       display: "flex",
-      flexFlow: "row wrap"
-    },
-    header: {
-      marginBottom: theme.spacing(2),
-      [theme.breakpoints.only("xs")]: {
-        wordBreak: "break-all"
-      }
+      flexFlow: "row wrap",
+      justifyContent: "space-around",
+      maxWidth: "500px"
     },
     input: {
-      margin: theme.spacing(1)
+      margin: theme.spacing(1),
+      flexGrow: 1
     },
     root: {
       alignItems: "center",
@@ -41,7 +42,9 @@ const styles = (theme: Theme) =>
     },
     submitWrapper: {
       marginBottom: theme.spacing(2),
+      marginTop: theme.spacing(2),
       padding: theme.spacing(1),
+      textAlign: "center",
       width: "100%"
     }
   });
@@ -124,10 +127,9 @@ class Register extends React.Component<Props, State> {
     const { firstName, lastName, email, error, password } = this.state;
     return (
       <div className={classes.root}>
-        <form onSubmit={this.submitForm}>
-          <Typography className={classes.header} variant="h1">
-            Register
-          </Typography>
+        <RobicLogo size="large" />
+        <PageTitle>Sign up to get going!</PageTitle>
+        <form className={classes.form} onSubmit={this.submitForm}>
           <TextField
             label="First Name"
             className={classes.input}
@@ -165,8 +167,8 @@ class Register extends React.Component<Props, State> {
             </Button>
           </div>
           <ErrorMessage error={error} className={classes.error} />
+          <Divider className={classes.divider} />
         </form>
-        <Divider />
         <Typography>Already have an account?</Typography>
         <Link label={routes.LOGIN.label} url={routes.LOGIN.route} />
       </div>

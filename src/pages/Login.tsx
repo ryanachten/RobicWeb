@@ -118,7 +118,7 @@ class Login extends React.Component<Props, State> {
     return (
       <div className={classes.root}>
         <RobicLogo size="large" />
-        <PageTitle>Login to get started</PageTitle>
+        <PageTitle>Login and get going!</PageTitle>
         <form className={classes.form} onSubmit={this.submitForm}>
           <TextField
             label="Email"

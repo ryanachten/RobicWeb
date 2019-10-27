@@ -12,9 +12,14 @@ import { LoginUser, RegisterUser } from "../constants/mutations";
 import { Divider } from "@material-ui/core";
 import routes from "../constants/routes";
 import { Link, ErrorMessage, RobicLogo, PageTitle } from "../components";
+import { LIGHT_GRADIENT } from "../constants/colors";
 
 const styles = (theme: Theme) =>
   createStyles({
+    button: {
+      backgroundColor: theme.palette.common.white,
+      color: theme.palette.secondary.main
+    },
     divider: {
       marginBottom: theme.spacing(2),
       width: "100%"
@@ -34,6 +39,7 @@ const styles = (theme: Theme) =>
     },
     root: {
       alignItems: "center",
+      background: LIGHT_GRADIENT,
       display: "flex",
       flexDirection: "column",
       minHeight: "100vh",
@@ -162,7 +168,11 @@ class Register extends React.Component<Props, State> {
             value={password}
           />
           <div className={classes.submitWrapper}>
-            <Button color="primary" type="submit" variant="contained">
+            <Button
+              className={classes.button}
+              type="submit"
+              variant="contained"
+            >
               Sign Up
             </Button>
           </div>

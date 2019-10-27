@@ -16,10 +16,6 @@ import { withStyles } from "@material-ui/styles";
 
 const styles = (theme: Theme) =>
   createStyles({
-    divider: {
-      borderRight: `2px solid ${theme.palette.divider}`,
-      margin: theme.spacing(2)
-    },
     historyContent: {
       display: "flex",
       flexFlow: "row wrap"
@@ -35,7 +31,8 @@ const styles = (theme: Theme) =>
     historySectionWrapper: {
       backgroundColor: theme.palette.common.white,
       display: "flex",
-      flexFlow: "row wrap"
+      flexFlow: "row wrap",
+      padding: `${theme.spacing(2)}px 0`
     },
     historyTimerWrapper: {
       display: "flex",
@@ -50,12 +47,26 @@ const styles = (theme: Theme) =>
     historyWrapper: {
       borderRadius: theme.shape.borderRadius,
       flexGrow: 1,
-      marginBottom: theme.spacing(4),
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
       maxWidth: "500px",
-      padding: theme.spacing(2),
-      width: "40%"
+      minWidth: "200px",
+      padding: `0 ${theme.spacing(2)}px`,
+      width: "40%",
+
+      [theme.breakpoints.up("sm")]: {
+        "&:not(:only-of-type)": {
+          "&:first-of-type": {
+            borderRight: `1px solid ${theme.palette.divider}`
+          }
+        }
+      },
+
+      [theme.breakpoints.down("sm")]: {
+        "&:not(:last-of-type)": {
+          marginBottom: theme.spacing(4)
+        }
+      }
     },
     setItem: {
       marginRight: theme.spacing(2)
@@ -241,9 +252,6 @@ class InsightCard extends React.Component<Props, State> {
               unit,
               childExercises
             )}
-          {((showPbSession && showRecentSession) || !showToggles) && (
-            <div className={classes.divider} />
-          )}
           {(showRecentSession || !showToggles) &&
             history &&
             history.length > 0 &&

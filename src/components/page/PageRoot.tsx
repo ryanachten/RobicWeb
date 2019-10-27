@@ -47,19 +47,21 @@ const styles = (theme: Theme) =>
       color: theme.palette.common.white,
       margin: theme.spacing(2)
     },
-    linkWrapper: {
-      display: "flex",
-      flexGrow: 1,
-      justifyContent: "center"
+    linkActive: {
+      fontWeight: "bold"
     },
-    linkWrapperSidebar: {
-      flexFlow: "column"
+    linkWrapper: {
+      borderBottom: `1px solid ${theme.palette.common.white}`,
+      display: "flex",
+      justifyContent: "center",
+      margin: `${theme.spacing(4)}px auto`
     },
     mobileProfileWrapper: {
       padding: theme.spacing(2),
       position: "fixed",
       right: 0,
-      top: 0
+      top: 0,
+      zIndex: 100
     },
     profileButton: {
       position: "absolute",
@@ -105,6 +107,8 @@ type State = {
 };
 
 class PageRoot extends React.Component<Props, State> {
+  activeLinkClasses: (route: string) => string;
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -117,6 +121,9 @@ class PageRoot extends React.Component<Props, State> {
     this.renderDesktop = this.renderDesktop.bind(this);
     this.renderNavLinks = this.renderNavLinks.bind(this);
     this.renderProfileMenu = this.renderProfileMenu.bind(this);
+    this.activeLinkClasses = (route: string) => {
+      return route === props.location.pathname ? props.classes.linkActive : "";
+    };
   }
 
   onMenuClick(event: SyntheticEvent) {
@@ -168,27 +175,25 @@ class PageRoot extends React.Component<Props, State> {
     return <ActionPanel {...actionPanel} containerWidth={containerWidth} />;
   }
 
-  renderNavLinks(additionalClasses?: { root: string }) {
-    const classes = this.props.classes;
+  renderNavLinks() {
+    const { classes } = this.props;
     return (
-      <div
-        className={classnames(
-          classes.linkWrapper,
-          additionalClasses && additionalClasses.root
-        )}
-      >
+      <div className={classes.linkWrapper}>
         <Link
           className={classes.link}
+          innerLinkClasses={this.activeLinkClasses(routes.HOME.route)}
           label={routes.HOME.label}
           url={routes.HOME.route}
         />
         <Link
           className={classes.link}
+          innerLinkClasses={this.activeLinkClasses(routes.EXERCISES.route)}
           label={routes.EXERCISES.label}
           url={routes.EXERCISES.route}
         />
         <Link
           className={classes.link}
+          innerLinkClasses={this.activeLinkClasses(routes.ACTIVITY.route)}
           label={routes.ACTIVITY.label}
           url={routes.ACTIVITY.route}
         />

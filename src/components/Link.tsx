@@ -18,13 +18,22 @@ const styles = (theme: Theme) =>
 type Props = {
   className?: string;
   classes: Classes;
+  innerLinkClasses?: string;
   label: string;
   onClick?: () => void;
   style?: any;
   url?: string;
 };
 
-const Link = ({ className, classes, label, onClick, style, url }: Props) => (
+const Link = ({
+  className,
+  classes,
+  innerLinkClasses,
+  label,
+  onClick,
+  style,
+  url
+}: Props) => (
   <RouterLink
     className={classnames(className, classes.link)}
     key={url}
@@ -32,7 +41,12 @@ const Link = ({ className, classes, label, onClick, style, url }: Props) => (
     to={url || "#"}
     style={style}
   >
-    <MuiLink color="inherit" component="span" variant="body1">
+    <MuiLink
+      className={innerLinkClasses}
+      color="inherit"
+      component="span"
+      variant="body1"
+    >
       {label}
     </MuiLink>
   </RouterLink>

@@ -17,7 +17,8 @@ import {
   VictoryBar,
   VictoryTheme,
   VictoryLabel,
-  VictoryAxis
+  VictoryAxis,
+  VictoryTooltip
 } from "victory";
 import { CHERRY_RED, PINK, PURPLE } from "../constants/colors";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
@@ -175,6 +176,7 @@ class Activity extends React.Component<Props, State> {
 
   getExerciseCounts(exercises: ExerciseDefinition[]) {
     const dateLimit = this.state.dateLimit;
+    const width = this.props.width;
     const exerciseCountData: {
       x: string;
       y: number;
@@ -189,6 +191,7 @@ class Activity extends React.Component<Props, State> {
         return {
           x: this.chartSettings.clipLabel(def.title),
           y: validSessions.length,
+          label: isMobile(width) ? def.title : null,
           muscleGroups: def.primaryMuscleGroup
         };
       })
@@ -246,6 +249,7 @@ class Activity extends React.Component<Props, State> {
             tickLabelComponent={<VictoryLabel {...this.chartSettings.label} />}
           />
           <VictoryBar
+            labelComponent={<VictoryTooltip />}
             style={{
               data: {
                 fill: d => lerpColor(PURPLE, PINK, d.y / exerciseCountMax)
@@ -259,7 +263,7 @@ class Activity extends React.Component<Props, State> {
   }
 
   renderMuscleCountChart(muscles: MuscleGroup[]) {
-    const { classes, theme } = this.props;
+    const { classes, theme, width } = this.props;
 
     const muscleCounts = muscles.reverse().reduce((total: any, muscle) => {
       total[muscle] ? total[muscle]++ : (total[muscle] = 1);
@@ -268,7 +272,8 @@ class Activity extends React.Component<Props, State> {
     const muscleData: { x: string; y: number }[] = Object.keys(muscleCounts)
       .map(muscle => ({
         x: this.chartSettings.clipLabel(muscle),
-        y: muscleCounts[muscle]
+        y: muscleCounts[muscle],
+        label: isMobile(width) ? muscle : null
       }))
       .sort(this.sortByY)
       .slice(0, this.chartSettings.maxColumnCount());
@@ -291,6 +296,7 @@ class Activity extends React.Component<Props, State> {
             tickLabelComponent={<VictoryLabel {...this.chartSettings.label} />}
           />
           <VictoryBar
+            labelComponent={<VictoryTooltip />}
             style={{
               data: {
                 fill: d =>

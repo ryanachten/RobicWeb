@@ -46,6 +46,9 @@ const styles = (theme: Theme) =>
       marginBottom: theme.spacing(1)
     },
     exerciseList: {
+      display: "flex",
+      flexFlow: "row wrap",
+      justifyContent: "space-around",
       margin: 0,
       padding: 0
     },
@@ -54,8 +57,9 @@ const styles = (theme: Theme) =>
     },
     exerciseItem: {
       cursor: "pointer",
+      flexGrow: 1,
       listStyle: "none",
-      marginBottom: theme.spacing(2)
+      margin: theme.spacing(2)
     },
     exerciseTitleText: {
       overflow: "hidden",
@@ -227,6 +231,7 @@ class Exercises extends React.Component<Props, State> {
             </div>
           )
         }}
+        containerWidth="md"
         error={error}
         loading={loading}
       >

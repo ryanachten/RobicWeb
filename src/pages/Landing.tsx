@@ -8,7 +8,7 @@ import { Classes } from "jss";
 import { Button, Divider } from "@material-ui/core";
 import routes from "../constants/routes";
 import { RobicLogo, PageTitle } from "../components";
-import { LIGHT_GRADIENT, PURPLE_GRADIENT } from "../constants/colors";
+import { LIGHT_GRADIENT, PURPLE_GRADIENT, PURPLE } from "../constants/colors";
 import classnames from "../utils";
 
 const styles = (theme: Theme) =>
@@ -34,7 +34,11 @@ const styles = (theme: Theme) =>
     sectionContent: {
       margin: "0 auto",
       maxWidth: theme.breakpoints.values.sm,
-      padding: theme.spacing(4)
+      padding: theme.spacing(8),
+
+      [theme.breakpoints.only("xs")]: {
+        padding: theme.spacing(4)
+      }
     },
     sectionDivider: {
       margin: `${theme.spacing(2)}px 0`
@@ -46,6 +50,12 @@ const styles = (theme: Theme) =>
     sectionPurple: {
       background: PURPLE_GRADIENT,
       color: theme.palette.common.white
+    },
+    sectionLightDivider: {
+      backgroundColor: "white"
+    },
+    sectionPurpleDivider: {
+      backgroundColor: PURPLE
     },
     sectionRoot: {
       marginBottom: theme.spacing(2)
@@ -75,13 +85,19 @@ const Section = withStyles(styles)(
       classes.sectionRoot,
       variant === "purple" ? classes.sectionPurple : classes.sectionLight
     );
+    const dividerClasses = classnames(
+      classes.sectionDivider,
+      variant === "purple"
+        ? classes.sectionLightDivider
+        : classes.sectionPurpleDivider
+    );
     return (
       <div className={sectionClasses}>
         <section className={classes.sectionContent}>
           <Typography align="center" variant="h6">
             {title}
           </Typography>
-          <Divider className={classes.sectionDivider} />
+          <Divider className={dividerClasses} />
           <Typography>{content}</Typography>
         </section>
       </div>

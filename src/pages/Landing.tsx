@@ -25,6 +25,21 @@ const styles = (theme: Theme) =>
       marginBottom: theme.spacing(4),
       padding: theme.spacing(4)
     },
+    footerContent: {
+      alignItems: "center",
+      display: "flex",
+      flexFlow: "column",
+      justifyContent: "center"
+    },
+    footerLinks: {
+      flexGrow: 1,
+      margin: theme.spacing(2),
+      width: "100%"
+    },
+    footerTagline: {
+      color: theme.palette.secondary.main,
+      marginTop: theme.spacing(2)
+    },
     root: {
       alignItems: "center",
       display: "flex",
@@ -108,11 +123,11 @@ const Section = withStyles(styles)(
 class Landing extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.navigateToLogin = this.navigateToLogin.bind(this);
+    this.navigateToScreen = this.navigateToScreen.bind(this);
   }
 
-  navigateToLogin() {
-    this.props.history.push(routes.LOGIN.route);
+  navigateToScreen(route: string) {
+    this.props.history.push(route);
   }
 
   render() {
@@ -128,7 +143,7 @@ class Landing extends React.Component<Props, State> {
           <Button
             className={classes.doneButton}
             variant="contained"
-            onClick={() => this.navigateToLogin()}
+            onClick={() => this.navigateToScreen(routes.LOGIN.route)}
           >
             Get started!
           </Button>
@@ -149,6 +164,35 @@ class Landing extends React.Component<Props, State> {
             title="monitor progress"
             content="Over time, Robic will be able to provide you insight into areas you are excelling in, and areas which could do with some improvement. Analytics can also be viewed on a specific exercise or over a period of time."
           />
+          <div
+            className={classnames(classes.sectionRoot, classes.sectionLight)}
+          >
+            <section className={classes.sectionContent}>
+              <section className={classes.footerContent}>
+                <RobicLogo />
+                <Typography align="center" className={classes.footerTagline}>
+                  Ready to get started?
+                </Typography>
+                <div className={classes.footerLinks}>
+                  <Typography
+                    align="center"
+                    variant="h6"
+                    onClick={() => this.navigateToScreen(routes.LOGIN.route)}
+                  >
+                    {routes.LOGIN.label}
+                  </Typography>
+                  <Divider className={classes.sectionDivider} />
+                  <Typography
+                    align="center"
+                    variant="h6"
+                    onClick={() => this.navigateToScreen(routes.REGISTER.route)}
+                  >
+                    {routes.REGISTER.label}
+                  </Typography>
+                </div>
+              </section>
+            </section>
+          </div>
         </article>
       </main>
     );

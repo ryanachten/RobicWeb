@@ -24,7 +24,7 @@ type Props = {
 };
 const LoadingSplash = ({ classes }: Props) => (
   <div className={classes.root}>
-    <RobicLogo size="large" />
+    <RobicLogo clickable={false} size="large" />
     <CircularProgress color="secondary" size={60} />
   </div>
 );

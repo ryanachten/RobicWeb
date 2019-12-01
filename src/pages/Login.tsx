@@ -9,7 +9,6 @@ import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import { LoginUser } from "../constants/mutations";
-import { Divider } from "@material-ui/core";
 import routes from "../constants/routes";
 import { Link, ErrorMessage, PageTitle, RobicLogo } from "../components";
 import { LIGHT_GRADIENT } from "../constants/colors";
@@ -19,10 +18,6 @@ const styles = (theme: Theme) =>
     button: {
       backgroundColor: theme.palette.common.white,
       color: theme.palette.secondary.main
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-      width: "100%"
     },
     error: {
       marginBottom: theme.spacing(2),
@@ -151,7 +146,6 @@ class Login extends React.Component<Props, State> {
             </Button>
           </div>
           <ErrorMessage error={error} className={classes.error} />
-          <Divider className={classes.divider} />
         </form>
         <Typography>Don't have an account?</Typography>
         <Link label={routes.REGISTER.label} url={routes.REGISTER.route} />

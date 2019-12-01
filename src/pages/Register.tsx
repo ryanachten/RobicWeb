@@ -9,7 +9,6 @@ import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import { LoginUser, RegisterUser } from "../constants/mutations";
-import { Divider } from "@material-ui/core";
 import routes from "../constants/routes";
 import { Link, ErrorMessage, RobicLogo, PageTitle } from "../components";
 import { LIGHT_GRADIENT } from "../constants/colors";
@@ -19,10 +18,6 @@ const styles = (theme: Theme) =>
     button: {
       backgroundColor: theme.palette.common.white,
       color: theme.palette.secondary.main
-    },
-    divider: {
-      marginBottom: theme.spacing(2),
-      width: "100%"
     },
     error: {
       marginTop: theme.spacing(1)
@@ -177,7 +172,6 @@ class Register extends React.Component<Props, State> {
             </Button>
           </div>
           <ErrorMessage error={error} className={classes.error} />
-          <Divider className={classes.divider} />
         </form>
         <Typography>Already have an account?</Typography>
         <Link label={routes.LOGIN.label} url={routes.LOGIN.route} />

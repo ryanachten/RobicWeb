@@ -98,8 +98,8 @@ class InsightCard extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      showPbSession: false,
-      showRecentSession: false
+      showPbSession: true,
+      showRecentSession: true
     };
   }
 

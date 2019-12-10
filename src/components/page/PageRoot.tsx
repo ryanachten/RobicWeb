@@ -2,7 +2,7 @@ import React, { SyntheticEvent, Fragment } from "react";
 import { withRouter, RouteComponentProps } from "react-router";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import PersonIcon from "@material-ui/icons/Person";
+import ProfileIcon from "@material-ui/icons/MoreVert";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { Classes } from "jss";
@@ -57,15 +57,14 @@ const styles = (theme: Theme) =>
       margin: `${theme.spacing(4)}px auto`
     },
     mobileProfileWrapper: {
-      padding: theme.spacing(2),
-      position: "fixed",
       right: 0,
       top: 0,
       zIndex: 100
     },
     profileButton: {
       position: "absolute",
-      right: theme.spacing(2)
+      right: theme.spacing(1),
+      zIndex: 100
     },
     purpleBackground: {
       backgroundImage: PURPLE_GRADIENT,
@@ -115,6 +114,7 @@ class PageRoot extends React.Component<Props, State> {
       anchorEl: null
     };
     this.onMenuClick = this.onMenuClick.bind(this);
+    this.onCloseMenu = this.onCloseMenu.bind(this);
     this.onLogout = this.onLogout.bind(this);
     this.navigateToRoute = this.navigateToRoute.bind(this);
     this.renderActionPanel = this.renderActionPanel.bind(this);
@@ -140,6 +140,12 @@ class PageRoot extends React.Component<Props, State> {
     });
   }
 
+  onCloseMenu() {
+    this.setState({
+      anchorEl: null
+    });
+  }
+
   navigateToRoute(route: string) {
     this.props.history.push(route);
   }
@@ -155,14 +161,14 @@ class PageRoot extends React.Component<Props, State> {
           aria-haspopup="true"
           onClick={this.onMenuClick}
         >
-          <PersonIcon color="disabled" />
+          <ProfileIcon color="primary" fontSize="large" />
         </IconButton>
         <Menu
           id="profile-menu"
           anchorEl={anchorEl}
           keepMounted
           open={Boolean(anchorEl)}
-          onClose={this.onLogout}
+          onClose={this.onCloseMenu}
         >
           <MenuItem onClick={this.onLogout}>Logout</MenuItem>
         </Menu>

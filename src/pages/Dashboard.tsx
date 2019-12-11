@@ -90,6 +90,7 @@ const styles = (theme: Theme) =>
       minWidth: "48px"
     },
     doneButton: {
+      marginBottom: theme.spacing(4),
       marginTop: theme.spacing(2),
       backgroundColor: theme.palette.common.white,
       color: theme.palette.secondary.main

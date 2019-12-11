@@ -36,6 +36,9 @@ const styles = (theme: Theme) =>
     },
     tabs: {
       width: "100%"
+    },
+    tabContainer: {
+      justifyContent: "center"
     }
   });
 
@@ -128,6 +131,9 @@ class FullBody extends React.Component<Props, State> {
           <Fragment>
             {hasBoth && (
               <Tabs
+                classes={{
+                  flexContainer: classes.tabContainer
+                }}
                 className={classes.tabs}
                 indicatorColor="primary"
                 onChange={this.onTabChange}

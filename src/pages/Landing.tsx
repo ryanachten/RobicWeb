@@ -96,7 +96,11 @@ const styles = (theme: Theme) =>
     sectionWrapper: {
       display: "flex",
       flexFlow: "row wrap",
-      width: "100%"
+      width: "100%",
+
+      [theme.breakpoints.up("lg")]: {
+        maxWidth: "80vw"
+      }
     }
   });
 

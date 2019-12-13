@@ -32,6 +32,11 @@ const styles = (theme: Theme) =>
       margin: theme.spacing(1),
       flexGrow: 1
     },
+    link: {
+      "&:hover": {
+        borderColor: theme.palette.primary.main
+      }
+    },
     root: {
       alignItems: "center",
       background: LIGHT_GRADIENT,
@@ -174,7 +179,11 @@ class Register extends React.Component<Props, State> {
           <ErrorMessage error={error} className={classes.error} />
         </form>
         <Typography>Already have an account?</Typography>
-        <Link label={routes.LOGIN.label} url={routes.LOGIN.route} />
+        <Link
+          innerLinkClasses={classes.link}
+          label={routes.LOGIN.label}
+          url={routes.LOGIN.route}
+        />
       </div>
     );
   }

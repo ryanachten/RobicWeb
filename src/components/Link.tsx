@@ -12,6 +12,13 @@ const styles = (theme: Theme) =>
     link: {
       color: theme.palette.primary.main,
       textDecoration: "none"
+    },
+    innerLink: {
+      "&:hover": {
+        borderBottom: `1px solid ${theme.palette.common.white}`,
+        paddingBottom: theme.spacing(0.5),
+        textDecoration: "none"
+      }
     }
   });
 
@@ -42,7 +49,7 @@ const Link = ({
     style={style}
   >
     <MuiLink
-      className={innerLinkClasses}
+      className={classnames(classes.innerLink, innerLinkClasses)}
       color="inherit"
       component="span"
       variant="body1"

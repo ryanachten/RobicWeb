@@ -34,6 +34,11 @@ const styles = (theme: Theme) =>
         wordBreak: "break-all"
       }
     },
+    link: {
+      "&:hover": {
+        borderColor: theme.palette.primary.main
+      }
+    },
     input: {
       margin: theme.spacing(1),
       flexGrow: 1
@@ -148,7 +153,11 @@ class Login extends React.Component<Props, State> {
           <ErrorMessage error={error} className={classes.error} />
         </form>
         <Typography>Don't have an account?</Typography>
-        <Link label={routes.REGISTER.label} url={routes.REGISTER.route} />
+        <Link
+          innerLinkClasses={classes.link}
+          label={routes.REGISTER.label}
+          url={routes.REGISTER.route}
+        />
       </div>
     );
   }

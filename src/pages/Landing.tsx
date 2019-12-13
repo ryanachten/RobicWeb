@@ -31,6 +31,11 @@ const styles = (theme: Theme) =>
       flexFlow: "column",
       justifyContent: "center"
     },
+    footerLink: {
+      "&:hover": {
+        cursor: "pointer"
+      }
+    },
     footerLinks: {
       flexGrow: 1,
       margin: theme.spacing(2),
@@ -176,6 +181,7 @@ class Landing extends React.Component<Props, State> {
                 <div className={classes.footerLinks}>
                   <Typography
                     align="center"
+                    className={classes.footerLink}
                     variant="h6"
                     onClick={() => this.navigateToScreen(routes.LOGIN.route)}
                   >
@@ -184,6 +190,7 @@ class Landing extends React.Component<Props, State> {
                   <Divider className={classes.sectionDivider} />
                   <Typography
                     align="center"
+                    className={classes.footerLink}
                     variant="h6"
                     onClick={() => this.navigateToScreen(routes.REGISTER.route)}
                   >

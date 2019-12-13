@@ -531,7 +531,6 @@ class Index extends React.Component<Props, State> {
               <StartIcon color="secondary" />
             )}
           </IconButton>
-          {console.log("this.stopwatch", this.stopwatch)}
           {this.stopwatch && !isNull(this.stopwatch.time) && (
             <IconButton
               className={classes.timerButton}

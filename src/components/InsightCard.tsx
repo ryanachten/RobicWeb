@@ -13,6 +13,7 @@ import AwardIcon from "@material-ui/icons/Star";
 import RecentIcon from "@material-ui/icons/AccessTime";
 import TimerIcon from "@material-ui/icons/Timer";
 import { withStyles } from "@material-ui/styles";
+import { isAfter } from "date-fns";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -171,8 +172,10 @@ class InsightCard extends React.Component<Props, State> {
     unit?: Unit,
     childExercises?: ExerciseDefinition[]
   ) {
-    history.sort((a, b) => (a.date > b.date ? -1 : 1));
-    const { date, sets, timeTaken } = history[history.length - 1];
+    const sortedHistory = history.sort((a, b) =>
+      isAfter(a.date, b.date) ? -1 : 1
+    );
+    const { date, sets, timeTaken } = sortedHistory[0];
     const classes = this.props.classes;
     return (
       <div className={classes.historyWrapper}>

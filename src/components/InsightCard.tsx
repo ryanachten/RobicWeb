@@ -171,6 +171,7 @@ class InsightCard extends React.Component<Props, State> {
     unit?: Unit,
     childExercises?: ExerciseDefinition[]
   ) {
+    history.sort((a, b) => (a.date > b.date ? -1 : 1));
     const { date, sets, timeTaken } = history[history.length - 1];
     const classes = this.props.classes;
     return (

@@ -150,7 +150,6 @@ class InsightCard extends React.Component<Props, State> {
               ) : (
                 <Typography
                   className={classes.setItem}
-                  color="textSecondary"
                 >{`${reps} reps x ${value} ${unit}`}</Typography>
               )}
             </div>
@@ -199,7 +198,6 @@ class InsightCard extends React.Component<Props, State> {
                     <Typography
                       key={e.id}
                       className={classes.setItem}
-                      color="textSecondary"
                     >{`${e.reps} reps x ${e.value} ${childDef.unit}`}</Typography>
                   );
                 })

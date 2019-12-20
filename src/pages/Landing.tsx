@@ -12,6 +12,9 @@ import { LIGHT_GRADIENT, PURPLE_GRADIENT, PURPLE } from "../constants/colors";
 import classnames from "../utils";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
+import activityImg from "../assets/img/Activity.png";
+import dashboardImg from "../assets/img/Dashboard.png";
+import exercisesImg from "../assets/img/Exercises.png";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -210,30 +213,21 @@ class Landing extends React.Component<Props, State> {
           </Button>
         </section>
         <article className={classes.sectionWrapper}>
-          <ImgSection
-            order={{ desktop: 1, mobile: 1 }}
-            imgUrl="https://via.placeholder.com/150"
-          />
+          <ImgSection order={{ desktop: 1, mobile: 1 }} imgUrl={exercisesImg} />
           <Section
             order={{ desktop: 2, mobile: 2 }}
             variant="purple"
             title="manage exercises"
             content="Create an exercise tailored to your needs. Robic has support for a range of exercise types, including circuit and superset exercises. These can be assigned additional information, such as units and muscle groups for granular analysis."
           />
-          <ImgSection
-            order={{ desktop: 4, mobile: 3 }}
-            imgUrl="https://via.placeholder.com/150"
-          />
+          <ImgSection order={{ desktop: 4, mobile: 3 }} imgUrl={dashboardImg} />
           <Section
             order={{ desktop: 3, mobile: 4 }}
             variant="light"
             title="record your effort"
             content="Simply select from the list of your exercises to get going. Robic allows you to time your exercise while adding set and repetition information. Previous exercise and personal best information are designed to push you to your limits."
           />
-          <ImgSection
-            order={{ desktop: 5, mobile: 5 }}
-            imgUrl="https://via.placeholder.com/150"
-          />
+          <ImgSection order={{ desktop: 5, mobile: 5 }} imgUrl={activityImg} />
           <Section
             order={{ desktop: 6, mobile: 6 }}
             variant="purple"

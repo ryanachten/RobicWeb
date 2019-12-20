@@ -11,7 +11,7 @@ import { RobicLogo, PageTitle } from "../components";
 import { LIGHT_GRADIENT, PURPLE_GRADIENT, PURPLE } from "../constants/colors";
 import classnames from "../utils";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
-import { isMobile } from "../constants/sizes";
+import { isMobile, isTablet } from "../constants/sizes";
 import activityImg from "../assets/img/Activity.png";
 import dashboardImg from "../assets/img/Dashboard.png";
 import exercisesImg from "../assets/img/Exercises.png";
@@ -34,7 +34,11 @@ const styles = (theme: Theme) =>
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
-      minHeight: "250px"
+      minHeight: "250px",
+
+      [theme.breakpoints.up("lg")]: {
+        width: `calc(70% - ${theme.spacing(2)}px) !important`
+      }
     },
     footerContent: {
       alignItems: "center",
@@ -90,15 +94,22 @@ const styles = (theme: Theme) =>
       backgroundColor: PURPLE
     },
     sectionRoot: {
-      width: "50%",
-
-      [theme.breakpoints.only("xs")]: {
-        width: "100%"
+      [theme.breakpoints.down("lg")]: {
+        marginBottom: 0,
+        width: "100%",
+        "&:nth-of-type(2n)": {
+          marginBottom: theme.spacing(2)
+        }
+      },
+      [theme.breakpoints.up("lg")]: {
+        width: "30%",
+        marginBottom: theme.spacing(2)
       }
     },
     sectionWrapper: {
       display: "flex",
       flexFlow: "row wrap",
+      justifyContent: "space-between",
       width: "100%",
 
       [theme.breakpoints.up("lg")]: {
@@ -141,7 +152,7 @@ const Section = withWidth()(
           ? classes.sectionLightDivider
           : classes.sectionPurpleDivider
       );
-      const flexOrder = isMobile(width) ? order.mobile : order.desktop;
+      const flexOrder = isTablet(width) ? order.mobile : order.desktop;
       return (
         <div
           style={{
@@ -171,7 +182,7 @@ type ImgSectionProps = {
 
 const ImgSection = withWidth()(
   withStyles(styles)(({ classes, imgUrl, order, width }: ImgSectionProps) => {
-    const flexOrder = isMobile(width) ? order.mobile : order.desktop;
+    const flexOrder = isTablet(width) ? order.mobile : order.desktop;
     return (
       <div
         style={{
@@ -223,7 +234,7 @@ class Landing extends React.Component<Props, State> {
           <ImgSection order={{ desktop: 4, mobile: 3 }} imgUrl={dashboardImg} />
           <Section
             order={{ desktop: 3, mobile: 4 }}
-            variant="light"
+            variant="purple"
             title="record your effort"
             content="Simply select from the list of your exercises to get going. Robic allows you to time your exercise while adding set and repetition information. Previous exercise and personal best information are designed to push you to your limits."
           />

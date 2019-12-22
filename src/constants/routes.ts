@@ -25,7 +25,7 @@ export default {
   },
   ACTIVITY: {
     route: "/activity/",
-    label: "Your Activity"
+    label: "Activity"
   },
   LOGIN: {
     route: "/login/",

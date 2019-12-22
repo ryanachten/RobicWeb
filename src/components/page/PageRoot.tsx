@@ -34,6 +34,7 @@ const styles = (theme: Theme) =>
     },
     bottomNav: {
       bottom: 0,
+      boxShadow: theme.shadows[1],
       position: "fixed",
       width: "100%"
     },
@@ -68,7 +69,7 @@ const styles = (theme: Theme) =>
     },
     profileButton: {
       position: "absolute",
-      right: theme.spacing(1),
+      right: theme.spacing(2),
       zIndex: 100
     },
     purpleBackground: {
@@ -169,7 +170,7 @@ class PageRoot extends React.Component<Props, State> {
           aria-haspopup="true"
           onClick={this.onMenuClick}
         >
-          <ProfileIcon color="primary" fontSize="large" />
+          <ProfileIcon color="primary" />
         </IconButton>
         <Menu
           id="profile-menu"

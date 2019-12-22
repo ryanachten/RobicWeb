@@ -341,12 +341,16 @@ class Activity extends React.Component<Props, State> {
 
     return (
       <Fragment>
+        <Typography variant="h6">Muscle Groups</Typography>
         <FullBody
           muscleGroupLevels={dateLimit}
           menuComponent={muscle => this.renderMuscleList(muscle)}
           selected={muscles}
         />
+        <Typography variant="subtitle1">Top Muscle Groups</Typography>
         {this.renderMuscleCountChart(muscles)}
+        <Typography variant="h6">Exercises</Typography>
+        <Typography variant="subtitle1">Top Exercises</Typography>
         {this.renderExerciseCountChart(
           exerciseCountData.slice(0, this.chartSettings.maxColumnCount()),
           exerciseCountMax

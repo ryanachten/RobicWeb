@@ -37,6 +37,11 @@ const styles = (theme: Theme) =>
       position: "fixed",
       width: "100%"
     },
+    bottomNavItem: {
+      "&.Mui-selected": {
+        color: theme.palette.secondary.main
+      }
+    },
     contentWrapper: {
       padding: theme.spacing(2)
     },
@@ -102,6 +107,7 @@ type Props = RouteComponentProps & {
 };
 
 type State = {
+  activePath: string;
   anchorEl: any;
 };
 
@@ -110,8 +116,10 @@ class PageRoot extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
+
     this.state = {
-      anchorEl: null
+      anchorEl: null,
+      activePath: props.history.location.pathname
     };
     this.onMenuClick = this.onMenuClick.bind(this);
     this.onCloseMenu = this.onCloseMenu.bind(this);
@@ -234,7 +242,9 @@ class PageRoot extends React.Component<Props, State> {
   }
 
   renderMobile() {
+    const { activePath } = this.state;
     const { children, classes } = this.props;
+
     return (
       <PurpleBackground>
         <div className={classes.contentWrapper}>
@@ -246,18 +256,22 @@ class PageRoot extends React.Component<Props, State> {
         {children && <div className={classes.secondaryContent}>{children}</div>}
         <BottomNavigation
           className={classes.bottomNav}
-          showLabels
           onChange={(e, val) => this.navigateToRoute(val)}
+          showLabels
+          value={activePath}
         >
           <BottomNavigationAction
+            className={classes.bottomNavItem}
             label={routes.HOME.label}
             value={routes.HOME.route}
           />
           <BottomNavigationAction
+            className={classes.bottomNavItem}
             label={routes.EXERCISES.label}
             value={routes.EXERCISES.route}
           />
           <BottomNavigationAction
+            className={classes.bottomNavItem}
             label={routes.ACTIVITY.label}
             value={routes.ACTIVITY.route}
           />

@@ -76,7 +76,9 @@ const styles = (theme: Theme) =>
       padding: 0
     },
     historyWrapper: {
+      boxShadow: `-5px 0 5px -5px ${theme.palette.grey[400]} inset`,
       display: "flex",
+      marginBottom: theme.spacing(4),
       overflowX: "auto"
     },
     insightIcon: {
@@ -119,8 +121,8 @@ const styles = (theme: Theme) =>
       maxWidth: 400
     },
     sessionItem: {
-      marginBottom: theme.spacing(2),
       marginRight: theme.spacing(4),
+      margin: `${theme.spacing(2)}px 0`,
       minWidth: "300px"
     },
     setItem: {

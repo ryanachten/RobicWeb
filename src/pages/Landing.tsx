@@ -140,7 +140,7 @@ type SectionProps = {
 };
 
 const Section = withWidth()(
-  withStyles(styles, { withTheme: true })(
+  withStyles(styles)(
     ({ classes, content, order, title, variant, width }: SectionProps) => {
       const sectionClasses = classnames(
         classes.sectionRoot,

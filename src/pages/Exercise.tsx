@@ -71,12 +71,17 @@ const styles = (theme: Theme) =>
     childExListWrapper: {
       margin: theme.spacing(1)
     },
-    editIcon: {
+    button: {
+      "&:first-of-type": {
+        marginRight: theme.spacing(2)
+      }
+    },
+    buttonIcon: {
       marginRight: theme.spacing(1)
     },
-    editWrapper: {
+    buttonWrapper: {
       display: "flex",
-      justifyContent: "flex-end"
+      justifyContent: "center"
     },
     header: {
       marginBottom: theme.spacing(2)
@@ -209,6 +214,11 @@ class ExercisePage extends React.Component<Props, State> {
   editExercise() {
     const { history, match } = this.props;
     history.push(`${routes.EDIT_EXERCISE(match.params.id).route}`);
+  }
+
+  startExercise() {
+    const { history, match } = this.props;
+    history.push(`${routes.DASHBOARD(match.params.id).route}`);
   }
 
   onTabChange(e: any, tabMode: TabMode) {
@@ -539,25 +549,27 @@ class ExercisePage extends React.Component<Props, State> {
       title,
       children: (
         <div>
-          <div className={classes.editWrapper}>
+          <FullBody selected={muscles} />
+          <div className={classes.buttonWrapper}>
             <Button
+              className={classes.button}
               color="secondary"
               variant="contained"
-              onClick={() => this.editExercise()}
+              onClick={() => this.startExercise()}
             >
-              <StartIcon className={classes.editIcon} />
+              <StartIcon className={classes.buttonIcon} />
               Start
             </Button>
             <Button
+              className={classes.button}
               color="secondary"
               variant="outlined"
               onClick={() => this.editExercise()}
             >
-              <EditIcon className={classes.editIcon} />
+              <EditIcon className={classes.buttonIcon} />
               Edit
             </Button>
           </div>
-          <FullBody selected={muscles} />
           <section>
             <ExerciseTypeIcon type={type} />
             {isCompositeExercise(type) && childExercises && (

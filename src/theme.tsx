@@ -22,6 +22,11 @@ const theme = createMuiTheme({
       root: {
         textTransform: "lowercase"
       }
+    },
+    MuiTab: {
+      root: {
+        textTransform: "capitalize"
+      }
     }
   }
 });

@@ -316,7 +316,7 @@ class ExercisePage extends React.Component<Props, State> {
       <div>
         <div className={classes.overviewChartWrapper}>
           <div>
-            <Typography variant="subtitle1">Overview</Typography>
+            <Typography variant="h6">Overview</Typography>
             <ul className={classes.legendList}>
               {Object.keys(settings).map(key => (
                 <li key={key} className={classes.legendItem}>

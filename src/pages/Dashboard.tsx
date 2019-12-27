@@ -56,20 +56,6 @@ const styles = (theme: Theme) =>
       marginLeft: theme.spacing(1),
       marginTop: theme.spacing(2)
     },
-    createExerciseLink: {
-      display: "block",
-      marginBottom: theme.spacing(2)
-    },
-    exerciseSelect: {
-      display: "flex",
-      justifyContent: "center"
-    },
-    filterButtonWrapper: {
-      marginTop: theme.spacing(2)
-    },
-    filterMenu: {
-      padding: theme.spacing(2)
-    },
     addButton: {
       alignItems: "center",
       backgroundColor: theme.palette.common.white,
@@ -89,15 +75,32 @@ const styles = (theme: Theme) =>
       justifyContent: "center",
       minWidth: "48px"
     },
+    createExerciseLink: {
+      display: "block",
+      marginBottom: theme.spacing(2)
+    },
     doneButton: {
       marginBottom: theme.spacing(4),
       marginTop: theme.spacing(2),
       backgroundColor: theme.palette.common.white,
       color: theme.palette.secondary.main
     },
+    exerciseSelect: {
+      display: "flex",
+      justifyContent: "center"
+    },
     exerciseTitle: {
       marginBottom: theme.spacing(3),
       textTransform: "capitalize"
+    },
+    filterButton: {
+      paddingBottom: 0
+    },
+    filterButtonWrapper: {
+      marginTop: theme.spacing(2)
+    },
+    filterMenu: {
+      padding: theme.spacing(2)
     },
     form: {
       display: "flex",
@@ -664,6 +667,7 @@ class Index extends React.Component<Props, State> {
           onClick={this.openFilterMenu}
         >
           <FilterIcon
+            className={classes.filterButton}
             color={filteredExercises.length > 0 ? "primary" : "inherit"}
           />
         </IconButton>

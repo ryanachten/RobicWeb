@@ -58,6 +58,7 @@ class NewExercise extends React.Component<Props, State> {
         loading={loading}
         actionPanel={{
           title: routes.NEW_EXERCISE.label,
+          tagline: "Add exercise details below",
           children: (
             <ExerciseForm onSubmit={(fields: any) => this.submitForm(fields)} />
           )

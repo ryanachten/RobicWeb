@@ -62,6 +62,7 @@ class EditExercise extends React.Component<Props, State> {
         loading={loading}
         actionPanel={{
           title: routes.EDIT_EXERCISE().label,
+          tagline: "Update exercise details below",
           children: (
             <ExerciseForm
               exerciseDefinition={exerciseDefinition}

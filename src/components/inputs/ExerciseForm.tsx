@@ -20,7 +20,7 @@ import {
 import { compose, graphql } from "react-apollo";
 import { GetExercises } from "../../constants/queries";
 import { MultiSelect } from "./MultiSelect";
-import { isCompositeExercise } from "../../utils";
+import { isCompositeExercise, sortAlphabetically } from "../../utils";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -46,7 +46,9 @@ const styles = (theme: Theme) =>
     },
     submitButton: {
       backgroundColor: theme.palette.common.white,
-      color: theme.palette.secondary.main
+      color: theme.palette.secondary.main,
+      marginBottom: theme.spacing(4),
+      width: "100%"
     },
     submitWrapper: {
       marginTop: theme.spacing(2),
@@ -153,8 +155,9 @@ class ExerciseForm extends React.Component<Props, State> {
     const childExerciseIds = this.state.childExerciseIds;
 
     // Don't allow nesting of composite exercises
-    const exercises = exerciseDefinitions.reduce(
-      (total: any[], exercise: ExerciseDefinition) => {
+    const exercises = exerciseDefinitions
+      .sort(sortAlphabetically)
+      .reduce((total: any[], exercise: ExerciseDefinition) => {
         return isCompositeExercise(exercise.type)
           ? [...total]
           : [
@@ -165,9 +168,7 @@ class ExerciseForm extends React.Component<Props, State> {
                 label: exercise.title
               }
             ];
-      },
-      []
-    );
+      }, []);
     return (
       <MultiSelect
         className={classes.muscleSelectWrapper}

@@ -3,9 +3,6 @@ import {
   withStyles,
   createStyles,
   Theme,
-  withWidth,
-  Tabs,
-  Tab,
   Popover,
   Typography
 } from "@material-ui/core";
@@ -13,8 +10,6 @@ import { MuscleGroup } from "../../constants/types";
 import { Classes } from "jss";
 import FrontBody from "./FrontBody";
 import BackBody from "./BackBody";
-import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
-import { isMobile } from "../../constants/sizes";
 import { PopoverProps } from "@material-ui/core/Popover";
 import { lerpColor, transparentize } from "../../utils";
 import { CHERRY_RED } from "../../constants/colors";
@@ -31,8 +26,7 @@ const styles = (theme: Theme) =>
     },
     side: {
       flexGrow: 1,
-      maxWidth: "500px",
-      minWidth: "200px"
+      maxWidth: "500px"
     },
     tabs: {
       width: "100%"
@@ -42,22 +36,14 @@ const styles = (theme: Theme) =>
     }
   });
 
-enum TabMode {
-  FRONT,
-  BACK
-}
-
 type Props = {
   classes: Classes;
   menuComponent?: (muscle: MuscleGroup) => ReactElement | null;
   muscleGroupLevels?: number;
   selected: MuscleGroup[];
-  width: Breakpoint;
 };
 
-type State = {
-  tab: TabMode;
-};
+type State = {};
 
 const hasFrontMuscles = (muscles: MuscleGroup[]): boolean => {
   const frontMuscles = [
@@ -90,102 +76,43 @@ const hasBackMuscles = (muscles: MuscleGroup[]): boolean => {
 };
 
 class FullBody extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      tab: TabMode.FRONT
-    };
-    this.onTabChange = this.onTabChange.bind(this);
-  }
-
-  onTabChange(e: any, tab: TabMode) {
-    this.setState({
-      tab
-    });
-  }
-
   render() {
     const {
       classes,
       menuComponent,
       muscleGroupLevels = 7,
-      selected,
-      width
+      selected
     } = this.props;
-    const tab = this.state.tab;
 
     const hasFront = hasFrontMuscles(selected);
     const hasBack = hasBackMuscles(selected);
-    const hasBoth = hasFront && hasBack;
-
-    // Only use tabs if both front and back are present
-    const showFront: boolean =
-      (!hasBoth && hasFront) || (hasBoth && tab === TabMode.FRONT);
-
-    const showBack: boolean =
-      (!hasBoth && hasBack) || (hasBoth && tab === TabMode.BACK);
 
     return (
       <div className={classes.root}>
-        {isMobile(width) ? (
-          <Fragment>
-            {hasBoth && (
-              <Tabs
-                classes={{
-                  flexContainer: classes.tabContainer
-                }}
-                className={classes.tabs}
-                indicatorColor="primary"
-                onChange={this.onTabChange}
-                value={tab}
-              >
-                <Tab label="Front" value={TabMode.FRONT} />
-                <Tab label="Back" value={TabMode.BACK} />
-              </Tabs>
-            )}
-            {showFront && (
-              <FrontBody
-                className={classes.side}
-                menuComponent={menuComponent}
-                muscleGroupLevels={muscleGroupLevels}
-                selected={selected}
-              />
-            )}
-            {showBack && (
-              <BackBody
-                className={classes.side}
-                menuComponent={menuComponent}
-                selected={selected}
-                muscleGroupLevels={muscleGroupLevels}
-              />
-            )}
-          </Fragment>
-        ) : (
-          <Fragment>
-            {hasFront && (
-              <FrontBody
-                className={classes.side}
-                menuComponent={menuComponent}
-                muscleGroupLevels={muscleGroupLevels}
-                selected={selected}
-              />
-            )}
-            {hasBack && (
-              <BackBody
-                className={classes.side}
-                menuComponent={menuComponent}
-                selected={selected}
-                muscleGroupLevels={muscleGroupLevels}
-              />
-            )}
-          </Fragment>
-        )}
+        <Fragment>
+          {hasFront && (
+            <FrontBody
+              className={classes.side}
+              menuComponent={menuComponent}
+              muscleGroupLevels={muscleGroupLevels}
+              selected={selected}
+            />
+          )}
+          {hasBack && (
+            <BackBody
+              className={classes.side}
+              menuComponent={menuComponent}
+              selected={selected}
+              muscleGroupLevels={muscleGroupLevels}
+            />
+          )}
+        </Fragment>
       </div>
     );
   }
 }
 
-const styled = withStyles(styles)(withWidth()(FullBody));
+const styled = withStyles(styles)(FullBody);
 export { styled as FullBody };
 
 type BodyProps = PopoverProps & {

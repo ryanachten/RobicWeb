@@ -48,6 +48,7 @@ import {
 } from "../components";
 import { isNull } from "util";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
+import { RouteComponentProps } from "react-router";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -180,7 +181,7 @@ type State = {
   timerRunning: boolean;
 };
 
-type Props = {
+type Props = RouteComponentProps & {
   classes: Classes;
   data: any;
   history: any;
@@ -219,6 +220,22 @@ class Index extends React.Component<Props, State> {
     this.submitForm = this.submitForm.bind(this);
     this.openFilterMenu = this.openFilterMenu.bind(this);
     this.toggleTimer = this.toggleTimer.bind(this);
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const { data, location } = props;
+    const queryParamId = location.search.replace("?exercise=", "");
+    // If there's a query param and no exercise has been selected
+    // we select default exercuse by query param ID
+    if (!data.loading && queryParamId && !state.selectedExercise) {
+      const selectedExercise = data.exerciseDefinitions.find(
+        (e: ExerciseDefinition) => e.id === queryParamId
+      );
+      // If no exercise is found, we just return the original state
+      return selectedExercise ? { ...state, selectedExercise } : { ...state };
+    }
+
+    return { ...state };
   }
 
   addSet() {

@@ -11,7 +11,7 @@ import { RobicLogo, PageTitle } from "../components";
 import { LIGHT_GRADIENT, PURPLE_GRADIENT, PURPLE } from "../constants/colors";
 import classnames from "../utils";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
-import { isMobile, isTablet } from "../constants/sizes";
+import { isTablet } from "../constants/sizes";
 import activityImg from "../assets/img/Activity.png";
 import dashboardImg from "../assets/img/Dashboard.png";
 import exercisesImg from "../assets/img/Exercises.png";

@@ -10,9 +10,12 @@ import {
   IconButton,
   withWidth,
   Tabs,
-  Tab
+  Tab,
+  Button
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import StartIcon from "@material-ui/icons/PlayArrow";
 import {
   Exercise,
   Set,
@@ -67,6 +70,13 @@ const styles = (theme: Theme) =>
     },
     childExListWrapper: {
       margin: theme.spacing(1)
+    },
+    editIcon: {
+      marginRight: theme.spacing(1)
+    },
+    editWrapper: {
+      display: "flex",
+      justifyContent: "flex-end"
     },
     header: {
       marginBottom: theme.spacing(2)
@@ -529,6 +539,24 @@ class ExercisePage extends React.Component<Props, State> {
       title,
       children: (
         <div>
+          <div className={classes.editWrapper}>
+            <Button
+              color="secondary"
+              variant="contained"
+              onClick={() => this.editExercise()}
+            >
+              <StartIcon className={classes.editIcon} />
+              Start
+            </Button>
+            <Button
+              color="secondary"
+              variant="outlined"
+              onClick={() => this.editExercise()}
+            >
+              <EditIcon className={classes.editIcon} />
+              Edit
+            </Button>
+          </div>
           <FullBody selected={muscles} />
           <section>
             <ExerciseTypeIcon type={type} />

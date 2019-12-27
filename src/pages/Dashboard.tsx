@@ -36,7 +36,8 @@ import {
   getUnitLabel,
   isCompositeExercise,
   getChildExercisDef,
-  isBodyWeight
+  isBodyWeight,
+  sortAlphabetically
 } from "../utils";
 import {
   PageRoot,
@@ -192,7 +193,6 @@ const FILTER_ALL = "all";
 
 class Index extends React.Component<Props, State> {
   stopwatch: any;
-  sortExericises: (a: ExerciseDefinition, b: ExerciseDefinition) => number;
 
   constructor(props: Props) {
     super(props);
@@ -219,9 +219,6 @@ class Index extends React.Component<Props, State> {
     this.submitForm = this.submitForm.bind(this);
     this.openFilterMenu = this.openFilterMenu.bind(this);
     this.toggleTimer = this.toggleTimer.bind(this);
-    this.sortExericises = (a: ExerciseDefinition, b: ExerciseDefinition) => {
-      return a.title >= b.title ? 1 : -1;
-    };
   }
 
   addSet() {
@@ -653,7 +650,7 @@ class Index extends React.Component<Props, State> {
           }}
           onChange={this.onSelectExercise}
           options={exercises
-            .sort(this.sortExericises)
+            .sort(sortAlphabetically)
             .map(({ id, title }: ExerciseDefinition) => ({
               id,
               value: id,

@@ -55,6 +55,11 @@ const styles = (theme: Theme) =>
     exerciseCard: {
       padding: theme.spacing(3)
     },
+    exerciseError: {
+      color: theme.palette.secondary.main,
+      padding: theme.spacing(4),
+      textAlign: "center"
+    },
     exerciseItem: {
       cursor: "pointer",
       flexGrow: 1,
@@ -244,7 +249,7 @@ class Exercises extends React.Component<Props, State> {
               )
           ) : (
             <div>
-              <Typography>
+              <Typography className={classes.exerciseError} variant="subtitle1">
                 {search
                   ? `Oops! No exercises match '${search}'`
                   : "Looks like you don't have any exercises yet"}

@@ -127,6 +127,11 @@ export const lerpColor = (a: string, b: string, amount: number) => {
   );
 };
 
+export const sortAlphabetically = (
+  a: ExerciseDefinition,
+  b: ExerciseDefinition
+) => (a.title >= b.title ? 1 : -1);
+
 export const compareExerciseDates = (
   a: ExerciseDefinition,
   b: ExerciseDefinition
@@ -140,7 +145,7 @@ export const compareExerciseDates = (
     return res;
   }
   // In the case where dates are the same, sort alphabetically
-  return a.title >= b.title ? 1 : -1;
+  return sortAlphabetically(a, b);
 };
 
 // Get net value from sets

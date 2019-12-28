@@ -126,6 +126,17 @@ const styles = (theme: Theme) =>
       flexFlow: "row wrap",
       justifyContent: "center"
     },
+    pbItem: {
+      marginRight: theme.spacing(3)
+    },
+    pbUnit: {
+      marginTop: theme.spacing(1)
+    },
+    pbWrapper: {
+      display: "flex",
+      marginBottom: theme.spacing(4),
+      marginTop: theme.spacing(2)
+    },
     reps: {
       marginRight: theme.spacing(2)
     },
@@ -317,6 +328,36 @@ class ExercisePage extends React.Component<Props, State> {
         <div className={classes.overviewChartWrapper}>
           <div>
             <Typography variant="h6">Overview</Typography>
+            <div className={classes.pbWrapper}>
+              <div className={classes.pbItem}>
+                <Typography color="textSecondary" variant="body2">
+                  {`Top ${getUnitLabel(unit)} (Net)`}
+                </Typography>
+                <Typography
+                  className={classes.pbUnit}
+                >{`${totalMax} ${Unit[unit]}`}</Typography>
+              </div>
+              <div className={classes.pbItem}>
+                <Typography color="textSecondary" variant="body2">
+                  {`Top ${getUnitLabel(unit)} (Avg)`}
+                </Typography>
+                <Typography
+                  className={classes.pbUnit}
+                >{`${valuesMax} ${Unit[unit]}`}</Typography>
+              </div>
+              <div className={classes.pbItem}>
+                <Typography color="textSecondary" variant="body2">
+                  Top Reps
+                </Typography>
+                <Typography className={classes.pbUnit}>{repsMax}</Typography>
+              </div>
+              <div className={classes.pbItem}>
+                <Typography color="textSecondary" variant="body2">
+                  Top Sets
+                </Typography>
+                <Typography className={classes.pbUnit}>{setsMax}</Typography>
+              </div>
+            </div>
             <ul className={classes.legendList}>
               {Object.keys(settings).map(key => (
                 <li key={key} className={classes.legendItem}>

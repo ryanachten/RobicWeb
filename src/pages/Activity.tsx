@@ -10,8 +10,8 @@ import { PageRoot } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
-import { Typography, Tabs, Tab, withWidth } from "@material-ui/core";
-import { lerpColor } from "../utils";
+import { Typography, Tabs, Tab, withWidth, Divider } from "@material-ui/core";
+import { lerpColor, sortAlphabetically } from "../utils";
 import {
   VictoryChart,
   VictoryBar,
@@ -23,6 +23,7 @@ import {
 import { CHERRY_RED, PINK, PURPLE } from "../constants/colors";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { isMobile } from "../constants/sizes";
+import { HEADER_FONT } from "../constants/fonts";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -34,9 +35,21 @@ const styles = (theme: Theme) =>
       margin: "0 auto",
       width: "100%"
     },
+    exerciseDivider: {
+      marginBottom: theme.spacing(4),
+      marginTop: theme.spacing(4)
+    },
     exerciseList: {
       margin: theme.spacing(2),
       width: "200px"
+    },
+    exerciseTotal: {
+      fontFamily: HEADER_FONT,
+      marginBottom: theme.spacing(2),
+      marginTop: theme.spacing(4)
+    },
+    exerciseTotalVal: {
+      color: theme.palette.primary.light
     },
     tabs: {
       justifyContent: "center"
@@ -67,10 +80,6 @@ type Props = {
 };
 
 class Activity extends React.Component<Props, State> {
-  sortExercisesAlphabetically: (
-    a: ExerciseDefinition,
-    b: ExerciseDefinition
-  ) => number;
   sortByY: (a: { x: any; y: number }, b: { x: any; y: number }) => number;
   chartSettings: any;
   constructor(props: Props) {
@@ -85,10 +94,6 @@ class Activity extends React.Component<Props, State> {
     this.renderCharts = this.renderCharts.bind(this);
     this.renderExerciseCountChart = this.renderExerciseCountChart.bind(this);
     this.updateDate = this.updateDate.bind(this);
-    this.sortExercisesAlphabetically = (
-      a: ExerciseDefinition,
-      b: ExerciseDefinition
-    ) => (a.title > b.title ? 1 : -1);
     this.sortByY = (a: { x: string; y: number }, b: { x: any; y: number }) => {
       if (a.y === b.y) {
         return a.x > b.x ? 1 : -1;
@@ -189,7 +194,6 @@ class Activity extends React.Component<Props, State> {
       y: number;
       muscleGroups: MuscleGroup[];
     }[] = exercises
-      // .sort(this.sortExercisesAlphabetically)
       .reverse()
       .map((def: ExerciseDefinition) => {
         const validSessions = def.history.filter(e =>
@@ -203,11 +207,20 @@ class Activity extends React.Component<Props, State> {
         };
       })
       .sort(this.sortByY);
+
+    // Highest number for manual chart calibration
     const exerciseCountMax =
       (exerciseCountData && Math.max(...exerciseCountData.map(e => e.y))) || 1;
+
+    // Total number of exercises in date period
+    const totalExerciseCount =
+      exerciseCountData &&
+      exerciseCountData.reduce((total, count) => total + count.y, 0);
+
     return {
       exerciseCountData,
-      exerciseCountMax
+      exerciseCountMax,
+      totalExerciseCount
     };
   }
 
@@ -223,7 +236,7 @@ class Activity extends React.Component<Props, State> {
     );
     return filtered.length > 0 ? (
       <div>
-        {filtered.sort(this.sortExercisesAlphabetically).map(e => (
+        {filtered.sort(sortAlphabetically).map(e => (
           <Typography key={e.id}>{e.title}</Typography>
         ))}
       </div>
@@ -232,14 +245,6 @@ class Activity extends React.Component<Props, State> {
 
   renderExerciseCountChart(exerciseCountData: any, exerciseCountMax: number) {
     const { classes } = this.props;
-
-    // Don't show the exercise count chart if y values are the same
-    const yAllTheSame = !exerciseCountData
-      .map((d: any) => d.y === exerciseCountData[0].y || d.y === 0)
-      .includes(false);
-    if (yAllTheSame) {
-      return null;
-    }
     return (
       <section className={classes.exerciseChart}>
         <BaseChart config={this.chartSettings}>
@@ -298,12 +303,15 @@ class Activity extends React.Component<Props, State> {
   }
 
   renderCharts() {
+    const { classes } = this.props;
     const { dateLimit, selectedExercises } = this.state;
 
     // Get number of sessions per exercise within the active date range
-    const { exerciseCountData, exerciseCountMax } = this.getExerciseCounts(
-      selectedExercises
-    );
+    const {
+      exerciseCountData,
+      exerciseCountMax,
+      totalExerciseCount
+    } = this.getExerciseCounts(selectedExercises);
 
     // Get total muscle groups based on exercise count
     const muscles: MuscleGroup[] = exerciseCountData
@@ -324,6 +332,18 @@ class Activity extends React.Component<Props, State> {
 
     return (
       <Fragment>
+        <Typography
+          align="center"
+          className={classes.exerciseTotal}
+          variant="h3"
+        >
+          <span
+            className={classes.exerciseTotalVal}
+          >{`${totalExerciseCount} `}</span>
+          exercises
+        </Typography>
+        <Typography align="center">{`completed between today and ${dateLimit} days ago`}</Typography>
+        <Divider className={classes.exerciseDivider} />
         <Typography variant="h6">Muscle Groups</Typography>
         <FullBody
           muscleGroupLevels={dateLimit}

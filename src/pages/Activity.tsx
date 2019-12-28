@@ -98,6 +98,13 @@ class Activity extends React.Component<Props, State> {
 
     // Shared chart configuration
     this.chartSettings = {
+      axis: {
+        style: {
+          axis: { display: "none" },
+          grid: { display: "none" },
+          ticks: { display: "none" }
+        }
+      },
       chart: {
         padding: { left: 70, right: 50, bottom: 50, top: 50 },
         height: 250,
@@ -235,19 +242,7 @@ class Activity extends React.Component<Props, State> {
     }
     return (
       <section className={classes.exerciseChart}>
-        <VictoryChart {...this.chartSettings.chart}>
-          <VictoryAxis
-            tickLabelComponent={
-              <VictoryLabel
-                {...this.chartSettings.label}
-                {...this.chartSettings.labelVertical}
-              />
-            }
-          />
-          <VictoryAxis
-            dependentAxis
-            tickLabelComponent={<VictoryLabel {...this.chartSettings.label} />}
-          />
+        <BaseChart config={this.chartSettings}>
           <VictoryBar
             labelComponent={<VictoryTooltip />}
             style={{
@@ -257,7 +252,7 @@ class Activity extends React.Component<Props, State> {
             }}
             data={exerciseCountData}
           />
-        </VictoryChart>
+        </BaseChart>
       </section>
     );
   }
@@ -282,19 +277,7 @@ class Activity extends React.Component<Props, State> {
     );
     return (
       <section className={classes.exerciseChart}>
-        <VictoryChart {...this.chartSettings.chart}>
-          <VictoryAxis
-            tickLabelComponent={
-              <VictoryLabel
-                {...this.chartSettings.label}
-                {...this.chartSettings.labelVertical}
-              />
-            }
-          />
-          <VictoryAxis
-            dependentAxis
-            tickLabelComponent={<VictoryLabel {...this.chartSettings.label} />}
-          />
+        <BaseChart config={this.chartSettings}>
           <VictoryBar
             labelComponent={<VictoryTooltip />}
             style={{
@@ -309,7 +292,7 @@ class Activity extends React.Component<Props, State> {
             }}
             data={muscleData}
           />
-        </VictoryChart>
+        </BaseChart>
       </section>
     );
   }
@@ -391,6 +374,25 @@ class Activity extends React.Component<Props, State> {
     );
   }
 }
+
+const BaseChart = ({ config, children }: any) => {
+  return (
+    <VictoryChart {...config.chart}>
+      <VictoryAxis
+        {...config.axis}
+        tickLabelComponent={
+          <VictoryLabel {...config.label} {...config.labelVertical} />
+        }
+      />
+      <VictoryAxis
+        {...config.axis}
+        dependentAxis
+        tickLabelComponent={<VictoryLabel {...config.label} />}
+      />
+      {children}
+    </VictoryChart>
+  );
+};
 
 export default compose(graphql(GetExercises))(
   withStyles(styles, { withTheme: true })(withWidth()(Activity))

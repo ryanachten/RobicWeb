@@ -228,6 +228,46 @@ class Activity extends React.Component<Props, State> {
     };
   }
 
+  getMuscleCounts(
+    exerciseCountData: {
+      x: string;
+      y: number;
+      muscleGroups: MuscleGroup[];
+    }[]
+  ) {
+    // Get total muscle groups based on exercise count
+    const muscles: MuscleGroup[] = exerciseCountData
+      ? Object.keys(exerciseCountData).reduce(
+          (total: MuscleGroup[], key: any) => {
+            const exercise = exerciseCountData[key];
+            const newMuscles: MuscleGroup[] = [];
+            // For the number of counts per exercise
+            for (let index = 0; index < exercise.y; index++) {
+              // ...each of the exercise's muscle groups are added to the total
+              exercise.muscleGroups.map((muscle: MuscleGroup) =>
+                newMuscles.push(muscle)
+              );
+            }
+            return [...total, ...newMuscles];
+          },
+          []
+        )
+      : [];
+
+    const muscleCounts = muscles.reverse().reduce((total: any, muscle) => {
+      total[muscle] ? total[muscle]++ : (total[muscle] = 1);
+      return { ...total };
+    }, {});
+    const maxMuscleCount = Math.max(
+      ...Object.keys(muscleCounts).map((muscle: any) => muscleCounts[muscle])
+    );
+    return {
+      muscles,
+      muscleCounts,
+      maxMuscleCount
+    };
+  }
+
   renderMuscleList(muscle: MuscleGroup): ReactElement | null {
     const { selectedExercises: exercises } = this.state;
     if (!muscle) {
@@ -266,13 +306,9 @@ class Activity extends React.Component<Props, State> {
     );
   }
 
-  renderMuscleCountChart(muscles: MuscleGroup[]) {
+  renderMuscleCountChart(muscleCounts: any, maxMuscleCount: number) {
     const { classes, theme, width } = this.props;
 
-    const muscleCounts = muscles.reverse().reduce((total: any, muscle) => {
-      total[muscle] ? total[muscle]++ : (total[muscle] = 1);
-      return { ...total };
-    }, {});
     const muscleData: { x: string; y: number }[] = Object.keys(muscleCounts)
       .map(muscle => ({
         x: this.chartSettings.clipLabel(muscle),
@@ -281,9 +317,6 @@ class Activity extends React.Component<Props, State> {
       }))
       .sort(this.sortByY)
       .slice(0, this.chartSettings.maxColumnCount());
-    const maxMuscleCount = Math.max(
-      ...Object.keys(muscleCounts).map((muscle: any) => muscleCounts[muscle])
-    );
     return (
       <section className={classes.exerciseChart}>
         <BaseChart config={this.chartSettings}>
@@ -317,22 +350,9 @@ class Activity extends React.Component<Props, State> {
       totalExerciseCount
     } = this.getExerciseCounts(selectedExercises);
 
-    // Get total muscle groups based on exercise count
-    const muscles: MuscleGroup[] = exerciseCountData
-      ? Object.keys(exerciseCountData).reduce(
-          (total: MuscleGroup[], key: any) => {
-            const exercise = exerciseCountData[key];
-            const newMuscles: MuscleGroup[] = [];
-            // For the number of counts per exercise
-            for (let index = 0; index < exercise.y; index++) {
-              // ...each of the exercise's muscle groups are added to the total
-              exercise.muscleGroups.map(muscle => newMuscles.push(muscle));
-            }
-            return [...total, ...newMuscles];
-          },
-          []
-        )
-      : [];
+    const { muscles, muscleCounts, maxMuscleCount } = this.getMuscleCounts(
+      exerciseCountData
+    );
 
     const titleAlignment = isMobile(width) ? "left" : "center";
 
@@ -356,11 +376,11 @@ class Activity extends React.Component<Props, State> {
           Muscle Groups
         </Typography>
         <FullBody
-          muscleGroupLevels={dateLimit}
+          muscleGroupLevels={maxMuscleCount}
           menuComponent={muscle => this.renderMuscleList(muscle)}
           selected={muscles}
         />
-        {this.renderMuscleCountChart(muscles)}
+        {this.renderMuscleCountChart(muscleCounts, maxMuscleCount)}
         <Typography align="center" variant="subtitle1">
           Top Muscle Groups
         </Typography>

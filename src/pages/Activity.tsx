@@ -35,7 +35,7 @@ const styles = (theme: Theme) =>
       margin: "0 auto",
       width: "100%"
     },
-    exerciseDivider: {
+    divider: {
       marginBottom: theme.spacing(4),
       marginTop: theme.spacing(4)
     },
@@ -50,6 +50,10 @@ const styles = (theme: Theme) =>
     },
     exerciseTotalVal: {
       color: theme.palette.primary.light
+    },
+    exerciseTotalWrapper: {
+      marginLeft: theme.spacing(2),
+      marginRight: theme.spacing(2)
     },
     tabs: {
       justifyContent: "center"
@@ -303,7 +307,7 @@ class Activity extends React.Component<Props, State> {
   }
 
   renderCharts() {
-    const { classes } = this.props;
+    const { classes, width } = this.props;
     const { dateLimit, selectedExercises } = this.state;
 
     // Get number of sessions per exercise within the active date range
@@ -330,34 +334,48 @@ class Activity extends React.Component<Props, State> {
         )
       : [];
 
+    const titleAlignment = isMobile(width) ? "left" : "center";
+
     return (
       <Fragment>
-        <Typography
-          align="center"
-          className={classes.exerciseTotal}
-          variant="h3"
-        >
-          <span
-            className={classes.exerciseTotalVal}
-          >{`${totalExerciseCount} `}</span>
-          exercises
+        <div className={classes.exerciseTotalWrapper}>
+          <Typography
+            align="center"
+            className={classes.exerciseTotal}
+            variant="h3"
+          >
+            <span
+              className={classes.exerciseTotalVal}
+            >{`${totalExerciseCount} `}</span>
+            exercises
+          </Typography>
+          <Typography align="center">{`completed between today and ${dateLimit} days ago`}</Typography>
+        </div>
+        <Divider className={classes.divider} />
+        <Typography align={titleAlignment} variant="h6">
+          Muscle Groups
         </Typography>
-        <Typography align="center">{`completed between today and ${dateLimit} days ago`}</Typography>
-        <Divider className={classes.exerciseDivider} />
-        <Typography variant="h6">Muscle Groups</Typography>
         <FullBody
           muscleGroupLevels={dateLimit}
           menuComponent={muscle => this.renderMuscleList(muscle)}
           selected={muscles}
         />
-        <Typography variant="subtitle1">Top Muscle Groups</Typography>
         {this.renderMuscleCountChart(muscles)}
-        <Typography variant="h6">Exercises</Typography>
-        <Typography variant="subtitle1">Top Exercises</Typography>
+        <Typography align="center" variant="subtitle1">
+          Top Muscle Groups
+        </Typography>
+        <Divider className={classes.divider} />
+        <Typography align={titleAlignment} variant="h6">
+          Exercises
+        </Typography>
         {this.renderExerciseCountChart(
           exerciseCountData.slice(0, this.chartSettings.maxColumnCount()),
           exerciseCountMax
         )}
+        <Typography align="center" variant="subtitle1">
+          Top Exercises
+        </Typography>
+        <div className={classes.divider} />
       </Fragment>
     );
   }

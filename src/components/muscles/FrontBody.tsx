@@ -131,7 +131,11 @@ class FrontBody extends React.Component<Props, State> {
 	c-0.129,1.418-0.22,2.842-0.396,4.254c-1.771,14.19-3.785,28.355-5.184,42.582c-0.376,3.82,0.72,7.939,1.829,11.72
 	C275.796,588.825,274.703,595.54,270.137,602.042z"
           />
-          <g id="left-forearm" fill={this.fill(MuscleGroup.FOREARMS)}>
+          <g
+            id="left-forearm"
+            fill={this.fill(MuscleGroup.FOREARMS)}
+            onClick={e => this.showMenu(e, MuscleGroup.FOREARMS)}
+          >
             <path
               d="M249.916,549.818c7.082-14.633,12.197-29.898,14.622-46.004
 		c1.462-9.707,2.675-19.452,4.223-29.145c0.509-3.183,1.542-6.28,2.411-9.404l2.994-7.229c2.562-4.286,4.498-8.972,7.271-13.107
@@ -146,7 +150,11 @@ class FrontBody extends React.Component<Props, State> {
 		c0.705-0.464,2.879,0.119,3.259,0.873c0.468,0.928,0.947,1.848,1.483,2.734C322.873,448.525,322.577,456.295,322.577,456.295z"
             />
           </g>
-          <g id="left-bicep" fill={this.fill(MuscleGroup.BICEPS)}>
+          <g
+            id="left-bicep"
+            fill={this.fill(MuscleGroup.BICEPS)}
+            onClick={e => this.showMenu(e, MuscleGroup.BICEPS)}
+          >
             <path
               d="M285.08,406.652l1.612-8.121c0.164-0.396,0.336-0.876,0.544-1.457
 		c4.648-12.977,11.287-24.232,25.293-29.039c4.41-1.514,8.836-2.998,13.314-4.295c5.685-1.646,8.664,0.56,7.998,6.332
@@ -162,12 +170,17 @@ class FrontBody extends React.Component<Props, State> {
           <path
             id="left-shoulder"
             fill={this.fill(MuscleGroup.SHOULDERS)}
+            onClick={e => this.showMenu(e, MuscleGroup.SHOULDERS)}
             d="M333.166,358.836c-10.922,3.695-21.812,7.487-32.236,11.076c0-7.446,0-15.846,0-24.556
 	c0-1.096,1.049-5.737,1.049-5.737l1.352-3.137c0.035-0.08,0.07-0.16,0.105-0.242c8.24-19.225,23.012-29.658,43.743-31.477
 	c9.397-0.825,15.69,7.288,12.345,16.039c-2.547,6.658-6.036,12.955-9.069,19.43c-0.589,1.257-1.094,2.555-1.61,3.847l-3.556,5.301
 	c-0.227,0.235-0.413,0.488-0.536,0.769C342.498,355.293,338.005,357.199,333.166,358.836z"
           />
-          <g id="left-obliques" fill={this.fill(MuscleGroup.OBLIQUES)}>
+          <g
+            id="left-obliques"
+            fill={this.fill(MuscleGroup.OBLIQUES)}
+            onClick={e => this.showMenu(e, MuscleGroup.OBLIQUES)}
+          >
             <path
               d="M379.757,482.798c0.016,0.034,0.032,0.067,0.049,0.1l3.931,4.261c0.723,1.801,1.224,3.052,2.192,5.469
 		c-3.629-1.163-6.735-2.158-9.68-3.102c-0.385-0.123-1.263-0.623-2.068-1.107c-0.864-0.519-3.284-2.685-3.284-2.685l-1.326-1.348
@@ -197,7 +210,11 @@ class FrontBody extends React.Component<Props, State> {
 	c1.306-1.351,1.456-3.987,1.783-6.086c1.306-8.375,2.45-16.774,3.706-25.157c0.182-1.217,0.643-2.392,1.131-4.147
 	c1.055,0.967,1.699,1.416,2.165,2.006c5.14,6.498,9.917,13.322,15.472,19.441C374.261,966.176,376.736,971.535,375.535,978.59z"
           />
-          <g id="left-calf" fill={this.fill(MuscleGroup.CALVES)}>
+          <g
+            id="left-calf"
+            fill={this.fill(MuscleGroup.CALVES)}
+            onClick={e => this.showMenu(e, MuscleGroup.CALVES)}
+          >
             <path
               d="M378.371,797.652c-4.047,17.985-8.314,35.921-12.347,53.909c0,0-0.822,2.608-2.072,2.358
 		s-1.914-2.873-1.914-2.873c-0.282-5.983-0.801-11.955-1.22-17.932c-1.901-27.137-1.264-53.992,8.977-79.755
@@ -213,7 +230,11 @@ class FrontBody extends React.Component<Props, State> {
 		c1.453,5.189,1.666,10.175,2.42,15.078C385.325,832.329,389.854,847.266,387.291,862.854z"
             />
           </g>
-          <g id="left-oblique" fill={this.fill(MuscleGroup.OBLIQUES)}>
+          <g
+            id="left-quads"
+            fill={this.fill(MuscleGroup.QUADS)}
+            onClick={e => this.showMenu(e, MuscleGroup.QUADS)}
+          >
             <path
               d="M349.369,772.105c-0.07-0.987-0.17-1.974-0.207-2.962
 		c-0.924-23.972-2.188-47.938-2.648-71.92c-0.379-19.793-0.39-39.631,0.48-59.402c1.447-32.938,7.689-65.558,6.848-98.673
@@ -242,7 +263,11 @@ class FrontBody extends React.Component<Props, State> {
 		c3.719,2.488,5.725,5.317,5.515,9.787C411.161,596.158,411.486,603.89,410.482,611.447z"
             />
           </g>
-          <g id="abs" fill={this.fill(MuscleGroup.ABS)}>
+          <g
+            id="abs"
+            fill={this.fill(MuscleGroup.ABS)}
+            onClick={e => this.showMenu(e, MuscleGroup.ABS)}
+          >
             <path
               d="M384.9,481.918c-1.393-5.262-2.732-10.406-4.157-15.525
 		c-1.017-3.655,0.438-5.883,3.496-7.869c9.361-6.078,19.756-6.617,30.34-5.811c1.347,0.104,3.447,2.348,3.616,3.785
@@ -300,7 +325,11 @@ class FrontBody extends React.Component<Props, State> {
 	c-1.137-7.877-2.105-15.782-3.441-23.625c-1.201-7.055,1.273-12.414,5.979-17.596c5.555-6.119,10.332-12.943,15.473-19.441
 	c0.465-0.59,1.109-1.039,2.164-2.006c0.488,1.756,0.949,2.931,1.131,4.147C492.332,952.077,493.477,960.477,494.783,968.852z"
           />
-          <g id="right-calf" fill={this.fill(MuscleGroup.CALVES)}>
+          <g
+            id="right-calf"
+            fill={this.fill(MuscleGroup.CALVES)}
+            onClick={e => this.showMenu(e, MuscleGroup.CALVES)}
+          >
             <path
               d="M472.07,753.36c10.24,25.763,10.879,52.618,8.977,79.755
 		c-0.419,5.977-0.938,11.948-1.22,17.932c0,0-0.663,2.623-1.913,2.873s-2.072-2.358-2.072-2.358
@@ -318,7 +347,11 @@ class FrontBody extends React.Component<Props, State> {
 		C497.445,788.34,503.832,810.227,505.695,833.814z"
             />
           </g>
-          <g id="right-obliques" fill={this.fill(MuscleGroup.OBLIQUES)}>
+          <g
+            id="right-quads"
+            fill={this.fill(MuscleGroup.QUADS)}
+            onClick={e => this.showMenu(e, MuscleGroup.QUADS)}
+          >
             <path
               d="M440.918,670.551l-1.795-8.781c-2.678-16.76-5.506-33.501-7.74-50.322
 		c-1.004-7.558-0.678-15.289-1.037-22.938c-0.211-4.47,1.795-7.299,5.514-9.787c8.551-5.719,17.389-11.241,24.965-18.107
@@ -344,7 +377,11 @@ class FrontBody extends React.Component<Props, State> {
 		c1.061-21.954,3.199-43.922,2.893-65.856c-0.285-20.427-2.643-40.88-5.043-61.208C491.24,574.051,490.441,549.659,491.914,525.16z"
             />
           </g>
-          <g id="right-obliques" fill={this.fill(MuscleGroup.OBLIQUES)}>
+          <g
+            id="right-obliques"
+            fill={this.fill(MuscleGroup.OBLIQUES)}
+            onClick={e => this.showMenu(e, MuscleGroup.OBLIQUES)}
+          >
             <path
               d="M464.514,446.312l-0.867-6.131c0.171-0.422,0.346-0.854,0.525-1.301c2.084,1.351,4.164,2.701,6.41,4.158
 		l3.186,4.015c2.256,2.619,3.9,4.646,5.666,6.559c4.521,4.897,5.213,10.396,2.016,16.076c-2.671,4.745-5.693,9.292-9.154,14.697
@@ -365,7 +402,11 @@ class FrontBody extends React.Component<Props, State> {
 		c8.125-2.407,15.941-5.847,23.895-8.835c6.023-2.264,7.094-1.992,7.207,4.149C493.373,399.326,493.213,416.122,493.061,432.912z"
             />
           </g>
-          <g id="chest" fill={this.fill(MuscleGroup.CHEST)}>
+          <g
+            id="chest"
+            fill={this.fill(MuscleGroup.CHEST)}
+            onClick={e => this.showMenu(e, MuscleGroup.CHEST)}
+          >
             <path
               d="M420.933,329.629c-0.064-0.119-0.13-0.24-0.195-0.361v0.724
 		c-0.011,0.021-0.022,0.04-0.033,0.062c-2.288-4.34-4.255-8.072-6.48-12.296c2.274,0,4.404,0,6.514,0c0.13,0,0.26,0,0.39,0
@@ -392,12 +433,17 @@ class FrontBody extends React.Component<Props, State> {
           <path
             id="right-shoulder"
             fill={this.fill(MuscleGroup.SHOULDERS)}
+            onClick={e => this.showMenu(e, MuscleGroup.SHOULDERS)}
             d="M497.113,350.148c-0.123-0.28-0.309-0.533-0.535-0.769l-3.557-5.301
 	c-0.516-1.292-1.021-2.59-1.609-3.847c-3.033-6.475-6.523-12.771-9.07-19.43c-3.346-8.751,2.947-16.864,12.346-16.039
 	c20.73,1.818,35.502,12.252,43.742,31.477c0.035,0.082,0.07,0.162,0.105,0.242l1.352,3.137c0,0,1.049,4.642,1.049,5.737
 	c0,8.71,0,17.109,0,24.556c-10.424-3.589-21.314-7.381-32.236-11.076C503.859,357.199,499.367,355.293,497.113,350.148z"
           />
-          <g id="right-bicep" fill={this.fill(MuscleGroup.BICEPS)}>
+          <g
+            id="right-bicep"
+            fill={this.fill(MuscleGroup.BICEPS)}
+            onClick={e => this.showMenu(e, MuscleGroup.BICEPS)}
+          >
             <path
               d="M554.629,397.074c0.209,0.581,0.381,1.062,0.545,1.457l1.611,8.121
 		c1.207,10.479-0.773,19.893-6.721,28.92c-2.393,3.633-3.344,7.777-3.359,12.098c-0.004,1.18-0.059,8.688-0.059,8.688l-0.226,4.746
@@ -410,7 +456,11 @@ class FrontBody extends React.Component<Props, State> {
 		c-0.564,0.15-1.129,0.299-1.693,0.448C504.969,418.604,498.588,396.34,504.164,370.603z"
             />
           </g>
-          <g id="right-forearm" fill={this.fill(MuscleGroup.FOREARMS)}>
+          <g
+            id="right-forearm"
+            fill={this.fill(MuscleGroup.FOREARMS)}
+            onClick={e => this.showMenu(e, MuscleGroup.FOREARMS)}
+          >
             <path
               d="M560.43,444.93c2.773,4.136,4.709,8.821,7.271,13.107l2.993,7.229
 		c0.868,3.124,1.901,6.222,2.411,9.404c1.547,9.692,2.76,19.438,4.223,29.145c2.424,16.105,7.539,31.371,14.621,46.004

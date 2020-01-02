@@ -134,7 +134,16 @@ class Activity extends React.Component<Props, State> {
         textAnchor: "start",
         verticalAnchor: "middle"
       },
-      maxColumnCount: () => (isMobile(this.props.width) ? 10 : 15)
+      maxColumnCount: () => (isMobile(this.props.width) ? 10 : 15),
+      tooltipFly: {
+        fill: this.props.theme.palette.common.white,
+        stroke: this.props.theme.palette.text.disabled
+      },
+      tooltipText: {
+        fontFamily: this.props.theme.typography.body1.fontFamily,
+        fill: this.props.theme.palette.text.primary
+      },
+      tooltipLabel: (d: { x: string; y: number }) => `${d.x}: ${d.y}`
     };
   }
 
@@ -293,7 +302,13 @@ class Activity extends React.Component<Props, State> {
       <section className={classes.exerciseChart}>
         <BaseChart config={this.chartSettings}>
           <VictoryBar
-            labelComponent={<VictoryTooltip />}
+            labelComponent={
+              <VictoryTooltip
+                flyoutStyle={{ ...this.chartSettings.tooltipFly }}
+                style={{ ...this.chartSettings.tooltipText }}
+                text={this.chartSettings.tooltipLabel}
+              />
+            }
             style={{
               data: {
                 fill: d => lerpColor(PURPLE, PINK, d.y / exerciseCountMax)
@@ -321,7 +336,13 @@ class Activity extends React.Component<Props, State> {
       <section className={classes.exerciseChart}>
         <BaseChart config={this.chartSettings}>
           <VictoryBar
-            labelComponent={<VictoryTooltip />}
+            labelComponent={
+              <VictoryTooltip
+                flyoutStyle={{ ...this.chartSettings.tooltipFly }}
+                style={{ ...this.chartSettings.tooltipText }}
+                text={this.chartSettings.tooltipLabel}
+              />
+            }
             style={{
               data: {
                 fill: d =>

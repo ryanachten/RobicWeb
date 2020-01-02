@@ -66,14 +66,7 @@ class FrontBody extends React.Component<Props, State> {
         >
           {menuComponent && selectedMuscle && menuComponent(selectedMuscle)}
         </BodyMenu>
-        <svg
-          version="1.1"
-          id="Layer_1"
-          x="0px"
-          y="0px"
-          viewBox="0 0 841.89 1190.55"
-          enable-background="new 0 0 841.89 1190.55"
-        >
+        <svg viewBox="0 0 841.89 1190.55">
           <path
             id="head"
             fill={this.fill()}

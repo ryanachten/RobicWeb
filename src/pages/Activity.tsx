@@ -121,8 +121,8 @@ class Activity extends React.Component<Props, State> {
         domainPadding: 10,
         animate: { duration: 1000 }
       },
-      clipLabel: (label: string) =>
-        label.length > 9 ? `${label.slice(0, 6)}...` : label,
+      clipLabel: (label: string) => label,
+      // label.length > 9 ? `${label.slice(0, 6)}...` : ,
       label: {
         style: {
           color: this.props.theme.palette.text.disabled,
@@ -135,15 +135,17 @@ class Activity extends React.Component<Props, State> {
         verticalAnchor: "middle"
       },
       maxColumnCount: () => (isMobile(this.props.width) ? 10 : 15),
-      tooltipFly: {
-        fill: this.props.theme.palette.common.white,
-        stroke: this.props.theme.palette.text.disabled
-      },
-      tooltipText: {
-        fontFamily: this.props.theme.typography.body1.fontFamily,
-        fill: this.props.theme.palette.text.primary
-      },
-      tooltipLabel: (d: { x: string; y: number }) => `${d.x}: ${d.y}`
+      toolTip: {
+        flyoutStyle: {
+          fill: this.props.theme.palette.common.white,
+          stroke: this.props.theme.palette.text.disabled
+        },
+        style: {
+          fontFamily: this.props.theme.typography.body1.fontFamily,
+          fill: this.props.theme.palette.text.primary
+        },
+        text: (d: { x: string; y: number }) => (d ? `${d.x}: ${d.y}` : "")
+      }
     };
   }
 
@@ -297,17 +299,17 @@ class Activity extends React.Component<Props, State> {
   }
 
   renderExerciseCountChart(exerciseCountData: any, exerciseCountMax: number) {
-    const { classes } = this.props;
+    const { classes, width } = this.props;
     return (
       <section className={classes.exerciseChart}>
         <BaseChart config={this.chartSettings}>
           <VictoryBar
             labelComponent={
-              <VictoryTooltip
-                flyoutStyle={{ ...this.chartSettings.tooltipFly }}
-                style={{ ...this.chartSettings.tooltipText }}
-                text={this.chartSettings.tooltipLabel}
-              />
+              isMobile(width) ? (
+                <VictoryTooltip {...this.chartSettings.toolTip} />
+              ) : (
+                <VictoryLabel />
+              )
             }
             style={{
               data: {
@@ -337,11 +339,11 @@ class Activity extends React.Component<Props, State> {
         <BaseChart config={this.chartSettings}>
           <VictoryBar
             labelComponent={
-              <VictoryTooltip
-                flyoutStyle={{ ...this.chartSettings.tooltipFly }}
-                style={{ ...this.chartSettings.tooltipText }}
-                text={this.chartSettings.tooltipLabel}
-              />
+              isMobile(width) ? (
+                <VictoryTooltip {...this.chartSettings.toolTip} />
+              ) : (
+                <VictoryLabel />
+              )
             }
             style={{
               data: {

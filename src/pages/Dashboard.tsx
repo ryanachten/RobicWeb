@@ -52,12 +52,6 @@ import { RouteComponentProps } from "react-router";
 
 const styles = (theme: Theme) =>
   createStyles({
-    buttonWrapper: {
-      alignItems: "center",
-      display: "flex",
-      marginLeft: theme.spacing(1),
-      marginTop: theme.spacing(2)
-    },
     addButton: {
       alignItems: "center",
       backgroundColor: theme.palette.common.white,
@@ -72,6 +66,15 @@ const styles = (theme: Theme) =>
       display: "flex",
       justifyContent: "center"
     },
+    buttonWrapper: {
+      alignItems: "center",
+      display: "flex",
+      marginLeft: "auto",
+      marginRight: "auto",
+      marginTop: theme.spacing(2),
+      maxWidth: theme.breakpoints.values.sm,
+      width: "100%"
+    },
     iconButton: {
       height: "48px",
       justifyContent: "center",
@@ -82,10 +85,14 @@ const styles = (theme: Theme) =>
       marginBottom: theme.spacing(2)
     },
     doneButton: {
-      marginBottom: theme.spacing(4),
-      marginTop: theme.spacing(2),
       backgroundColor: theme.palette.common.white,
-      color: theme.palette.secondary.main
+      color: theme.palette.secondary.main,
+      marginBottom: theme.spacing(4),
+      marginLeft: "auto",
+      marginRight: "auto",
+      marginTop: theme.spacing(2),
+      maxWidth: theme.breakpoints.values.sm,
+      width: "100%"
     },
     exerciseSelect: {
       display: "flex",
@@ -138,9 +145,14 @@ const styles = (theme: Theme) =>
     setCard: {
       flexGrow: 1,
       margin: theme.spacing(2),
-      maxWidth: "100%",
+      maxWidth: "calc(50% - 32px)",
       padding: theme.spacing(2),
-      width: "45%"
+      width: "calc(50% - 32px)",
+
+      [theme.breakpoints.down("sm")]: {
+        maxWidth: "100%",
+        width: "100%"
+      }
     },
     setList: {
       display: "flex",
@@ -466,7 +478,7 @@ class Index extends React.Component<Props, State> {
             className={classes.iconButton}
             onClick={() => this.removeSet(index)}
           >
-            <RemoveIcon />
+            <RemoveIcon color="secondary" />
           </IconButton>
         ) : (
           <div className={classes.iconButton} />

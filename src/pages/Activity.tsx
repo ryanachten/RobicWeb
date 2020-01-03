@@ -33,7 +33,13 @@ const styles = (theme: Theme) =>
     },
     exerciseChart: {
       margin: "0 auto",
-      width: "100%"
+      marginBottom: theme.spacing(2),
+      marginTop: theme.spacing(1),
+      width: "100%",
+
+      [theme.breakpoints.down("sm")]: {
+        marginTop: theme.spacing(2)
+      }
     },
     divider: {
       marginBottom: theme.spacing(4),
@@ -53,7 +59,11 @@ const styles = (theme: Theme) =>
     },
     exerciseTotalWrapper: {
       marginLeft: theme.spacing(2),
-      marginRight: theme.spacing(2)
+      marginRight: theme.spacing(2),
+
+      [theme.breakpoints.up("sm")]: {
+        marginBottom: theme.spacing(8)
+      }
     },
     tabs: {
       justifyContent: "center"
@@ -115,7 +125,7 @@ class Activity extends React.Component<Props, State> {
         }
       },
       chart: {
-        padding: { left: 70, right: 50, bottom: 50, top: 50 },
+        padding: { left: 70, right: 50, bottom: 50, top: 0 },
         height: 250,
         theme: VictoryTheme.material,
         domainPadding: 10,

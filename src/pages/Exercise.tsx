@@ -124,7 +124,8 @@ const styles = (theme: Theme) =>
       alignItems: "center",
       display: "flex",
       flexFlow: "row wrap",
-      justifyContent: "center"
+      justifyContent: "center",
+      marginBottom: theme.spacing(4)
     },
     pbItem: {
       marginRight: theme.spacing(3)
@@ -358,17 +359,6 @@ class ExercisePage extends React.Component<Props, State> {
                 <Typography className={classes.pbUnit}>{setsMax}</Typography>
               </div>
             </div>
-            <ul className={classes.legendList}>
-              {Object.keys(settings).map(key => (
-                <li key={key} className={classes.legendItem}>
-                  <span
-                    className={classes.legendIcon}
-                    style={{ backgroundColor: settings[key].stroke }}
-                  />
-                  {settings[key].label}
-                </li>
-              ))}
-            </ul>
           </div>
           <div className={classes.overviewChart}>
             <VictoryChart
@@ -427,6 +417,17 @@ class ExercisePage extends React.Component<Props, State> {
               />
             </VictoryChart>
           </div>
+          <ul className={classes.legendList}>
+            {Object.keys(settings).map(key => (
+              <li key={key} className={classes.legendItem}>
+                <span
+                  className={classes.legendIcon}
+                  style={{ backgroundColor: settings[key].stroke }}
+                />
+                {settings[key].label}
+              </li>
+            ))}
+          </ul>
         </div>
         {isMobile(width) ? (
           <div>

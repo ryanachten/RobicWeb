@@ -67,9 +67,11 @@ const styles = (theme: Theme) =>
       margin: theme.spacing(2)
     },
     exerciseTitleText: {
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      textTransform: "capitalize"
+      [theme.breakpoints.down("sm")]: {
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        textTransform: "capitalize"
+      }
     },
     exerciseTitleWrapper: {
       display: "flex"

@@ -8,10 +8,15 @@ import routes from "../constants/routes";
 import { GetExercises } from "../constants/queries";
 import { PageRoot } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
-import { ExerciseDefinition, MuscleGroup } from "../constants/types";
+import { ExerciseDefinition, MuscleGroup, Exercise } from "../constants/types";
 import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
 import { Typography, Tabs, Tab, withWidth, Divider } from "@material-ui/core";
-import { lerpColor, sortAlphabetically } from "../utils";
+import {
+  lerpColor,
+  sortAlphabetically,
+  getNetTotalFromSets,
+  isCompositeExercise
+} from "../utils";
 import {
   VictoryChart,
   VictoryBar,
@@ -239,6 +244,52 @@ class Activity extends React.Component<Props, State> {
     };
   }
 
+  getExerciseProgress(exercises: ExerciseDefinition[]) {
+    const dateLimit = this.state.dateLimit;
+    const width = this.props.width;
+
+    const exerciseProgressData: {
+      x: string;
+      y: number;
+      data: any;
+      label: string | null;
+    }[] = [];
+
+    exercises.reverse().forEach((def: ExerciseDefinition) => {
+      // Progess is considered here as:
+      // the delta of the latest session net total
+      // minus the earliest session net total within date range
+      const validSessions = def.history.filter(e =>
+        isAfter(e.date, subDays(Date.now(), dateLimit))
+      );
+      if (validSessions.length > 1) {
+        const isComposite = isCompositeExercise(def.type);
+        const earliestSession: Exercise = validSessions[0];
+        const latestSession: Exercise = validSessions[validSessions.length - 1];
+        const earliestNetTotal = getNetTotalFromSets(
+          earliestSession.sets,
+          isComposite
+        );
+        const latestNetTotal = getNetTotalFromSets(
+          latestSession.sets,
+          isComposite
+        );
+        const delta = latestNetTotal - earliestNetTotal;
+        exerciseProgressData.push({
+          x: this.chartSettings.clipLabel(def.title),
+          y: delta,
+          label: isMobile(width) ? def.title : null,
+          data: {
+            earliestSession,
+            latestSession
+          }
+        });
+      }
+    });
+    exerciseProgressData.sort(this.sortByY);
+    return exerciseProgressData;
+  }
+
   getMuscleCounts(
     exerciseCountData: {
       x: string;
@@ -372,6 +423,8 @@ class Activity extends React.Component<Props, State> {
       exerciseCountMax,
       totalExerciseCount
     } = this.getExerciseCounts(selectedExercises);
+
+    this.getExerciseProgress(selectedExercises);
 
     const { muscles, muscleCounts, maxMuscleCount } = this.getMuscleCounts(
       exerciseCountData

@@ -48,7 +48,6 @@ export type Exercise = {
   id: string;
   date: string;
   definiton: ExerciseDefinition;
-  netValue: number;
   sets: Set[];
   timeTaken: string;
 };

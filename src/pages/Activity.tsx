@@ -193,27 +193,17 @@ class Activity extends React.Component<Props, State> {
   }
 
   getCurrentExercises() {
-    // Selected exercises filtered to those that are within the date range
+    // Any upfront filtering can go here... (currently not requried)
     const exercises = this.props.data.exerciseDefinitions;
-    const selectedExercises = exercises
-      ? exercises.filter(({ history }: ExerciseDefinition) => {
-          return (
-            history.length > 0 &&
-            isAfter(
-              history[history.length - 1].date,
-              subDays(Date.now(), this.state.dateLimit)
-            )
-          );
-        })
-      : [];
     this.setState({
-      selectedExercises
+      selectedExercises: exercises
     });
   }
 
   getExerciseCounts(exercises: ExerciseDefinition[]) {
     const dateLimit = this.state.dateLimit;
     const width = this.props.width;
+
     const exerciseCountData: {
       x: string;
       y: number;
@@ -234,13 +224,13 @@ class Activity extends React.Component<Props, State> {
       .sort(this.sortByY);
 
     // Highest number for manual chart calibration
-    const exerciseCountMax =
-      (exerciseCountData && Math.max(...exerciseCountData.map(e => e.y))) || 1;
+    const exerciseCountMax = Math.max(...exerciseCountData.map(e => e.y)) || 1;
 
     // Total number of exercises in date period
-    const totalExerciseCount =
-      exerciseCountData &&
-      exerciseCountData.reduce((total, count) => total + count.y, 0);
+    const totalExerciseCount = exerciseCountData.reduce(
+      (total, count) => total + count.y,
+      0
+    );
 
     return {
       exerciseCountData,

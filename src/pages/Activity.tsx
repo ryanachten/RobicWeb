@@ -257,7 +257,7 @@ class Activity extends React.Component<Props, State> {
 
     exercises.reverse().forEach((def: ExerciseDefinition) => {
       // Progess is considered here as:
-      // the delta of the latest session net total
+      // the delta of the average session net total within date range
       // minus the earliest session net total within date range
       const validSessions = def.history.filter(e =>
         isAfter(e.date, subDays(Date.now(), dateLimit))
@@ -270,14 +270,16 @@ class Activity extends React.Component<Props, State> {
           earliestSession.sets,
           isComposite
         );
-        const latestNetTotal = getNetTotalFromSets(
-          latestSession.sets,
-          isComposite
+        let averageNetTotal = 0;
+        validSessions.map(
+          e => (averageNetTotal += getNetTotalFromSets(e.sets, isComposite))
         );
+        averageNetTotal = averageNetTotal / validSessions.length;
+        console.log("averageNetTotal", averageNetTotal);
 
-        const delta = latestNetTotal - earliestNetTotal;
+        const delta = averageNetTotal - earliestNetTotal;
         let percentDifference =
-          (delta / Math.min(earliestNetTotal, latestNetTotal)) * 100;
+          (delta / Math.min(earliestNetTotal, averageNetTotal)) * 100;
 
         if (!isFinite(percentDifference) || isNaN(percentDifference)) {
           // Fallback to 0 in edge cases
@@ -523,7 +525,7 @@ class Activity extends React.Component<Props, State> {
         </Typography>
         {exerciseProgressData.length > 5 &&
           this.renderExerciseProgressChart(
-            exerciseProgressData.slice(0, this.chartSettings.maxColumnCount()),
+            exerciseProgressData,
             exerciseProgressMax
           )}
         <div className={classes.divider} />

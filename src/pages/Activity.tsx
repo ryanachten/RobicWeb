@@ -274,10 +274,18 @@ class Activity extends React.Component<Props, State> {
           latestSession.sets,
           isComposite
         );
+
         const delta = latestNetTotal - earliestNetTotal;
+        let percentDifference =
+          (delta / Math.min(earliestNetTotal, latestNetTotal)) * 100;
+
+        if (!isFinite(percentDifference) || isNaN(percentDifference)) {
+          // Fallback to 0 in edge cases
+          percentDifference = 0;
+        }
         exerciseProgressData.push({
           x: this.chartSettings.clipLabel(def.title),
-          y: delta,
+          y: percentDifference,
           label: isMobile(width) ? def.title : null,
           data: {
             earliestSession,
@@ -287,7 +295,18 @@ class Activity extends React.Component<Props, State> {
       }
     });
     exerciseProgressData.sort(this.sortByY);
-    return exerciseProgressData;
+    const exerciseProgressMax = Math.max(...exerciseProgressData.map(d => d.y));
+    console.log(
+      "exerciseProgressData",
+      exerciseProgressData,
+      "exerciseProgressMax",
+      exerciseProgressMax
+    );
+
+    return {
+      exerciseProgressData,
+      exerciseProgressMax
+    };
   }
 
   getMuscleCounts(
@@ -374,6 +393,34 @@ class Activity extends React.Component<Props, State> {
     );
   }
 
+  renderExerciseProgressChart(
+    exerciseProgressData: any,
+    exerciseProgressMax: number
+  ) {
+    const { classes, width } = this.props;
+    return (
+      <section className={classes.exerciseChart}>
+        <BaseChart config={this.chartSettings}>
+          <VictoryBar
+            labelComponent={
+              isMobile(width) ? (
+                <VictoryTooltip {...this.chartSettings.toolTip} />
+              ) : (
+                <VictoryLabel />
+              )
+            }
+            style={{
+              data: {
+                fill: d => lerpColor(PURPLE, PINK, d.y / exerciseProgressMax)
+              }
+            }}
+            data={exerciseProgressData}
+          />
+        </BaseChart>
+      </section>
+    );
+  }
+
   renderMuscleCountChart(muscleCounts: any, maxMuscleCount: number) {
     const { classes, theme, width } = this.props;
 
@@ -424,7 +471,10 @@ class Activity extends React.Component<Props, State> {
       totalExerciseCount
     } = this.getExerciseCounts(selectedExercises);
 
-    this.getExerciseProgress(selectedExercises);
+    const {
+      exerciseProgressData,
+      exerciseProgressMax
+    } = this.getExerciseProgress(selectedExercises);
 
     const { muscles, muscleCounts, maxMuscleCount } = this.getMuscleCounts(
       exerciseCountData
@@ -471,6 +521,11 @@ class Activity extends React.Component<Props, State> {
         <Typography align="center" variant="subtitle1">
           Top Exercises
         </Typography>
+        {exerciseProgressData.length > 5 &&
+          this.renderExerciseProgressChart(
+            exerciseProgressData.slice(0, this.chartSettings.maxColumnCount()),
+            exerciseProgressMax
+          )}
         <div className={classes.divider} />
       </Fragment>
     );

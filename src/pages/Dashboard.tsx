@@ -46,9 +46,9 @@ import {
   ExerciseTypeIcon,
   InsightCard
 } from "../components";
-import { isNull } from "util";
+import { isNull, isUndefined } from "util";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, Prompt } from "react-router";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -704,20 +704,37 @@ class Index extends React.Component<Props, State> {
 
   render() {
     const { classes, data, result } = this.props;
-    const { filteredExercises, selectedExercise } = this.state;
+    const { filteredExercises, selectedExercise, sets } = this.state;
     const { exerciseDefinitions, loading } = data;
     const exercises =
       filteredExercises.length > 0 ? filteredExercises : exerciseDefinitions;
     const noExercises = !loading && exercises.length === 0;
+
+    // Block navigation if in progress
+    const exerciseInProgress: boolean =
+      // Exercise considered in progress when:
+      !isUndefined(sets[0]) &&
+      // ...first reps value has been set
+      (Boolean(sets[0].reps) ||
+        // ...or first child exercise reps value has been set
+        (!isUndefined(sets[0].exercises) &&
+          Boolean(sets[0].exercises[0].reps)));
+
     return (
       <PageRoot
         actionPanel={{
           title: "Morning Ryan!",
           tagline: "Select an exercise to get started",
           children: !noExercises ? (
-            <div className={classes.exerciseSelect}>
-              {exercises && this.renderExerciseSelect(exercises)}
-            </div>
+            <Fragment>
+              <Prompt
+                when={exerciseInProgress}
+                message="Are you sure you want to discard your current session?"
+              />
+              <div className={classes.exerciseSelect}>
+                {exercises && this.renderExerciseSelect(exercises)}
+              </div>
+            </Fragment>
           ) : (
             <Fragment>
               <Link
@@ -743,7 +760,4 @@ class Index extends React.Component<Props, State> {
 
 const styled = withStyles(styles)(withWidth()(Index));
 
-export default compose(
-  graphql(GetExercises),
-  graphql(AddExercise)
-)(styled);
+export default compose(graphql(GetExercises), graphql(AddExercise))(styled);

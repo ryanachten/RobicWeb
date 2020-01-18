@@ -412,6 +412,7 @@ class Activity extends React.Component<Props, State> {
       <VictoryChart
         {...this.chartSettings.chart}
         animate={false}
+        padding={{ ...this.chartSettings.chart.padding, top: 50 }}
         containerComponent={
           <VictoryVoronoiContainer
             labels={d => format(d.x, "DD/MM/YYYY")}

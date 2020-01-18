@@ -275,7 +275,6 @@ class Activity extends React.Component<Props, State> {
           e => (averageNetTotal += getNetTotalFromSets(e.sets, isComposite))
         );
         averageNetTotal = averageNetTotal / validSessions.length;
-        console.log("averageNetTotal", averageNetTotal);
 
         const delta = averageNetTotal - earliestNetTotal;
         let percentDifference =
@@ -288,7 +287,7 @@ class Activity extends React.Component<Props, State> {
         exerciseProgressData.push({
           x: this.chartSettings.clipLabel(def.title),
           y: percentDifference,
-          label: isMobile(width) ? def.title : null,
+          label: def.title,
           data: {
             earliestSession,
             latestSession
@@ -298,12 +297,6 @@ class Activity extends React.Component<Props, State> {
     });
     exerciseProgressData.sort(this.sortByY);
     const exerciseProgressMax = Math.max(...exerciseProgressData.map(d => d.y));
-    console.log(
-      "exerciseProgressData",
-      exerciseProgressData,
-      "exerciseProgressMax",
-      exerciseProgressMax
-    );
 
     return {
       exerciseProgressData,
@@ -402,14 +395,15 @@ class Activity extends React.Component<Props, State> {
     const { classes, width } = this.props;
     return (
       <section className={classes.exerciseChart}>
-        <BaseChart config={this.chartSettings}>
+        <VictoryChart {...this.chartSettings.chart}>
+          <VictoryAxis
+            {...this.chartSettings.axis}
+            dependentAxis
+            tickLabelComponent={<VictoryLabel {...this.chartSettings.label} />}
+          />
           <VictoryBar
             labelComponent={
-              isMobile(width) ? (
-                <VictoryTooltip {...this.chartSettings.toolTip} />
-              ) : (
-                <VictoryLabel />
-              )
+              <NegativeAwareTickLabel {...this.chartSettings.label} />
             }
             style={{
               data: {
@@ -418,7 +412,7 @@ class Activity extends React.Component<Props, State> {
             }}
             data={exerciseProgressData}
           />
-        </BaseChart>
+        </VictoryChart>
       </section>
     );
   }
@@ -582,6 +576,23 @@ const BaseChart = ({ config, children }: any) => {
       />
       {children}
     </VictoryChart>
+  );
+};
+
+const NegativeAwareTickLabel = (props: any) => {
+  const { datum, y, dy, scale, ...rest } = props;
+
+  const flipLabel = datum.y < 0;
+  return (
+    <VictoryLabel
+      {...rest}
+      datum={datum}
+      y={scale.y(0)} // Set y to the svg-space location of the axis
+      dy={flipLabel ? -5 : 3}
+      dx={flipLabel ? -10 : 10}
+      angle={90}
+      textAnchor={flipLabel ? "end" : "start"}
+    />
   );
 };
 

@@ -259,11 +259,11 @@ class Activity extends React.Component<Props, State> {
 
     // Get number of exercise session per day during date period
     const dateHash: any = {};
-    exercises.map((def: ExerciseDefinition) => {
+    exercises.forEach((def: ExerciseDefinition) => {
       const validSessions = def.history.filter(e =>
         isAfter(e.date, subDays(Date.now(), dateLimit))
       );
-      validSessions.forEach((e: Exercise) => {
+      return validSessions.forEach((e: Exercise) => {
         const formattedDate = format(e.date, "DD/MM/YYYY");
         dateHash[formattedDate] = {
           date: new Date(e.date),
@@ -275,10 +275,13 @@ class Activity extends React.Component<Props, State> {
     });
 
     // Convert hash to graph data
-    const dateCountData = Object.keys(dateHash).map(key => ({
-      x: dateHash[key].date,
-      y: dateHash[key].counts
-    }));
+    const dateCountData = Object.keys(dateHash)
+      .map(key => ({
+        x: dateHash[key].date,
+        y: dateHash[key].counts
+      }))
+      // Sort chronologically
+      .sort((a, b) => (isAfter(a.x, b.x) ? 1 : -1));
 
     return {
       dateCountData
@@ -408,6 +411,7 @@ class Activity extends React.Component<Props, State> {
     return (
       <VictoryChart
         {...this.chartSettings.chart}
+        animate={false}
         containerComponent={
           <VictoryVoronoiContainer
             labels={d => format(d.x, "DD/MM/YYYY")}
@@ -426,6 +430,9 @@ class Activity extends React.Component<Props, State> {
           tickLabelComponent={<VictoryLabel {...this.chartSettings.label} />}
         />
         <VictoryArea
+          animate={{
+            duration: 1000
+          }}
           data={dateCountData}
           style={{
             data: {
@@ -467,7 +474,7 @@ class Activity extends React.Component<Props, State> {
     exerciseProgressData: any,
     exerciseProgressMax: number
   ) {
-    const { classes, width } = this.props;
+    const classes = this.props.classes;
     return (
       <section className={classes.exerciseChart}>
         <VictoryChart {...this.chartSettings.chart}>

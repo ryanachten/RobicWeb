@@ -9,15 +9,23 @@ import { GetExercises } from "../constants/queries";
 import { PageRoot } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup, Exercise } from "../constants/types";
-import { isAfter, subDays, getDaysInMonth, getDaysInYear } from "date-fns";
+import {
+  isAfter,
+  subDays,
+  getDaysInMonth,
+  getDaysInYear,
+  format
+} from "date-fns";
 import { Typography, Tabs, Tab, withWidth, Divider } from "@material-ui/core";
 import {
   lerpColor,
   sortAlphabetically,
   getNetTotalFromSets,
-  isCompositeExercise
+  isCompositeExercise,
+  transparentize
 } from "../utils";
 import {
+  VictoryArea,
   VictoryChart,
   VictoryBar,
   VictoryTheme,
@@ -244,9 +252,42 @@ class Activity extends React.Component<Props, State> {
     };
   }
 
+  getDateCounts(exercises: ExerciseDefinition[]) {
+    const dateLimit = this.state.dateLimit;
+
+    // Get number of exercise session per day during date period
+    const dateHash: any = {};
+    exercises.map((def: ExerciseDefinition) => {
+      const validSessions = def.history.filter(e =>
+        isAfter(e.date, subDays(Date.now(), dateLimit))
+      );
+      validSessions.forEach((e: Exercise) => {
+        const formattedDate = format(e.date, "DD/MM/YYYY");
+        dateHash[formattedDate] = {
+          date: e.date,
+          counts: !Boolean(dateHash[formattedDate])
+            ? 1
+            : dateHash[formattedDate].counts + 1
+        };
+      });
+    });
+
+    // Convert hash to graph data
+    const dateCountData = Object.keys(dateHash).map(key => ({
+      x: dateHash[key].date,
+      y: dateHash[key].counts
+    }));
+
+    const dateCountMax = Math.max(...dateCountData.map(e => e.y)) || 1;
+
+    return {
+      dateCountMax,
+      dateCountData
+    };
+  }
+
   getExerciseProgress(exercises: ExerciseDefinition[]) {
     const dateLimit = this.state.dateLimit;
-    const width = this.props.width;
 
     const exerciseProgressData: {
       x: string;
@@ -363,6 +404,28 @@ class Activity extends React.Component<Props, State> {
     ) : null;
   }
 
+  renderDateCountChart(dateCountData: any, dateCountMax: number) {
+    const theme = this.props.theme;
+    return (
+      <VictoryChart {...this.chartSettings.chart} height={150}>
+        <VictoryAxis
+          {...this.chartSettings.axis}
+          dependentAxis
+          tickLabelComponent={<VictoryLabel {...this.chartSettings.label} />}
+        />
+        <VictoryArea
+          data={dateCountData}
+          style={{
+            data: {
+              stroke: theme.palette.primary.main,
+              fill: transparentize(theme.palette.primary.main, 0.2)
+            }
+          }}
+        />
+      </VictoryChart>
+    );
+  }
+
   renderExerciseCountChart(exerciseCountData: any, exerciseCountMax: number) {
     const { classes, width } = this.props;
     return (
@@ -467,6 +530,10 @@ class Activity extends React.Component<Props, State> {
       totalExerciseCount
     } = this.getExerciseCounts(selectedExercises);
 
+    const { dateCountData, dateCountMax } = this.getDateCounts(
+      selectedExercises
+    );
+
     const {
       exerciseProgressData: rawExerciseProgressData,
       exerciseProgressMax
@@ -526,6 +593,7 @@ class Activity extends React.Component<Props, State> {
         <Typography align={titleAlignment} variant="h6">
           Exercises
         </Typography>
+        {this.renderDateCountChart(dateCountData, dateCountMax)}
         {this.renderExerciseCountChart(
           exerciseCountData.slice(0, this.chartSettings.maxColumnCount()),
           exerciseCountMax

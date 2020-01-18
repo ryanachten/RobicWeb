@@ -149,7 +149,7 @@ class Activity extends React.Component<Props, State> {
         textAnchor: "start",
         verticalAnchor: "middle"
       },
-      maxColumnCount: () => (isMobile(this.props.width) ? 10 : 15),
+      maxColumnCount: () => (isMobile(this.props.width) ? 10 : 16),
       toolTip: {
         flyoutStyle: {
           fill: this.props.theme.palette.common.white,
@@ -468,9 +468,23 @@ class Activity extends React.Component<Props, State> {
     } = this.getExerciseCounts(selectedExercises);
 
     const {
-      exerciseProgressData,
+      exerciseProgressData: rawExerciseProgressData,
       exerciseProgressMax
     } = this.getExerciseProgress(selectedExercises);
+
+    // Clip the progress data to half of the best progress reports
+    const exerciseProgressData = [
+      ...rawExerciseProgressData.slice(
+        0,
+        this.chartSettings.maxColumnCount() / 2
+      ),
+      // ... and half of the worst progress reports
+      ...rawExerciseProgressData.slice(
+        rawExerciseProgressData.length -
+          this.chartSettings.maxColumnCount() / 2,
+        rawExerciseProgressData.length
+      )
+    ];
 
     const { muscles, muscleCounts, maxMuscleCount } = this.getMuscleCounts(
       exerciseCountData

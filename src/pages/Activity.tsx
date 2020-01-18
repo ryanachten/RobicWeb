@@ -472,19 +472,21 @@ class Activity extends React.Component<Props, State> {
       exerciseProgressMax
     } = this.getExerciseProgress(selectedExercises);
 
-    // Clip the progress data to half of the best progress reports
-    const exerciseProgressData = [
-      ...rawExerciseProgressData.slice(
-        0,
-        this.chartSettings.maxColumnCount() / 2
-      ),
-      // ... and half of the worst progress reports
-      ...rawExerciseProgressData.slice(
-        rawExerciseProgressData.length -
-          this.chartSettings.maxColumnCount() / 2,
-        rawExerciseProgressData.length
-      )
-    ];
+    // Clip exercise progress data
+    const maxCols = this.chartSettings.maxColumnCount();
+    const exerciseProgressData =
+      // ...only clip if number of reports exceed max col count
+      rawExerciseProgressData.length > maxCols
+        ? [
+            // ...include half of the best progress reports
+            ...rawExerciseProgressData.slice(0, maxCols / 2),
+            // ... and half of the worst progress reports
+            ...rawExerciseProgressData.slice(
+              rawExerciseProgressData.length - maxCols / 2,
+              rawExerciseProgressData.length
+            )
+          ]
+        : rawExerciseProgressData;
 
     const { muscles, muscleCounts, maxMuscleCount } = this.getMuscleCounts(
       exerciseCountData
@@ -518,7 +520,7 @@ class Activity extends React.Component<Props, State> {
         />
         {this.renderMuscleCountChart(muscleCounts, maxMuscleCount)}
         <Typography align="center" variant="subtitle1">
-          Top Muscle Groups
+          Muscle Groups by Frequency
         </Typography>
         <Divider className={classes.divider} />
         <Typography align={titleAlignment} variant="h6">
@@ -529,13 +531,19 @@ class Activity extends React.Component<Props, State> {
           exerciseCountMax
         )}
         <Typography align="center" variant="subtitle1">
-          Top Exercises
+          Exercises by Frequency
         </Typography>
-        {exerciseProgressData.length > 5 &&
-          this.renderExerciseProgressChart(
-            exerciseProgressData,
-            exerciseProgressMax
-          )}
+        {exerciseProgressData.length > 5 && (
+          <Fragment>
+            {this.renderExerciseProgressChart(
+              exerciseProgressData,
+              exerciseProgressMax
+            )}
+            <Typography align="center" variant="subtitle1">
+              Max and Min Exercise Progress
+            </Typography>
+          </Fragment>
+        )}
         <div className={classes.divider} />
       </Fragment>
     );

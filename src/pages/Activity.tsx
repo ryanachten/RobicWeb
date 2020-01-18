@@ -264,7 +264,7 @@ class Activity extends React.Component<Props, State> {
       validSessions.forEach((e: Exercise) => {
         const formattedDate = format(e.date, "DD/MM/YYYY");
         dateHash[formattedDate] = {
-          date: e.date,
+          date: new Date(e.date),
           counts: !Boolean(dateHash[formattedDate])
             ? 1
             : dateHash[formattedDate].counts + 1
@@ -406,8 +406,16 @@ class Activity extends React.Component<Props, State> {
 
   renderDateCountChart(dateCountData: any, dateCountMax: number) {
     const theme = this.props.theme;
+    const dateLimit = this.state.dateLimit;
+    const dates = [subDays(Date.now(), dateLimit), new Date(Date.now())];
+    console.log("dateCountData", dateCountData);
     return (
-      <VictoryChart {...this.chartSettings.chart} height={150}>
+      <VictoryChart {...this.chartSettings.chart}>
+        <VictoryAxis
+          {...this.chartSettings.axis}
+          tickFormat={tick => format(tick, "DD/MM/YYYY")}
+          tickLabelComponent={<VictoryLabel {...this.chartSettings.label} />}
+        />
         <VictoryAxis
           {...this.chartSettings.axis}
           dependentAxis

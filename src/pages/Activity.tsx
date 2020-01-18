@@ -31,7 +31,8 @@ import {
   VictoryTheme,
   VictoryLabel,
   VictoryAxis,
-  VictoryTooltip
+  VictoryTooltip,
+  VictoryVoronoiContainer
 } from "victory";
 import { CHERRY_RED, PINK, PURPLE } from "../constants/colors";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
@@ -165,6 +166,7 @@ class Activity extends React.Component<Props, State> {
         },
         style: {
           fontFamily: this.props.theme.typography.body1.fontFamily,
+          fontSize: "7px",
           fill: this.props.theme.palette.text.primary
         },
         text: (d: { x: string; y: number }) => (d ? `${d.x}: ${d.y}` : "")
@@ -278,10 +280,7 @@ class Activity extends React.Component<Props, State> {
       y: dateHash[key].counts
     }));
 
-    const dateCountMax = Math.max(...dateCountData.map(e => e.y)) || 1;
-
     return {
-      dateCountMax,
       dateCountData
     };
   }
@@ -404,13 +403,18 @@ class Activity extends React.Component<Props, State> {
     ) : null;
   }
 
-  renderDateCountChart(dateCountData: any, dateCountMax: number) {
+  renderDateCountChart(dateCountData: any) {
     const theme = this.props.theme;
-    const dateLimit = this.state.dateLimit;
-    const dates = [subDays(Date.now(), dateLimit), new Date(Date.now())];
-    console.log("dateCountData", dateCountData);
     return (
-      <VictoryChart {...this.chartSettings.chart}>
+      <VictoryChart
+        {...this.chartSettings.chart}
+        containerComponent={
+          <VictoryVoronoiContainer
+            labels={d => format(d.x, "DD/MM/YYYY")}
+            labelComponent={<VictoryTooltip {...this.chartSettings.toolTip} />}
+          />
+        }
+      >
         <VictoryAxis
           {...this.chartSettings.axis}
           tickFormat={tick => format(tick, "DD/MM/YYYY")}
@@ -538,9 +542,7 @@ class Activity extends React.Component<Props, State> {
       totalExerciseCount
     } = this.getExerciseCounts(selectedExercises);
 
-    const { dateCountData, dateCountMax } = this.getDateCounts(
-      selectedExercises
-    );
+    const { dateCountData } = this.getDateCounts(selectedExercises);
 
     const {
       exerciseProgressData: rawExerciseProgressData,
@@ -601,7 +603,7 @@ class Activity extends React.Component<Props, State> {
         <Typography align={titleAlignment} variant="h6">
           Exercises
         </Typography>
-        {this.renderDateCountChart(dateCountData, dateCountMax)}
+        {this.renderDateCountChart(dateCountData)}
         {this.renderExerciseCountChart(
           exerciseCountData.slice(0, this.chartSettings.maxColumnCount()),
           exerciseCountMax

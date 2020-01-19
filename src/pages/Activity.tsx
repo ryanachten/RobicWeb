@@ -6,7 +6,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import routes from "../constants/routes";
 import { GetExercises } from "../constants/queries";
-import { PageRoot } from "../components";
+import { PageRoot, OverviewCard } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup, Exercise } from "../constants/types";
 import {
@@ -108,6 +108,10 @@ type Props = {
 };
 
 class Activity extends React.Component<Props, State> {
+  getOverviewLabel: (
+    data: { x: string; y: number }[],
+    parse: (x: string, y: number) => { x: string; y: string | number }
+  ) => string;
   sortByY: (a: { x: any; y: number }, b: { x: any; y: number }) => number;
   chartSettings: any;
   constructor(props: Props) {
@@ -128,6 +132,13 @@ class Activity extends React.Component<Props, State> {
       }
       return a.y < b.y ? 1 : -1;
     };
+    this.getOverviewLabel = (data, parse) => {
+      if (!data[0]) {
+        return "";
+      }
+      const parsed = parse(data[0].x, data[0].y);
+      return `${parsed.x}  ${parsed.y}`;
+    };
 
     // Shared chart configuration
     this.chartSettings = {
@@ -146,10 +157,9 @@ class Activity extends React.Component<Props, State> {
         animate: { duration: 1000 }
       },
       clipLabel: (label: string) => label,
-      // label.length > 9 ? `${label.slice(0, 6)}...` : ,
       label: {
         style: {
-          color: this.props.theme.palette.text.disabled,
+          fill: this.props.theme.palette.text.disabled,
           fontSize: "7px"
         }
       },
@@ -500,17 +510,9 @@ class Activity extends React.Component<Props, State> {
     );
   }
 
-  renderMuscleCountChart(muscleCounts: any, maxMuscleCount: number) {
+  renderMuscleCountChart(muscleCountData: any, maxMuscleCount: number) {
     const { classes, theme, width } = this.props;
 
-    const muscleData: { x: string; y: number }[] = Object.keys(muscleCounts)
-      .map(muscle => ({
-        x: this.chartSettings.clipLabel(muscle),
-        y: muscleCounts[muscle],
-        label: isMobile(width) ? muscle : null
-      }))
-      .sort(this.sortByY)
-      .slice(0, this.chartSettings.maxColumnCount());
     return (
       <section className={classes.exerciseChart}>
         <BaseChart config={this.chartSettings}>
@@ -532,7 +534,7 @@ class Activity extends React.Component<Props, State> {
                   )
               }
             }}
-            data={muscleData}
+            data={muscleCountData}
           />
         </BaseChart>
       </section>
@@ -577,6 +579,17 @@ class Activity extends React.Component<Props, State> {
       exerciseCountData
     );
 
+    const muscleCountData: { x: string; y: number }[] = Object.keys(
+      muscleCounts
+    )
+      .map(muscle => ({
+        x: this.chartSettings.clipLabel(muscle),
+        y: muscleCounts[muscle],
+        label: isMobile(width) ? muscle : null
+      }))
+      .sort(this.sortByY)
+      .slice(0, this.chartSettings.maxColumnCount());
+
     const titleAlignment = isMobile(width) ? "left" : "center";
 
     return (
@@ -593,6 +606,40 @@ class Activity extends React.Component<Props, State> {
             exercises
           </Typography>
           <Typography align="center">{`completed between today and ${dateLimit} days ago`}</Typography>
+          <OverviewCard
+            stats={[
+              {
+                label: "Most Frequent Muscle Groups",
+                value: this.getOverviewLabel(muscleCountData, (x, y) => {
+                  return {
+                    x,
+                    y
+                  };
+                })
+              },
+              {
+                label: "Most Frequent Exercise",
+                value: this.getOverviewLabel(exerciseCountData, (x, y) => ({
+                  x,
+                  y
+                }))
+              },
+              {
+                label: "Top Exercise Progress",
+                value: this.getOverviewLabel(exerciseProgressData, (x, y) => ({
+                  x,
+                  y: `${y.toFixed(2)}%`
+                }))
+              },
+              {
+                label: "Top Exercises per Day",
+                value: this.getOverviewLabel(dateCountData, (x, y) => ({
+                  x: format(x, "DD/MM/YYYY"),
+                  y
+                }))
+              }
+            ]}
+          />
         </div>
         <Divider className={classes.divider} />
         <Typography align={titleAlignment} variant="h6">
@@ -603,7 +650,7 @@ class Activity extends React.Component<Props, State> {
           menuComponent={muscle => this.renderMuscleList(muscle)}
           selected={muscles}
         />
-        {this.renderMuscleCountChart(muscleCounts, maxMuscleCount)}
+        {this.renderMuscleCountChart(muscleCountData, maxMuscleCount)}
         <Typography align="center" variant="subtitle1">
           Muscle Groups by Frequency
         </Typography>

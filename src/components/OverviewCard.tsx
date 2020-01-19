@@ -4,6 +4,7 @@ import { Classes } from "jss";
 
 type Props = {
   classes: Classes;
+  className?: string;
   stats: {
     label: string;
     value: string;
@@ -25,8 +26,8 @@ const styles = (theme: Theme) =>
     }
   });
 
-const OverviewCard = ({ classes, stats }: Props) => (
-  <section>
+const OverviewCard = ({ className, classes, stats }: Props) => (
+  <section className={className}>
     <Typography variant="h6">Overview</Typography>
     <div className={classes.wrapper}>
       {stats.map(({ label, value }, index) => (

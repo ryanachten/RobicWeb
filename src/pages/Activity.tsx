@@ -79,6 +79,11 @@ const styles = (theme: Theme) =>
         marginBottom: theme.spacing(8)
       }
     },
+    overviewCard: {
+      margin: "0 auto",
+      marginTop: theme.spacing(4),
+      maxWidth: theme.breakpoints.values.sm
+    },
     tabs: {
       justifyContent: "center"
     }
@@ -607,6 +612,7 @@ class Activity extends React.Component<Props, State> {
           </Typography>
           <Typography align="center">{`completed between today and ${dateLimit} days ago`}</Typography>
           <OverviewCard
+            className={classes.overviewCard}
             stats={[
               {
                 label: "Most Frequent Muscle Groups",

@@ -6,7 +6,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import { Classes } from "jss";
 import routes from "../constants/routes";
 import { GetExercises } from "../constants/queries";
-import { PageRoot, OverviewCard } from "../components";
+import { PageRoot, OverviewCard, Select } from "../components";
 import { FullBody } from "../components/muscles/FullBody";
 import { ExerciseDefinition, MuscleGroup, Exercise } from "../constants/types";
 import {
@@ -109,6 +109,7 @@ enum TabMode {
 
 type State = {
   dateLimit: number;
+  selectedMuscleGroup: MuscleGroup | "";
   selectedExercises: ExerciseDefinition[];
   tab: TabMode;
 };
@@ -136,6 +137,7 @@ class Activity extends React.Component<Props, State> {
     this.state = {
       dateLimit: 7,
       selectedExercises: [],
+      selectedMuscleGroup: "",
       tab: TabMode.WEEK
     };
     this.getCurrentExercises = this.getCurrentExercises.bind(this);
@@ -143,6 +145,7 @@ class Activity extends React.Component<Props, State> {
     this.renderCharts = this.renderCharts.bind(this);
     this.renderExerciseCountChart = this.renderExerciseCountChart.bind(this);
     this.updateDate = this.updateDate.bind(this);
+    this.updateMuscleGroup = this.updateMuscleGroup.bind(this);
     this.sortByY = (a: { x: string; y: number }, b: { x: any; y: number }) => {
       if (a.y === b.y) {
         return a.x > b.x ? 1 : -1;
@@ -231,6 +234,12 @@ class Activity extends React.Component<Props, State> {
     this.setState({
       tab,
       dateLimit: daysAmount
+    });
+  }
+
+  updateMuscleGroup(e: MuscleGroup) {
+    this.setState({
+      selectedMuscleGroup: e
     });
   }
 
@@ -473,6 +482,23 @@ class Activity extends React.Component<Props, State> {
     );
   }
 
+  renderMuscleDropdown() {
+    const { selectedMuscleGroup } = this.state;
+    const options = Object.keys(MuscleGroup).map((key: any) => ({
+      id: key,
+      value: key,
+      label: MuscleGroup[key]
+    }));
+    return (
+      <Select
+        label="Filter by Muscle Group"
+        options={options}
+        onChange={this.updateMuscleGroup}
+        value={selectedMuscleGroup}
+      />
+    );
+  }
+
   renderExerciseCountChart(exerciseCountData: any, exerciseCountMax: number) {
     const { classes, width } = this.props;
     return (
@@ -682,6 +708,7 @@ class Activity extends React.Component<Props, State> {
         <Typography align={titleAlignment} variant="h6">
           Exercises
         </Typography>
+        {this.renderMuscleDropdown()}
         <div className={classes.sectionWrapper}>
           <div className={classes.sectionItem}>
             {this.renderDateCountChart(dateCountData)}

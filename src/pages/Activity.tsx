@@ -84,6 +84,18 @@ const styles = (theme: Theme) =>
       marginTop: theme.spacing(4),
       maxWidth: theme.breakpoints.values.sm
     },
+    sectionItem: {
+      flexGrow: 1,
+      minWidth: "200px",
+
+      [theme.breakpoints.up("sm")]: {
+        maxWidth: "50%"
+      }
+    },
+    sectionWrapper: {
+      display: "flex",
+      flexFlow: "row wrap"
+    },
     tabs: {
       justifyContent: "center"
     }
@@ -619,7 +631,7 @@ class Activity extends React.Component<Props, State> {
                 value: this.getOverviewLabel(muscleCountData, (x, y) => {
                   return {
                     x,
-                    y
+                    y: `(x${y})`
                   };
                 })
               },
@@ -627,21 +639,21 @@ class Activity extends React.Component<Props, State> {
                 label: "Most Frequent Exercise",
                 value: this.getOverviewLabel(exerciseCountData, (x, y) => ({
                   x,
-                  y
+                  y: `(x${y})`
                 }))
               },
               {
                 label: "Top Exercise Progress",
                 value: this.getOverviewLabel(exerciseProgressData, (x, y) => ({
                   x,
-                  y: `${y.toFixed(2)}%`
+                  y: `(${y.toFixed(2)}%)`
                 }))
               },
               {
                 label: "Top Exercises per Day",
                 value: this.getOverviewLabel(dateCountData, (x, y) => ({
                   x: format(x, "DD/MM/YYYY"),
-                  y
+                  y: `(x${y})`
                 }))
               }
             ]}
@@ -651,38 +663,50 @@ class Activity extends React.Component<Props, State> {
         <Typography align={titleAlignment} variant="h6">
           Muscle Groups
         </Typography>
-        <FullBody
-          muscleGroupLevels={maxMuscleCount}
-          menuComponent={muscle => this.renderMuscleList(muscle)}
-          selected={muscles}
-        />
-        {this.renderMuscleCountChart(muscleCountData, maxMuscleCount)}
-        <Typography align="center" variant="subtitle1">
-          Muscle Groups by Frequency
-        </Typography>
+        <div className={classes.sectionWrapper}>
+          <div className={classes.sectionItem}>
+            <FullBody
+              muscleGroupLevels={maxMuscleCount}
+              menuComponent={muscle => this.renderMuscleList(muscle)}
+              selected={muscles}
+            />
+          </div>
+          <div className={classes.sectionItem}>
+            {this.renderMuscleCountChart(muscleCountData, maxMuscleCount)}
+            <Typography align="center" variant="subtitle1">
+              Muscle Groups by Frequency
+            </Typography>
+          </div>
+        </div>
         <Divider className={classes.divider} />
         <Typography align={titleAlignment} variant="h6">
           Exercises
         </Typography>
-        {this.renderDateCountChart(dateCountData)}
-        {this.renderExerciseCountChart(
-          exerciseCountData.slice(0, this.chartSettings.maxColumnCount()),
-          exerciseCountMax
-        )}
-        <Typography align="center" variant="subtitle1">
-          Exercises by Frequency
-        </Typography>
-        {exerciseProgressData.length > 5 && (
-          <Fragment>
-            {this.renderExerciseProgressChart(
-              exerciseProgressData,
-              exerciseProgressMax
+        <div className={classes.sectionWrapper}>
+          <div className={classes.sectionItem}>
+            {this.renderDateCountChart(dateCountData)}
+          </div>
+          <div className={classes.sectionItem}>
+            {this.renderExerciseCountChart(
+              exerciseCountData.slice(0, this.chartSettings.maxColumnCount()),
+              exerciseCountMax
             )}
             <Typography align="center" variant="subtitle1">
-              Max and Min Exercise Progress
+              Exercises by Frequency
             </Typography>
-          </Fragment>
-        )}
+          </div>
+          {exerciseProgressData.length > 5 && (
+            <div className={classes.sectionItem}>
+              {this.renderExerciseProgressChart(
+                exerciseProgressData,
+                exerciseProgressMax
+              )}
+              <Typography align="center" variant="subtitle1">
+                Max and Min Exercise Progress
+              </Typography>
+            </div>
+          )}
+        </div>
         <div className={classes.divider} />
       </Fragment>
     );

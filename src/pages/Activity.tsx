@@ -79,6 +79,9 @@ const styles = (theme: Theme) =>
         marginBottom: theme.spacing(8)
       }
     },
+    muscleDropdown: {
+      minWidth: "200px"
+    },
     overviewCard: {
       margin: "0 auto",
       marginTop: theme.spacing(4),
@@ -109,7 +112,7 @@ enum TabMode {
 
 type State = {
   dateLimit: number;
-  selectedMuscleGroup: MuscleGroup | "";
+  selectedMuscleGroup: any;
   selectedExercises: ExerciseDefinition[];
   tab: TabMode;
 };
@@ -130,6 +133,7 @@ class Activity extends React.Component<Props, State> {
     data: { x: string; y: number }[],
     parse: (x: string, y: number) => { x: string; y: string | number }
   ) => string;
+  hasMuscleGroup: (definitionGroups: MuscleGroup[]) => boolean;
   sortByY: (a: { x: any; y: number }, b: { x: any; y: number }) => number;
   chartSettings: any;
   constructor(props: Props) {
@@ -159,6 +163,10 @@ class Activity extends React.Component<Props, State> {
       const parsed = parse(data[0].x, data[0].y);
       return `${parsed.x}  ${parsed.y}`;
     };
+    this.hasMuscleGroup = definitionGroups =>
+      definitionGroups.includes(
+        MuscleGroup[this.state.selectedMuscleGroup] as any
+      );
 
     // Shared chart configuration
     this.chartSettings = {
@@ -237,9 +245,9 @@ class Activity extends React.Component<Props, State> {
     });
   }
 
-  updateMuscleGroup(e: MuscleGroup) {
+  updateMuscleGroup(e: any) {
     this.setState({
-      selectedMuscleGroup: e
+      selectedMuscleGroup: e.target.value
     });
   }
 
@@ -325,7 +333,7 @@ class Activity extends React.Component<Props, State> {
   }
 
   getExerciseProgress(exercises: ExerciseDefinition[]) {
-    const dateLimit = this.state.dateLimit;
+    const { dateLimit, selectedMuscleGroup } = this.state;
 
     const exerciseProgressData: {
       x: string;
@@ -334,13 +342,17 @@ class Activity extends React.Component<Props, State> {
       label: string | null;
     }[] = [];
 
-    exercises.reverse().forEach((def: ExerciseDefinition) => {
+    exercises.forEach((def: ExerciseDefinition) => {
       // Progess is considered here as:
       // the delta of the average session net total within date range
       // minus the earliest session net total within date range
-      const validSessions = def.history.filter(e =>
-        isAfter(e.date, subDays(Date.now(), dateLimit))
-      );
+      const validSessions = def.history.filter(e => {
+        const withinDateRange = isAfter(e.date, subDays(Date.now(), dateLimit));
+        const hasMuscleGroup = selectedMuscleGroup
+          ? this.hasMuscleGroup(def.primaryMuscleGroup)
+          : true;
+        return withinDateRange && hasMuscleGroup;
+      });
       if (validSessions.length > 1) {
         const isComposite = isCompositeExercise(def.type);
         const earliestSession: Exercise = validSessions[0];
@@ -483,6 +495,7 @@ class Activity extends React.Component<Props, State> {
   }
 
   renderMuscleDropdown() {
+    const { classes } = this.props;
     const { selectedMuscleGroup } = this.state;
     const options = Object.keys(MuscleGroup).map((key: any) => ({
       id: key,
@@ -491,6 +504,7 @@ class Activity extends React.Component<Props, State> {
     }));
     return (
       <Select
+        className={classes.muscleDropdown}
         label="Filter by Muscle Group"
         options={options}
         onChange={this.updateMuscleGroup}
@@ -722,17 +736,15 @@ class Activity extends React.Component<Props, State> {
               Exercises by Frequency
             </Typography>
           </div>
-          {exerciseProgressData.length > 5 && (
-            <div className={classes.sectionItem}>
-              {this.renderExerciseProgressChart(
-                exerciseProgressData,
-                exerciseProgressMax
-              )}
-              <Typography align="center" variant="subtitle1">
-                Max and Min Exercise Progress
-              </Typography>
-            </div>
-          )}
+          <div className={classes.sectionItem}>
+            {this.renderExerciseProgressChart(
+              exerciseProgressData,
+              exerciseProgressMax
+            )}
+            <Typography align="center" variant="subtitle1">
+              Max and Min Exercise Progress
+            </Typography>
+          </div>
         </div>
         <div className={classes.divider} />
       </Fragment>

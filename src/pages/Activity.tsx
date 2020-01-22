@@ -133,7 +133,7 @@ class Activity extends React.Component<Props, State> {
     data: { x: string; y: number }[],
     parse: (x: string, y: number) => { x: string; y: string | number }
   ) => string;
-  hasMuscleGroup: (definitionGroups: MuscleGroup[]) => boolean;
+  isSessionValid: (date: string, p: MuscleGroup[]) => boolean;
   sortByY: (a: { x: any; y: number }, b: { x: any; y: number }) => number;
   chartSettings: any;
   constructor(props: Props) {
@@ -163,10 +163,16 @@ class Activity extends React.Component<Props, State> {
       const parsed = parse(data[0].x, data[0].y);
       return `${parsed.x}  ${parsed.y}`;
     };
-    this.hasMuscleGroup = definitionGroups =>
-      definitionGroups.includes(
-        MuscleGroup[this.state.selectedMuscleGroup] as any
-      );
+    this.isSessionValid = (date, primaryMuscleGroup) => {
+      const { dateLimit, selectedMuscleGroup } = this.state;
+      const withinDateRange = isAfter(date, subDays(Date.now(), dateLimit));
+      const hasMuscleGroup = selectedMuscleGroup
+        ? primaryMuscleGroup.includes(
+            MuscleGroup[this.state.selectedMuscleGroup] as any
+          )
+        : true;
+      return withinDateRange && hasMuscleGroup;
+    };
 
     // Shared chart configuration
     this.chartSettings = {
@@ -260,7 +266,6 @@ class Activity extends React.Component<Props, State> {
   }
 
   getExerciseCounts(exercises: ExerciseDefinition[]) {
-    const dateLimit = this.state.dateLimit;
     const width = this.props.width;
 
     const exerciseCountData: {
@@ -271,7 +276,7 @@ class Activity extends React.Component<Props, State> {
       .reverse()
       .map((def: ExerciseDefinition) => {
         const validSessions = def.history.filter(e =>
-          isAfter(e.date, subDays(Date.now(), dateLimit))
+          this.isSessionValid(e.date, def.primaryMuscleGroup)
         );
         return {
           x: this.chartSettings.clipLabel(def.title),
@@ -299,13 +304,11 @@ class Activity extends React.Component<Props, State> {
   }
 
   getDateCounts(exercises: ExerciseDefinition[]) {
-    const dateLimit = this.state.dateLimit;
-
     // Get number of exercise session per day during date period
     const dateHash: any = {};
     exercises.forEach((def: ExerciseDefinition) => {
       const validSessions = def.history.filter(e =>
-        isAfter(e.date, subDays(Date.now(), dateLimit))
+        this.isSessionValid(e.date, def.primaryMuscleGroup)
       );
       return validSessions.forEach((e: Exercise) => {
         const formattedDate = format(e.date, "DD/MM/YYYY");
@@ -333,8 +336,6 @@ class Activity extends React.Component<Props, State> {
   }
 
   getExerciseProgress(exercises: ExerciseDefinition[]) {
-    const { dateLimit, selectedMuscleGroup } = this.state;
-
     const exerciseProgressData: {
       x: string;
       y: number;
@@ -346,13 +347,9 @@ class Activity extends React.Component<Props, State> {
       // Progess is considered here as:
       // the delta of the average session net total within date range
       // minus the earliest session net total within date range
-      const validSessions = def.history.filter(e => {
-        const withinDateRange = isAfter(e.date, subDays(Date.now(), dateLimit));
-        const hasMuscleGroup = selectedMuscleGroup
-          ? this.hasMuscleGroup(def.primaryMuscleGroup)
-          : true;
-        return withinDateRange && hasMuscleGroup;
-      });
+      const validSessions = def.history.filter(e =>
+        this.isSessionValid(e.date, def.primaryMuscleGroup)
+      );
       if (validSessions.length > 1) {
         const isComposite = isCompositeExercise(def.type);
         const earliestSession: Exercise = validSessions[0];

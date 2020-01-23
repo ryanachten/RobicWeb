@@ -101,6 +101,13 @@ const styles = (theme: Theme) =>
     },
     tabs: {
       justifyContent: "center"
+    },
+    tabsWrapper: {
+      alignItems: "center",
+      display: "flex",
+      flexFlow: "row wrap",
+      justifyContent: "space-around",
+      paddingTop: theme.spacing(4)
     }
   });
 
@@ -719,29 +726,34 @@ class Activity extends React.Component<Props, State> {
         <Typography align={titleAlignment} variant="h6">
           Exercises
         </Typography>
-        {this.renderMuscleDropdown()}
         <div className={classes.sectionWrapper}>
-          <div className={classes.sectionItem}>
-            {this.renderDateCountChart(dateCountData)}
-          </div>
-          <div className={classes.sectionItem}>
-            {this.renderExerciseCountChart(
-              exerciseCountData.slice(0, this.chartSettings.maxColumnCount()),
-              exerciseCountMax
-            )}
-            <Typography align="center" variant="subtitle1">
-              Exercises by Frequency
-            </Typography>
-          </div>
-          <div className={classes.sectionItem}>
-            {this.renderExerciseProgressChart(
-              exerciseProgressData,
-              exerciseProgressMax
-            )}
-            <Typography align="center" variant="subtitle1">
-              Max and Min Exercise Progress
-            </Typography>
-          </div>
+          {dateCountData.length > 0 && (
+            <div className={classes.sectionItem}>
+              {this.renderDateCountChart(dateCountData)}
+            </div>
+          )}
+          {exerciseCountData.length > 0 && (
+            <div className={classes.sectionItem}>
+              {this.renderExerciseCountChart(
+                exerciseCountData.slice(0, this.chartSettings.maxColumnCount()),
+                exerciseCountMax
+              )}
+              <Typography align="center" variant="subtitle1">
+                Exercises by Frequency
+              </Typography>
+            </div>
+          )}
+          {exerciseProgressData.length > 0 && (
+            <div className={classes.sectionItem}>
+              {this.renderExerciseProgressChart(
+                exerciseProgressData,
+                exerciseProgressMax
+              )}
+              <Typography align="center" variant="subtitle1">
+                Max and Min Exercise Progress
+              </Typography>
+            </div>
+          )}
         </div>
         <div className={classes.divider} />
       </Fragment>
@@ -760,18 +772,22 @@ class Activity extends React.Component<Props, State> {
         actionPanel={{
           title: routes.ACTIVITY.label,
           children: (
-            <Tabs
-              classes={{
-                flexContainer: classes.tabs
-              }}
-              indicatorColor="primary"
-              onChange={(e, tab: TabMode) => this.updateDate(tab)}
-              value={tab}
-            >
-              <Tab label="Weekly" value={TabMode.WEEK} />
-              <Tab label="Monthly" value={TabMode.MONTH} />
-              <Tab label="Yearly" value={TabMode.YEAR} />
-            </Tabs>
+            <div className={classes.tabsWrapper}>
+              <Tabs
+                classes={{
+                  flexContainer: classes.tabs
+                }}
+                indicatorColor="primary"
+                onChange={(e, tab: TabMode) => this.updateDate(tab)}
+                value={tab}
+              >
+                <Tab label="Weekly" value={TabMode.WEEK} />
+                <Tab label="Monthly" value={TabMode.MONTH} />
+                <Tab label="Yearly" value={TabMode.YEAR} />
+              </Tabs>
+
+              {this.renderMuscleDropdown()}
+            </div>
           )
         }}
       >

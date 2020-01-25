@@ -1,11 +1,11 @@
 import React from "react";
 import { Exercise, Unit, ExerciseDefinition } from "../constants/types";
 import {
-  getNetTotalFromSets,
   formatDate,
   getChildExercisDef,
   formatTime,
-  isCompositeExercise
+  isCompositeExercise,
+  getPbFromExercise
 } from "../utils";
 import { Classes } from "jss";
 import { Typography, Switch, Theme, createStyles } from "@material-ui/core";
@@ -111,17 +111,12 @@ class InsightCard extends React.Component<Props, State> {
   }
 
   renderPersonalBest(
-    history: Exercise[],
     composite: boolean,
     unit?: Unit,
     childExercises?: ExerciseDefinition[]
   ) {
-    const personalBest = [...history].sort((a: Exercise, b: Exercise) => {
-      const a_total = getNetTotalFromSets(a.sets, composite);
-      const b_total = getNetTotalFromSets(b.sets, composite);
-      return a_total > b_total ? -1 : 1;
-    })[0];
-    const classes = this.props.classes;
+    const { classes, exerciseDefinition } = this.props;
+    const personalBest = getPbFromExercise(exerciseDefinition);
     return (
       <div className={classes.historyWrapper}>
         <div className={classes.historyHeader}>
@@ -248,12 +243,7 @@ class InsightCard extends React.Component<Props, State> {
           {(showPbSession || !showToggles) &&
             history &&
             history.length > 0 &&
-            this.renderPersonalBest(
-              history,
-              compositeType,
-              unit,
-              childExercises
-            )}
+            this.renderPersonalBest(compositeType, unit, childExercises)}
           {(showRecentSession || !showToggles) &&
             history &&
             history.length > 0 &&

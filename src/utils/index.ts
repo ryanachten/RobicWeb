@@ -15,7 +15,8 @@ import {
   ExerciseDefinition,
   MuscleGroup,
   SetExercise,
-  Set
+  Set,
+  Exercise
 } from "../constants/types";
 
 export default classnames;
@@ -169,3 +170,15 @@ export const getNetTotalFromSets = (sets: Set[], composite: boolean) => {
 };
 
 export const isBodyWeight = (unit?: Unit) => unit === Unit.bodyweight;
+
+export const getPbFromExercise = (definition: ExerciseDefinition): Exercise => {
+  const composite = isCompositeExercise(definition.type);
+  const personalBest = [...definition.history].sort(
+    (a: Exercise, b: Exercise) => {
+      const a_total = getNetTotalFromSets(a.sets, composite);
+      const b_total = getNetTotalFromSets(b.sets, composite);
+      return a_total > b_total ? -1 : 1;
+    }
+  )[0];
+  return personalBest;
+};

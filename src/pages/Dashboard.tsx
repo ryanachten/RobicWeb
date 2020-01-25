@@ -127,6 +127,9 @@ const styles = (theme: Theme) =>
     input: {
       padding: theme.spacing(2)
     },
+    pbFeedbackWrapper: {
+      padding: `${theme.spacing(4)}px ${theme.spacing(2)}px`
+    },
     selectTitle: {
       marginRight: theme.spacing(2),
       textAlign: "center"
@@ -491,11 +494,13 @@ class Index extends React.Component<Props, State> {
 
   renderPbFeedback() {
     const { selectedExercise, sets } = this.state;
+    const { classes } = this.props;
     // TODO: add support for composite exercises
     if (!sets.length || !selectedExercise) {
       return null;
     }
     const composite = isCompositeExercise(selectedExercise.type);
+    const unit = selectedExercise.unit || "";
     const currentNetValue = getNetTotalFromSets(sets, composite);
     const pb = getPbFromExercise(selectedExercise);
     const pbNetValue = getNetTotalFromSets(pb.sets, composite);
@@ -503,17 +508,17 @@ class Index extends React.Component<Props, State> {
     // If over current PB, display success message
     if (currentNetValue > pbNetValue) {
       return (
-        <div>
+        <div className={classes.pbFeedbackWrapper}>
           <Typography
             align="center"
             variant="subtitle1"
-          >{`Congratulations! New personal best ${currentNetValue}`}</Typography>
+          >{`Congratulations! New personal best ${currentNetValue}${unit}`}</Typography>
           <Typography
             align="center"
             color="textSecondary"
-          >{`Previous personal best ${pbNetValue} (+${Math.abs(
+          >{`Previous personal best ${pbNetValue}${unit} (+${Math.abs(
             delta
-          )})`}</Typography>
+          )}${unit})`}</Typography>
         </div>
       );
     }
@@ -528,13 +533,13 @@ class Index extends React.Component<Props, State> {
     const value = ((delta + 1) / setNumber / repAverage).toFixed(2);
 
     return (
-      <div>
+      <div className={classes.pbFeedbackWrapper}>
         <Typography align="center" variant="subtitle1">{`${delta +
-          1} until new personal best`}</Typography>
+          1}${unit} until new personal best`}</Typography>
         <Typography
           align="center"
           color="textSecondary"
-        >{`${value} x ${repAverage} reps x ${setNumber} sets`}</Typography>
+        >{`${value}${unit} x ${repAverage} reps x ${setNumber} sets`}</Typography>
       </div>
     );
   }
@@ -600,6 +605,7 @@ class Index extends React.Component<Props, State> {
             <AddIcon color="secondary" />
           </Button>
         </div>
+        {this.renderPbFeedback()}
         <div className={classes.buttonWrapper}>
           <Stopwatch ref={(stopwatch: any) => (this.stopwatch = stopwatch)} />
           <IconButton
@@ -621,7 +627,6 @@ class Index extends React.Component<Props, State> {
             </IconButton>
           )}
         </div>
-        {this.renderPbFeedback()}
         <Button
           className={classes.doneButton}
           color="primary"

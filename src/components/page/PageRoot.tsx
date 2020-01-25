@@ -2,7 +2,7 @@ import React, { SyntheticEvent, Fragment } from "react";
 import { withRouter, RouteComponentProps } from "react-router";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import ProfileIcon from "@material-ui/icons/MoreVert";
+import MenuIcon from "@material-ui/icons/MoreVert";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { Classes } from "jss";
@@ -61,6 +61,13 @@ const styles = (theme: Theme) =>
       display: "flex",
       justifyContent: "center",
       margin: `${theme.spacing(4)}px auto`
+    },
+    menuIcon: {
+      color: theme.palette.primary.main,
+
+      [theme.breakpoints.up("sm")]: {
+        color: theme.palette.common.white
+      }
     },
     mobileProfileWrapper: {
       right: 0,
@@ -170,7 +177,7 @@ class PageRoot extends React.Component<Props, State> {
           aria-haspopup="true"
           onClick={this.onMenuClick}
         >
-          <ProfileIcon color="primary" />
+          <MenuIcon className={classes.menuIcon} />
         </IconButton>
         <Menu
           id="profile-menu"

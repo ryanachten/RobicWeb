@@ -37,7 +37,9 @@ import {
   isCompositeExercise,
   getChildExercisDef,
   isBodyWeight,
-  sortAlphabetically
+  sortAlphabetically,
+  getNetTotalFromSets,
+  getPbFromExercise
 } from "../utils";
 import {
   PageRoot,
@@ -487,6 +489,56 @@ class Index extends React.Component<Props, State> {
     );
   }
 
+  renderPbFeedback() {
+    const { selectedExercise, sets } = this.state;
+    // TODO: add support for composite exercises
+    if (!sets.length || !selectedExercise) {
+      return null;
+    }
+    const composite = isCompositeExercise(selectedExercise.type);
+    const currentNetValue = getNetTotalFromSets(sets, composite);
+    const pb = getPbFromExercise(selectedExercise);
+    const pbNetValue = getNetTotalFromSets(pb.sets, composite);
+    const delta = pbNetValue - currentNetValue;
+    // If over current PB, display success message
+    if (currentNetValue > pbNetValue) {
+      return (
+        <div>
+          <Typography
+            align="center"
+            variant="subtitle1"
+          >{`Congratulations! New personal best ${currentNetValue}`}</Typography>
+          <Typography
+            align="center"
+            color="textSecondary"
+          >{`Previous personal best ${pbNetValue} (+${Math.abs(
+            delta
+          )})`}</Typography>
+        </div>
+      );
+    }
+    // Otherwise show delta with value/reps/sets recommendation
+    // Sets are based on PB set length
+    const setNumber =
+      sets.length < pb.sets.length ? pb.sets.length - sets.length : 1;
+    // Reps are PB set rep average
+    const repAverage =
+      pb.sets.reduce((total, set) => total + set.reps, 0) / pb.sets.length;
+    // Value is derived from delta based on PB set and rep average
+    const value = ((delta + 1) / setNumber / repAverage).toFixed(2);
+
+    return (
+      <div>
+        <Typography align="center" variant="subtitle1">{`${delta +
+          1} until new personal best`}</Typography>
+        <Typography
+          align="center"
+          color="textSecondary"
+        >{`${value} x ${repAverage} reps x ${setNumber} sets`}</Typography>
+      </div>
+    );
+  }
+
   renderExerciseForm() {
     const { classes } = this.props;
     const { selectedExercise, sets, timerRunning } = this.state;
@@ -569,6 +621,7 @@ class Index extends React.Component<Props, State> {
             </IconButton>
           )}
         </div>
+        {this.renderPbFeedback()}
         <Button
           className={classes.doneButton}
           color="primary"

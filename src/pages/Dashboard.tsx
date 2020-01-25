@@ -51,6 +51,7 @@ import {
 import { isNull, isUndefined } from "util";
 import { Breakpoint } from "@material-ui/core/styles/createBreakpoints";
 import { RouteComponentProps, Prompt } from "react-router";
+import { isAfter, setHours, setMinutes } from "date-fns";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -512,6 +513,7 @@ class Index extends React.Component<Props, State> {
           <Typography
             align="center"
             variant="subtitle1"
+            color="secondary"
           >{`Congratulations! New personal best ${currentNetValue}${unit}`}</Typography>
           <Typography
             align="center"
@@ -781,7 +783,11 @@ class Index extends React.Component<Props, State> {
     return (
       <PageRoot
         actionPanel={{
-          title: "Morning Ryan!",
+          title: `Good ${
+            isAfter(Date.now(), setMinutes(setHours(Date.now(), 12), 0))
+              ? "Evening"
+              : "Morning"
+          }!`,
           tagline: "Select an exercise to get started",
           children: !noExercises ? (
             <Fragment>

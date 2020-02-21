@@ -180,5 +180,5 @@ export const getPbFromExercise = (definition: ExerciseDefinition): Exercise => {
       return a_total > b_total ? -1 : 1;
     }
   )[0];
-  return personalBest;
+  return personalBest || null;
 };

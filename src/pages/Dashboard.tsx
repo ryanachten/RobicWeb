@@ -496,11 +496,14 @@ class Index extends React.Component<Props, State> {
   renderPbFeedback() {
     const { selectedExercise, sets } = this.state;
     const { classes } = this.props;
-    // TODO: add support for composite exercises
-    if (!sets.length || !selectedExercise) {
+    if (!selectedExercise || !selectedExercise.history.length) {
       return null;
     }
+    // TODO: add support for composite exercises
     const composite = isCompositeExercise(selectedExercise.type);
+    if (composite) {
+      return null;
+    }
     const unit = selectedExercise.unit || "";
     const currentNetValue = getNetTotalFromSets(sets, composite);
     const pb = getPbFromExercise(selectedExercise);
